@@ -5,3 +5,5 @@
 2012-02-14 15:33:12,342 [-] [main]  INFO FileWriter The target\generated-code\src\cgl\iotcloud\gen\clients\SensorRegistrationServiceCallbackHandler.java file cannot be overwritten.
 2012-02-14 15:33:12,346 [-] [main]  INFO FileWriter The target\generated-code\src\cgl\iotcloud\gen\clients\SensorRegistrationService.java file cannot be overwritten.
 2012-02-14 15:33:12,351 [-] [main]  INFO FileWriter The target\generated-code\src\cgl\iotcloud\gen\clients\SensorRegistrationServiceStub.java file cannot be overwritten.
+2012-02-14 17:14:12,199 [-] [main]  WARN SchemaCompiler No schemaLocation for import of http://sensor.services.iotcloud.cgl/xsd; compilation may fail
+2012-02-14 17:14:12,199 [-] [main]  WARN SchemaCompiler No schemaLocation for import of http://services.iotcloud.cgl/xsd; compilation may fail
