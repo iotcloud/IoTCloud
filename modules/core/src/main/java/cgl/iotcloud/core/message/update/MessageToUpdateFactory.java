@@ -1,9 +1,9 @@
 package cgl.iotcloud.core.message.update;
 
 import cgl.iotcloud.core.SCException;
-import com.iotCloud.message.xsd.Param;
-import com.iotCloud.message.xsd.Sensor;
-import com.iotCloud.message.xsd.UpdateDocument;
+import com.iotcloud.message.xsd.Param;
+import com.iotcloud.message.xsd.Sensor;
+import com.iotcloud.message.xsd.UpdateDocument;
 import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

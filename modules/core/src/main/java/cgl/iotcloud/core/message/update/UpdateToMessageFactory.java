@@ -2,8 +2,8 @@ package cgl.iotcloud.core.message.update;
 
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
-import com.iotCloud.message.xsd.Sensor;
-import com.iotCloud.message.xsd.UpdateDocument;
+import com.iotcloud.message.xsd.Sensor;
+import com.iotcloud.message.xsd.UpdateDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +20,7 @@ public class UpdateToMessageFactory {
         sensor.setId(message.getSensorId());
 
         for (Map.Entry<String, String> e : message.getAllUpdates().entrySet()) {
-            com.iotCloud.message.xsd.Param param = sensor.addNewParam();
+            com.iotcloud.message.xsd.Param param = sensor.addNewParam();
             param.setName(e.getKey());
             param.setValue(e.getValue());
         }

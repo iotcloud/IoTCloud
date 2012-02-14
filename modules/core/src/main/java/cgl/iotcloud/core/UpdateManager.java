@@ -12,8 +12,8 @@ import cgl.iotcloud.core.message.data.TextDataMessage;
 import cgl.iotcloud.core.message.update.UpdateMessage;
 import cgl.iotcloud.core.message.update.UpdateToMessageFactory;
 import cgl.iotcloud.core.sensor.SCSensor;
-import com.iotCloud.message.xsd.Sensor;
-import com.iotCloud.message.xsd.UpdateDocument;
+import com.iotcloud.message.xsd.Sensor;
+import com.iotcloud.message.xsd.UpdateDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
