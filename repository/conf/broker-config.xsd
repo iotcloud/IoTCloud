@@ -1,7 +1,7 @@
 <xs:schema
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:po="http://sensor-cloud.com/xsd"
-    targetNamespace="http://sensor-cloud.com/xsd"
+    xmlns:po="http://iotcloud.com/xsd"
+    targetNamespace="http://iotcloud.com/xsd"
     elementFormDefault="qualified">
     <xs:simpleType name='nonEmptyString'>
         <xs:restriction base='xs:string'>
