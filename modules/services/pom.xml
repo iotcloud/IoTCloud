@@ -1,0 +1,88 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>iotcloud</groupId>
+        <artifactId>iotcloud-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>iotcloud-services</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>aar</packaging>
+
+    <name>iotcloud-services</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.axis2</groupId>
+                <artifactId> axis2-aar-maven-plugin</artifactId>
+                <version>1.6.1</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <fileSets>
+                        <fileSet>
+                            <outputDirectory>META-INF</outputDirectory>
+                            <includes>
+                                <include>*.xml</include>
+                                <include>*.xsd</include>
+                                <include>*.wsdl</include>
+                            </includes>
+                            <excludes>
+                                <exclude>schemaorg_apache_xmlbeans/**/*
+                                </exclude>
+                            </excludes>
+                        </fileSet>
+                    </fileSets>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jcl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>iotcloud</groupId>
+            <artifactId>iotcloud-core</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-kernel</artifactId>
+        </dependency>
+    </dependencies>
+</project>

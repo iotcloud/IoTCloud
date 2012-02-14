@@ -1,0 +1,37 @@
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:po="http://sensor-cloud.com/message/xsd"
+    targetNamespace="http://sensor-cloud.com/message/xsd"
+    elementFormDefault="qualified">
+    <xs:simpleType name='nonEmptyString'>
+        <xs:restriction base='xs:string'>
+            <xs:minLength value='1'/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="updates">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="sensor" type="po:sensor" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="update">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="sensor" type="po:sensor" minOccurs="1" maxOccurs="1"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="sensor">
+        <xs:sequence>
+            <xs:element name="param" type="po:param" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="param">
+        <xs:sequence>
+            <xs:element name="name" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="value" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

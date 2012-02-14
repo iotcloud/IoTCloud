@@ -1,0 +1,61 @@
+<serviceGroup>
+    <service name="ClientRegistrationService">
+        <Description>Register Clients to the Sensor Cloud</Description>
+
+        <transports>
+            <transport>http</transport>
+        </transports>
+
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/robust-in-only"
+                             class="org.apache.axis2.rpc.receivers.RPCInOnlyMessageReceiver"/>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-only"
+                             class="org.apache.axis2.rpc.receivers.RPCInOnlyMessageReceiver"/>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </messageReceivers>
+
+        <parameter name="ServiceClass" locked="xsd:false">cgl.iotcloud.services.client.ClientRegistrationService</parameter>
+
+        <operation name="getAllSensors">
+            <actionMapping>urn:getAllSensors</actionMapping>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
+        <operation name="getSensors">
+            <actionMapping>urn:getSensors</actionMapping>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
+        <operation name="getSensorInformation">
+            <actionMapping>urn:getSensorInformation</actionMapping>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
+    </service>
+
+    <service name="SensorRegistrationService">
+        <Description>Register Clients to the Sensor Cloud</Description>
+
+        <transports>
+            <transport>http</transport>
+        </transports>
+
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/robust-in-only"
+                             class="org.apache.axis2.rpc.receivers.RPCInOnlyMessageReceiver"/>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-only"
+                             class="org.apache.axis2.rpc.receivers.RPCInOnlyMessageReceiver"/>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </messageReceivers>
+
+        <parameter name="ServiceClass" locked="xsd:false">cgl.iotcloud.services.sensor.SensorRegistrationService</parameter>
+
+        <operation name="registerSensor">
+            <actionMapping>urn:registerSensor</actionMapping>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
+    </service>
+</serviceGroup>
