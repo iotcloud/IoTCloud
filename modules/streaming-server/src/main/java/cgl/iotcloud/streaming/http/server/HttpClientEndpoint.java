@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
+import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
+
 public class HttpClientEndpoint extends HttpEndpoint {
     private static Logger log = LoggerFactory.getLogger(HttpClientEndpoint.class);
     private String host;
@@ -41,11 +43,14 @@ public class HttpClientEndpoint extends HttpEndpoint {
                     // Begin to accept incoming traffic.
                     context.getInChannel().setReadable(true);
 
-                    context.getOutChannel().write(context.getRequest());
+                    ChannelFuture writeFuture = context.getOutChannel().write(context.getRequest());
+                    if (!context.getRequest().isChunked()) {
+                        writeFuture.addListener(new ResponseWriter(context.getInChannel(), !isKeepAlive(context.request)));
+                    }
                     // If outboundChannel is saturated, do not read until notified in
                     // OutboundHandler.channelInterestChanged().
                     if (!context.getOutChannel().isWritable()) {
-                        log.info("inbound readable false");
+                        // log.info("inbound readable false");
                         context.getInChannel().setReadable(false);
                     }
                     outboundChannel.setAttachment(context);

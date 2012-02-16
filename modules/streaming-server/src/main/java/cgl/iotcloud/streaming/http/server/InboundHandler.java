@@ -1,17 +1,21 @@
 package cgl.iotcloud.streaming.http.server;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelStateEvent;
-import io.netty.channel.MessageEvent;
-import io.netty.channel.SimpleChannelUpstreamHandler;
+import io.netty.channel.*;
+import io.netty.handler.codec.http.HttpChunk;
 import io.netty.handler.codec.http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
 
 
 public class InboundHandler extends SimpleChannelUpstreamHandler {
     private static Logger log = LoggerFactory.getLogger(InboundHandler.class);
     private ServerConfiguration configuration;
+
+    private boolean readingChunks = false;
+
+    private HttpRequest request = null;
 
     public InboundHandler(
             ServerConfiguration configuration) {
@@ -24,7 +28,7 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
         Object message = e.getMessage();
         log.info("Message received");
         if (message instanceof HttpRequest) {
-            HttpRequest request = (HttpRequest) e.getMessage();
+            request = (HttpRequest) e.getMessage();
             String url = request.getUri();
 
             RoutingRule rule = null;
@@ -34,6 +38,8 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
                 }
             }
 
+            readingChunks = request.isChunked();
+
             if (rule != null) {
                 e.getChannel().setReadable(false);
                 MessageContext context = new MessageContext(request, e.getChannel(), rule);
@@ -42,9 +48,14 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
             } else {
                 // close the connection
             }
-        } else {
+        } else if (readingChunks) {
             MessageContext context = (MessageContext) ctx.getChannel().getAttachment();
-            context.getOutChannel().write(e.getMessage());
+            ChannelFuture future = context.getOutChannel().write(e.getMessage());
+            HttpChunk chunk = (HttpChunk) e.getMessage();
+            // when the write operation is completed we have to write the 202
+            if (chunk.isLast()) {
+                future.addListener(new ResponseWriter(e.getChannel(), isKeepAlive(request)));
+            }
         }
     }
 
@@ -54,19 +65,9 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
         MessageContext context = (MessageContext) ctx.getChannel().getAttachment();
         if (context != null) {
             if (e.getChannel().isWritable()) {
-                log.info("outbout readable true");
+                // log.info("outbout readable true");
                 context.getOutChannel().setReadable(true);
             }
         }
     }
-
-    /**
-     * Closes the specified channel after all queued write requests are flushed.
-     * @param ch channel
-     */
-//    static void closeOnFlush(Channel ch) {
-//        if (ch.isConnected()) {
-//            ch.write(ChannelBuffers.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
-//        }
-//    }
 }
