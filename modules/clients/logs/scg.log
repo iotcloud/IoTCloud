@@ -17,3 +17,7 @@
 2012-02-14 17:29:07,664 [-] [main]  WARN SchemaCompiler No schemaLocation for import of http://client.services.iotcloud.cgl/xsd; compilation may fail
 2012-02-14 17:29:09,119 [-] [main]  WARN SchemaCompiler No schemaLocation for import of http://services.iotcloud.cgl/xsd; compilation may fail
 2012-02-14 17:29:09,154 [-] [main]  WARN SchemaCompiler No schemaLocation for import of http://services.iotcloud.cgl/xsd; compilation may fail
+2012-02-15 09:52:36,715 [-] [main]  WARN SchemaCompiler No schemaLocation for import of http://services.iotcloud.cgl/xsd; compilation may fail
+2012-02-15 09:52:36,716 [-] [main]  WARN SchemaCompiler No schemaLocation for import of http://client.services.iotcloud.cgl/xsd; compilation may fail
+2012-02-15 09:52:37,524 [-] [main]  WARN SchemaCompiler No schemaLocation for import of http://services.iotcloud.cgl/xsd; compilation may fail
+2012-02-15 09:52:37,549 [-] [main]  WARN SchemaCompiler No schemaLocation for import of http://services.iotcloud.cgl/xsd; compilation may fail

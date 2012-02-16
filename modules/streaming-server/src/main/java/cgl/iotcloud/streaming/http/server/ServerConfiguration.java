@@ -20,13 +20,13 @@ public class ServerConfiguration {
     private ThreadPoolExecutor workerExecutor = null;
 
     public ServerConfiguration() {
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 100, 10, TimeUnit.SECONDS, new LinkedBlockingQueue(), new CustomThreadFactory(new ThreadGroup("io"), "worker-thread"));
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 100, 10, TimeUnit.SECONDS, new LinkedBlockingQueue(), new CustomThreadFactory(new ThreadGroup("io"), "client-io-thread"));
         ClientSocketChannelFactory socketFactory = new NioClientSocketChannelFactory(
-                Executors.newCachedThreadPool(new CustomThreadFactory(new ThreadGroup("boss"), "boss-thread")),
+                Executors.newCachedThreadPool(new CustomThreadFactory(new ThreadGroup("boss"), "client-boss-thread")),
 //                Executors.newCachedThreadPool(new CustomThreadFactory(new ThreadGroup("io"), "io-thread")));
                 executor);
 
-        workerExecutor = new ThreadPoolExecutor(20, 100, 10, TimeUnit.SECONDS, new LinkedBlockingQueue(), new CustomThreadFactory(new ThreadGroup("io"), "server-io-thread"));
+        workerExecutor = new ThreadPoolExecutor(20, 100, 10, TimeUnit.SECONDS, new LinkedBlockingQueue(), new CustomThreadFactory(new ThreadGroup("io"), "worker-thread"));
 
         clientBootStrap = new ClientBootstrap(socketFactory);
         clientBootStrap.setPipelineFactory(new ClientPipelineFactory());

@@ -1,22 +1,16 @@
 package cgl.iotcloud.streaming.http.server;
 
-import io.netty.buffer.ChannelBuffers;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelStateEvent;
-import io.netty.channel.ExceptionEvent;
 import io.netty.channel.MessageEvent;
 import io.netty.channel.SimpleChannelUpstreamHandler;
 import io.netty.handler.codec.http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.locks.Lock;
 
 public class InboundHandler extends SimpleChannelUpstreamHandler {
     private static Logger log = LoggerFactory.getLogger(InboundHandler.class);
-
     private ServerConfiguration configuration;
 
     public InboundHandler(
@@ -25,14 +19,10 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
     }
 
     @Override
-    public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-        super.channelConnected(ctx, e);
-    }
-
-    @Override
     public void messageReceived(ChannelHandlerContext ctx, final MessageEvent e)
             throws Exception {
         Object message = e.getMessage();
+        log.info("Message received");
         if (message instanceof HttpRequest) {
             HttpRequest request = (HttpRequest) e.getMessage();
             String url = request.getUri();
@@ -45,12 +35,9 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
             }
 
             if (rule != null) {
+                e.getChannel().setReadable(false);
                 MessageContext context = new MessageContext(request, e.getChannel(), rule);
                 Worker worker = new Worker(context);
-//                ctx.getChannel().setAttachment(context);
-//                HttpClientEndpoint endpoint = rule.getEndpoint();
-//
-//                endpoint.connect(context);
                 configuration.getWorkerExecutor().execute(worker);
             } else {
                 // close the connection
@@ -66,41 +53,20 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
             ChannelStateEvent e) throws Exception {
         MessageContext context = (MessageContext) ctx.getChannel().getAttachment();
         if (context != null) {
-            Lock lock = context.getLock();
-            // If inboundChannel is not saturated anymore, continue accepting
-            // the incoming traffic from the outboundChannel.
-//            lock.lock();
-            try {
+            if (e.getChannel().isWritable()) {
+                log.info("outbout readable true");
                 context.getOutChannel().setReadable(true);
-            } finally {
-//                lock.unlock();
             }
         }
     }
-
-//    @Override
-//    public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e)
-//            throws Exception {
-//        MessageContext context = (MessageContext) ctx.getChannel().getAttachment();
-//        if (context != null) {
-//
-//        }
-//    }
-//
-//    @Override
-//    public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e)
-//            throws Exception {
-//        log.info("Exception occurred: " + e);
-//        closeOnFlush(e.getChannel());
-//    }
 
     /**
      * Closes the specified channel after all queued write requests are flushed.
      * @param ch channel
      */
-    static void closeOnFlush(Channel ch) {
-        if (ch.isConnected()) {
-            ch.write(ChannelBuffers.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
-        }
-    }
+//    static void closeOnFlush(Channel ch) {
+//        if (ch.isConnected()) {
+//            ch.write(ChannelBuffers.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
+//        }
+//    }
 }

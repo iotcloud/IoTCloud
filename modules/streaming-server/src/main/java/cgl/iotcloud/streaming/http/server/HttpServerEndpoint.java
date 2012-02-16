@@ -34,7 +34,7 @@ public class HttpServerEndpoint extends HttpEndpoint {
     public void start() {
         log.info("Starting server endpoint on path: " + path + " and port: " + port);
         ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 100, 10, TimeUnit.SECONDS, new LinkedBlockingQueue(), new CustomThreadFactory(new ThreadGroup("io"), "server-io-thread"));
-        socketFactory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(new CustomThreadFactory(new ThreadGroup("boss"), "boss-thread")),executor);
+        socketFactory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(new CustomThreadFactory(new ThreadGroup("boss"), "server-boss-thread")),executor);
         //Executors.newCachedThreadPool(new CustomThreadFactory(new ThreadGroup("io"), "io-thread")));
         ServerBootstrap sb = new ServerBootstrap(socketFactory);
 
