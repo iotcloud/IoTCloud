@@ -45,7 +45,8 @@ public class HttpClientEndpoint extends HttpEndpoint {
 
                     ChannelFuture writeFuture = context.getOutChannel().write(context.getRequest());
                     if (!context.getRequest().isChunked()) {
-                        writeFuture.addListener(new ResponseWriter(context.getInChannel(), !isKeepAlive(context.request)));
+                        writeFuture.addListener(new ResponseWriter(context.getInChannel(), !isKeepAlive(context.getRequest()),
+                                context.getRequest().isChunked(), outboundChannel));
                     }
                     // If outboundChannel is saturated, do not read until notified in
                     // OutboundHandler.channelInterestChanged().

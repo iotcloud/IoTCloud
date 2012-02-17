@@ -6,7 +6,7 @@ import io.netty.handler.codec.http.HttpRequest;
 public class MessageContext {
     private RoutingRule rule = null;
 
-    protected HttpRequest request = null;
+    private HttpRequest request = null;
 
     private Channel inChannel = null;
 

@@ -26,7 +26,6 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
     public void messageReceived(ChannelHandlerContext ctx, final MessageEvent e)
             throws Exception {
         Object message = e.getMessage();
-        log.info("Message received");
         if (message instanceof HttpRequest) {
             request = (HttpRequest) e.getMessage();
             String url = request.getUri();
@@ -54,7 +53,7 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
             HttpChunk chunk = (HttpChunk) e.getMessage();
             // when the write operation is completed we have to write the 202
             if (chunk.isLast()) {
-                future.addListener(new ResponseWriter(e.getChannel(), isKeepAlive(request)));
+                future.addListener(new ResponseWriter(e.getChannel(), isKeepAlive(request), request.isChunked(), context.getOutChannel()));
             }
         }
     }
@@ -69,5 +68,11 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
                 context.getOutChannel().setReadable(true);
             }
         }
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
+        log.error("Exception occured:", e.getCause());
+        e.getChannel().close();
     }
 }
