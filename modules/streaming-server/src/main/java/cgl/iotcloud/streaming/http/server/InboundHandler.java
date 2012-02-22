@@ -44,6 +44,9 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
                 MessageContext context = new MessageContext(request, e.getChannel(), rule);
                 Worker worker = new Worker(context);
                 configuration.getWorkerExecutor().execute(worker);
+                if (!readingChunks) {
+                    new ResponseWriter(e.getChannel(), !isKeepAlive(request), request.isChunked()).write();
+                }
             } else {
                 // close the connection
             }
@@ -53,7 +56,7 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
             HttpChunk chunk = (HttpChunk) e.getMessage();
             // when the write operation is completed we have to write the 202
             if (chunk.isLast()) {
-                future.addListener(new ResponseWriter(e.getChannel(), isKeepAlive(request), request.isChunked(), context.getOutChannel()));
+                new ResponseWriter(e.getChannel(), !isKeepAlive(request), request.isChunked()).write();
             }
         }
     }

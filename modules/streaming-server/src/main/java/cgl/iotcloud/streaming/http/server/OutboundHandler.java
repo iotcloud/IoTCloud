@@ -21,16 +21,23 @@ public class OutboundHandler extends SimpleChannelUpstreamHandler {
         if (!readingChunks) {
             response = (HttpResponse) e.getMessage();
             if (!response.isChunked()) {
-                if (!isKeepAlive(response)) {
-                    log.info("Closing the connection");
-                    e.getChannel().close();
-                }
+//                if (!isKeepAlive(response)) {
+//                    log.info("Closing the connection");
+//                    e.getChannel().close();
+//                }
+                log.info("Closing the connection");
+                e.getChannel().close();
             } else {
                 readingChunks = true;
             }
         } else {
             HttpChunk chunk = (HttpChunk) e.getMessage();
-            if (chunk.isLast() && !isKeepAlive(response)) {
+//            if (chunk.isLast() && !isKeepAlive(response)) {
+//                log.info("Closing the connection");
+//                e.getChannel().close();
+//            }
+
+            if (chunk.isLast()) {
                 log.info("Closing the connection");
                 e.getChannel().close();
             }

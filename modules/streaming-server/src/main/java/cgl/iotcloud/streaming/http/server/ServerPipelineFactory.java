@@ -4,7 +4,6 @@ import static io.netty.channel.Channels.*;
 
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPipelineFactory;
-import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.logging.LoggingHandler;

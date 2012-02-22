@@ -4,6 +4,7 @@ import io.netty.bootstrap.ClientBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.handler.codec.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,12 +43,12 @@ public class HttpClientEndpoint extends HttpEndpoint {
                     // Connection attempt succeeded:
                     // Begin to accept incoming traffic.
                     context.getInChannel().setReadable(true);
-
-                    ChannelFuture writeFuture = context.getOutChannel().write(context.getRequest());
-                    if (!context.getRequest().isChunked()) {
-                        writeFuture.addListener(new ResponseWriter(context.getInChannel(), !isKeepAlive(context.getRequest()),
-                                context.getRequest().isChunked(), outboundChannel));
-                    }
+                    // context.getRequest().setHeader(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
+                    context.getOutChannel().write(context.getRequest());
+//                    if (!context.getRequest().isChunked()) {
+//                        new ResponseWriter(context.getInChannel(), !isKeepAlive(context.getRequest()),
+//                                context.getRequest().isChunked(), outboundChannel));
+//                    }
                     // If outboundChannel is saturated, do not read until notified in
                     // OutboundHandler.channelInterestChanged().
                     if (!context.getOutChannel().isWritable()) {
@@ -57,7 +58,7 @@ public class HttpClientEndpoint extends HttpEndpoint {
                     outboundChannel.setAttachment(context);
                 } else {
                     // Close the connection if the connection attempt has failed.
-                    context.getInChannel().close();
+                    // context.getInChannel().close();
                 }
             }
         });        
