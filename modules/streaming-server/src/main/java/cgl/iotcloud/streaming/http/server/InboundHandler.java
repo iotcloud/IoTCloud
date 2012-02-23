@@ -1,10 +1,13 @@
 package cgl.iotcloud.streaming.http.server;
 
+import io.netty.bootstrap.ClientBootstrap;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.HttpChunk;
 import io.netty.handler.codec.http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.InetSocketAddress;
 
 import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
 
@@ -77,5 +80,21 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
         log.error("Exception occured:", e.getCause());
         e.getChannel().close();
+    }
+
+    private ChannelFuture newChannelFuture(final HttpRequest httpRequest,
+                                           final Channel browserToProxyChannel, String host, int port) {
+        if (port == -1) {
+            port = 80;
+        }
+
+        ClientBootstrap cb = new ClientBootstrap(configuration.getClientSocketChannelFactory());
+
+        cb.setPipelineFactory(new ClientPipelineFactory());
+        cb.setOption("connectTimeoutMillis", 60 * 1000);
+        log.info("Starting new connection to: {}", host + ":" + port);
+        final ChannelFuture future =
+                cb.connect(new InetSocketAddress(host, port));
+        return future;
     }
 }

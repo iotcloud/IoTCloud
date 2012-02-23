@@ -19,18 +19,19 @@ public class ServerConfiguration {
 
     private ThreadPoolExecutor workerExecutor = null;
 
+    private ClientSocketChannelFactory clientSocketChannelFactory = null;
+
     public ServerConfiguration() {
         ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 100, 10, TimeUnit.SECONDS, new LinkedBlockingQueue(),
                 new CustomThreadFactory(new ThreadGroup("io"), "client-io-thread"));
-        ClientSocketChannelFactory socketFactory = new NioClientSocketChannelFactory(
+        clientSocketChannelFactory = new NioClientSocketChannelFactory(
                 Executors.newCachedThreadPool(new CustomThreadFactory(new ThreadGroup("boss"), "client-boss-thread")),
-//                Executors.newCachedThreadPool(new CustomThreadFactory(new ThreadGroup("io"), "io-thread")));
                 executor);
 
         workerExecutor = new ThreadPoolExecutor(20, 100, 10, TimeUnit.SECONDS, new LinkedBlockingQueue(),
                 new CustomThreadFactory(new ThreadGroup("io"), "worker-thread"));
 
-        clientBootStrap = new ClientBootstrap(socketFactory);
+        clientBootStrap = new ClientBootstrap(clientSocketChannelFactory);
         clientBootStrap.setPipelineFactory(new ClientPipelineFactory());
     }
 
@@ -72,5 +73,9 @@ public class ServerConfiguration {
 
     public void addClientEndpoints(List<HttpClientEndpoint> clientEndpoints) {
         clientEndpoints.addAll(clientEndpoints);
+    }
+
+    public ClientSocketChannelFactory getClientSocketChannelFactory() {
+        return clientSocketChannelFactory;
     }
 }
