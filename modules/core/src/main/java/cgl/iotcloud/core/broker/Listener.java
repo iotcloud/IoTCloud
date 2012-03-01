@@ -4,10 +4,10 @@ import cgl.iotcloud.core.Control;
 import cgl.iotcloud.core.ManagedLifeCycle;
 import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.State;
+import cgl.iotcloud.core.message.MessageFactory;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
-import cgl.iotcloud.core.message.jms.MessageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

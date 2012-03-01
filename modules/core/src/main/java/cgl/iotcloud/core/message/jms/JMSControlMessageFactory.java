@@ -1,6 +1,7 @@
 package cgl.iotcloud.core.message.jms;
 
 import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.message.MessageFactory;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
 import org.slf4j.Logger;

@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.UUID;
 
 import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
 
@@ -20,6 +21,10 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
 
     private HttpRequest request = null;
 
+    private String messageId = null;
+
+    private RoutingRule rule = null;
+    
     public InboundHandler(
             ServerConfiguration configuration) {
         this.configuration = configuration;
@@ -29,11 +34,10 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
     public void messageReceived(ChannelHandlerContext ctx, final MessageEvent e)
             throws Exception {
         Object message = e.getMessage();
-        if (message instanceof HttpRequest) {
+        if (!readingChunks) {
             request = (HttpRequest) e.getMessage();
             String url = request.getUri();
 
-            RoutingRule rule = null;
             for (RoutingRule r : configuration.getRoutingRules()) {
                 if (r.isMatch(url)) {
                     rule = r;
@@ -45,19 +49,24 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
             if (rule != null) {
                 e.getChannel().setReadable(false);
                 MessageContext context = new MessageContext(request, e.getChannel(), rule);
-                Worker worker = new Worker(context);
-                configuration.getWorkerExecutor().execute(worker);
+                //Worker worker = new Worker(context);
+                //configuration.getWorkerExecutor().execute(worker);
+                messageId = UUID.randomUUID().toString();
+                rule.getEndpoint().writeRequest(request, messageId);
+
                 if (!readingChunks) {
                     new ResponseWriter(e.getChannel(), !isKeepAlive(request), request.isChunked()).write();
                 }
             } else {
                 // close the connection
             }
-        } else if (readingChunks) {
-            MessageContext context = (MessageContext) ctx.getChannel().getAttachment();
-            ChannelFuture future = context.getOutChannel().write(e.getMessage());
+        } else {
+            //MessageContext context = (MessageContext) ctx.getChannel().getAttachment();
+            //ChannelFuture future = context.getOutChannel().write(e.getMessage());
             HttpChunk chunk = (HttpChunk) e.getMessage();
             // when the write operation is completed we have to write the 202
+            rule.getEndpoint().writeChunk(chunk, messageId);
+
             if (chunk.isLast()) {
                 new ResponseWriter(e.getChannel(), !isKeepAlive(request), request.isChunked()).write();
             }

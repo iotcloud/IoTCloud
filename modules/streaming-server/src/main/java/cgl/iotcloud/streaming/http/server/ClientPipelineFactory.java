@@ -3,7 +3,6 @@ package cgl.iotcloud.streaming.http.server;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPipelineFactory;
 import io.netty.handler.codec.http.HttpClientCodec;
-import io.netty.handler.codec.http.HttpContentDecompressor;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.logging.InternalLogLevel;
@@ -11,6 +10,9 @@ import org.slf4j.Logger;
 
 import static io.netty.channel.Channels.pipeline;
 
+/**
+ * Sets up the pipeline for the client part of the server.
+ */
 public class ClientPipelineFactory implements ChannelPipelineFactory {
     public ChannelPipeline getPipeline() throws Exception {
         ChannelPipeline pipeline = pipeline();
@@ -19,15 +21,6 @@ public class ClientPipelineFactory implements ChannelPipelineFactory {
         if (log.isDebugEnabled()) {
             pipeline.addLast("log", new LoggingHandler(InternalLogLevel.INFO));
         }
-        //pipeline.addLast("log", new LoggingHandler(InternalLogLevel.INFO));
-
-//        if (ssl) {
-//            SSLEngine engine =
-//                SecureChatSslContextFactory.getClientContext().createSSLEngine();
-//            engine.setUseClientMode(true);
-//
-//            pipeline.addLast("ssl", new SslHandler(engine));
-//        }
 
         pipeline.addLast("codec", new HttpClientCodec());
 

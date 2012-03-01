@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.*;
+import static io.netty.handler.codec.http.HttpHeaders.Values.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.ACCEPTED;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
@@ -29,11 +30,12 @@ public class ResponseWriter {
     public void write() throws Exception {
         HttpResponse response = new DefaultHttpResponse(HTTP_1_1, ACCEPTED);
         response.setHeader(CONTENT_LENGTH, 0);
+        response.setHeader(CONNECTION, CLOSE);
         ChannelFuture future = channel.write(response);
 
-        if (close) {
-            log.info("Adding closing listener");
-            future.addListener(ChannelFutureListener.CLOSE);
-        }
+
+        log.info("Adding closing listener");
+        future.addListener(ChannelFutureListener.CLOSE);
+
     }
 }

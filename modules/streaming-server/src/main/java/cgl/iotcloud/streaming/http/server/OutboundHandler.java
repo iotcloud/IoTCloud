@@ -14,32 +14,31 @@ public class OutboundHandler extends SimpleChannelUpstreamHandler {
     private boolean readingChunks = false;
 
     private HttpResponse response = null;
-    
+
     @Override
     public void messageReceived(ChannelHandlerContext ctx, final MessageEvent e)
-            throws Exception {  
+            throws Exception {
+        HttpClientEndpoint endpoint = (HttpClientEndpoint) ctx.getChannel().getAttachment();
         if (!readingChunks) {
             response = (HttpResponse) e.getMessage();
             if (!response.isChunked()) {
-//                if (!isKeepAlive(response)) {
-//                    log.info("Closing the connection");
-//                    e.getChannel().close();
-//                }
-                log.info("Closing the connection");
-                e.getChannel().close();
+                if (!isKeepAlive(response)) {
+                    log.info("Closing the connection");
+                    endpoint.responseDone(Channels.succeededFuture(e.getChannel()), true);
+                } else {
+                    log.info("Keeping the connection");
+                    endpoint.responseDone(Channels.succeededFuture(e.getChannel()), false);
+                }
             } else {
                 readingChunks = true;
             }
         } else {
             HttpChunk chunk = (HttpChunk) e.getMessage();
-//            if (chunk.isLast() && !isKeepAlive(response)) {
-//                log.info("Closing the connection");
-//                e.getChannel().close();
-//            }
-
-            if (chunk.isLast()) {
+            if (chunk.isLast() && !isKeepAlive(response)) {
                 log.info("Closing the connection");
-                e.getChannel().close();
+                endpoint.responseDone(Channels.succeededFuture(e.getChannel()), true);
+            } else if (chunk.isLast() && isKeepAlive(response)) {
+                endpoint.responseDone(Channels.succeededFuture(e.getChannel()), false);
             }
         }
     }

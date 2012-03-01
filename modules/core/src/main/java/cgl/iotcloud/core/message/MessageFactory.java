@@ -1,4 +1,4 @@
-package cgl.iotcloud.core.message.jms;
+package cgl.iotcloud.core.message;
 
 import cgl.iotcloud.core.message.SensorMessage;
 
