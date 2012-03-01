@@ -88,7 +88,9 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
         log.error("Exception occured:", e.getCause());
-        e.getChannel().close();
+        if (e.getChannel().isConnected()) {
+            e.getChannel().close();
+        }
     }
 
     private ChannelFuture newChannelFuture(final HttpRequest httpRequest,
