@@ -64,5 +64,10 @@ public class OutboundHandler extends SimpleChannelUpstreamHandler {
             e.getChannel().close();
         }
     }
+
+    @Override
+    public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        log.info("Channel closed........................");
+    }
 }
 
