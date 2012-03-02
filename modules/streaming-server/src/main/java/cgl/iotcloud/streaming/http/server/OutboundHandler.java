@@ -23,7 +23,7 @@ public class OutboundHandler extends SimpleChannelUpstreamHandler {
             response = (HttpResponse) e.getMessage();
             if (!response.isChunked()) {
                 if (!isKeepAlive(response)) {
-                    log.info("Closing the connection");
+                    log.debug("Closing the connection");
                     endpoint.responseDone(Channels.succeededFuture(e.getChannel()), true);
                 } else {
                     log.info("Keeping the connection");
@@ -35,7 +35,7 @@ public class OutboundHandler extends SimpleChannelUpstreamHandler {
         } else {
             HttpChunk chunk = (HttpChunk) e.getMessage();
             if (chunk.isLast() && !isKeepAlive(response)) {
-                log.info("Closing the connection");
+                log.debug("Closing the connection");
                 endpoint.responseDone(Channels.succeededFuture(e.getChannel()), true);
             } else if (chunk.isLast() && isKeepAlive(response)) {
                 endpoint.responseDone(Channels.succeededFuture(e.getChannel()), false);
@@ -63,11 +63,6 @@ public class OutboundHandler extends SimpleChannelUpstreamHandler {
         if (e.getChannel().isConnected()) {
             e.getChannel().close();
         }
-    }
-
-    @Override
-    public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-        log.info("Channel closed....................");
     }
 }
 

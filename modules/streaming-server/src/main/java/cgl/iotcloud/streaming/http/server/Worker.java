@@ -13,7 +13,7 @@ public class Worker implements Runnable {
         context.getInChannel().setAttachment(context);
         HttpClientEndpoint endpoint = context.getRule().getEndpoint();
 
-        endpoint.connect(context);
+        //endpoint.connect(context);
 
         // endpoint.send();
     }

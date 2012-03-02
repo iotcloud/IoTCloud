@@ -33,8 +33,9 @@ public class ResponseWriter {
         response.setHeader(CONNECTION, CLOSE);
         ChannelFuture future = channel.write(response);
 
-
-        log.info("Adding closing listener");
+        if (log.isDebugEnabled()) {
+            log.debug("Adding closing listener");
+        }
         future.addListener(ChannelFutureListener.CLOSE);
 
     }

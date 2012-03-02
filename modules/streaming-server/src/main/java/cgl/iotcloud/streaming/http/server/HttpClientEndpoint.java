@@ -21,7 +21,7 @@ public class HttpClientEndpoint extends HttpEndpoint {
     
     private ServerConfiguration configuration;
 
-    private final Queue<ChannelFuture> openChannels = new LinkedList<ChannelFuture>();
+    private final LinkedList<ChannelFuture> openChannels = new LinkedList<ChannelFuture>();
     
     private final Map<String, ChannelFuture> workingChannels = new HashMap<String, ChannelFuture>(); 
     
@@ -39,49 +39,6 @@ public class HttpClientEndpoint extends HttpEndpoint {
         this.host = host;
     }
 
-    public ChannelFuture connect(final MessageContext context) {
-        ClientBootstrap cb = configuration.getClientBootStrap();
-
-//        ChannelFuture f = cb.connect(new InetSocketAddress(host, port));
-//
-//        final Channel outboundChannel = f.getChannel();
-//        context.setOutChannel(outboundChannel);
-//        f.addListener(new ChannelFutureListener() {
-//            public void operationComplete(ChannelFuture future) throws Exception {
-//                if (future.isSuccess()) {
-//                    // Connection attempt succeeded:
-//                    // Begin to accept incoming traffic.
-//                    context.getInChannel().setReadable(true);
-//                    context.getOutChannel().write(context.getRequest());
-//
-//                    // If outboundChannel is saturated, do not read until notified in
-//                    // OutboundHandler.channelInterestChanged().
-//                    if (!context.getOutChannel().isWritable()) {
-//                        // log.info("inbound readable false");
-//                        context.getInChannel().setReadable(false);
-//                    }
-//                    outboundChannel.setAttachment(context);
-//                } else {
-//                    // Close the connection if the connection attempt has failed.
-//                    // context.getInChannel().close();
-//                }
-//            }
-//        });
-
-        if (port == -1) {
-            port = 80;
-        }
-
-        // ClientBootstrap cb = new ClientBootstrap(configuration.getClientSocketChannelFactory());
-
-        cb.setPipelineFactory(new ClientPipelineFactory());
-        cb.setOption("connectTimeoutMillis", 60 * 1000);
-        log.info("Starting new connection to: {}", host + ":" + port);
-        final ChannelFuture future =
-                cb.connect(new InetSocketAddress(host, port));
-        return future;
-    }
-
     public void writeRequest(final HttpRequest request, String id) {
         final class OnConnect {
             public ChannelFuture onConnect(final ChannelFuture cf) {
@@ -93,7 +50,7 @@ public class HttpClientEndpoint extends HttpEndpoint {
 
         ChannelFuture future = getChannelFuture();
         if (future != null) {
-            log.info("Using existing connection...");
+            log.debug("Using existing connection...");
             if (future.getChannel().isConnected()) {
                 onConnect.onConnect(future);
             } else {
@@ -116,19 +73,19 @@ public class HttpClientEndpoint extends HttpEndpoint {
                         channelGroup.add(channel);
                     }
                     if (future.isSuccess()) {
-                        log.info("Connected successfully to: {}", channel);
-                        log.info("Writing message on channel...");
+                        log.debug("Connected successfully to: {}", channel);
+                        log.debug("Writing message on channel...");
                         final ChannelFuture wf = onConnect.onConnect(cf);
                         wf.addListener(new ChannelFutureListener() {
                             public void operationComplete(final ChannelFuture wcf)
                                     throws Exception {
-                                log.info("Finished write: " + wcf + " to: " +
+                                log.debug("Finished write: " + wcf + " to: " +
                                         request.getMethod() + " " +
                                         request.getUri());
                             }
                         });
                     } else {
-                        log.info("Could not connect to " + host + ":" + port,
+                        log.warn("Could not connect to " + host + ":" + port,
                                 future.getCause());
                     }
                 }
@@ -180,11 +137,14 @@ public class HttpClientEndpoint extends HttpEndpoint {
     }
 
     private ChannelFuture newChannelFuture() {
+        if (log.isDebugEnabled()) {
+            log.debug("Starting new connection to: {}", host + port);
+        }
+        
         // Configure the client.
         ClientBootstrap cb = configuration.getClientBootStrap();
         
-        cb.setOption("connectTimeoutMillis", 40*1000);
-        log.info("Starting new connection to: {}", host + port);
+        cb.setOption("connectTimeoutMillis", 40*1000);                        
         final ChannelFuture future =
                 cb.connect(new InetSocketAddress(host, port));
         future.getChannel().setAttachment(this);
@@ -193,7 +153,9 @@ public class HttpClientEndpoint extends HttpEndpoint {
     
     public void responseDone(ChannelFuture future, boolean close) {
         if (!close) {
-            openChannels.offer(future);
+            synchronized (openChannels) {
+                openChannels.offer(future);
+            }
         } else {
             if (future != null) {
                 future.addListener(ChannelFutureListener.CLOSE);
