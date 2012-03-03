@@ -47,10 +47,6 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
             readingChunks = request.isChunked();
 
             if (rule != null) {
-                // e.getChannel().setReadable(false);
-                MessageContext context = new MessageContext(request, e.getChannel(), rule);
-                //Worker worker = new Worker(context);
-                //configuration.getWorkerExecutor().execute(worker);
                 messageId = UUID.randomUUID().toString();
                 rule.getEndpoint().writeRequest(request, messageId);
 
