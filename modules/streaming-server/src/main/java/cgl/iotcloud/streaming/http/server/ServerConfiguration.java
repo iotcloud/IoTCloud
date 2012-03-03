@@ -22,13 +22,17 @@ public class ServerConfiguration {
     private ClientSocketChannelFactory clientSocketChannelFactory = null;
 
     public ServerConfiguration() {
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 100, 10, TimeUnit.SECONDS, new LinkedBlockingQueue(),
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 100, 10,
+                TimeUnit.SECONDS, new LinkedBlockingQueue(),
                 new CustomThreadFactory(new ThreadGroup("io"), "client-io-thread"));
+
         clientSocketChannelFactory = new NioClientSocketChannelFactory(
-                Executors.newCachedThreadPool(new CustomThreadFactory(new ThreadGroup("boss"), "client-boss-thread")),
+                Executors.newCachedThreadPool(
+                        new CustomThreadFactory(new ThreadGroup("boss"), "client-boss-thread")),
                 executor);
 
-        workerExecutor = new ThreadPoolExecutor(20, 100, 10, TimeUnit.SECONDS, new LinkedBlockingQueue(),
+        workerExecutor = new ThreadPoolExecutor(20, 100, 10,
+                TimeUnit.SECONDS, new LinkedBlockingQueue(),
                 new CustomThreadFactory(new ThreadGroup("io"), "worker-thread"));
 
         clientBootStrap = new ClientBootstrap(clientSocketChannelFactory);

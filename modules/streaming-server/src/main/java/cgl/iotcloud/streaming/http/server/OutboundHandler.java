@@ -26,7 +26,7 @@ public class OutboundHandler extends SimpleChannelUpstreamHandler {
                     log.debug("Closing the connection");
                     endpoint.responseDone(Channels.succeededFuture(e.getChannel()), true);
                 } else {
-                    log.info("Keeping the connection");
+                    log.debug("Keeping the connection");
                     endpoint.responseDone(Channels.succeededFuture(e.getChannel()), false);
                 }
             } else {
@@ -43,20 +43,20 @@ public class OutboundHandler extends SimpleChannelUpstreamHandler {
         }
     }
 
-    @Override
-    public void channelInterestChanged(ChannelHandlerContext ctx,
-                                       ChannelStateEvent e) throws Exception {
-        // If outboundChannel is not saturated anymore, continue accepting
-        // the incoming traffic from the inboundChannel.
-        MessageContext context = (MessageContext) ctx.getChannel().getAttachment();
-        if (context != null) {
-            Channel inboundChannel = context.getInChannel();
-            if (inboundChannel != null && e.getChannel().isWritable()) {
-                //log.info("inbound readable true");
-                inboundChannel.setReadable(true);
-            }
-        }
-    }
+//    @Override
+//    public void channelInterestChanged(ChannelHandlerContext ctx,
+//                                       ChannelStateEvent e) throws Exception {
+//        // If outboundChannel is not saturated anymore, continue accepting
+//        // the incoming traffic from the inboundChannel.
+//        MessageContext context = (MessageContext) ctx.getChannel().getAttachment();
+//        if (context != null) {
+//            Channel inboundChannel = context.getInChannel();
+//            if (inboundChannel != null && e.getChannel().isWritable()) {
+//                //log.info("inbound readable true");
+//                inboundChannel.setReadable(true);
+//            }
+//        }
+//    }
 
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
         log.error("Exception occured:", e.getCause());
