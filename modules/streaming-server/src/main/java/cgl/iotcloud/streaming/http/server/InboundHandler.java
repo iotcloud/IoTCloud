@@ -99,7 +99,9 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
 
         cb.setPipelineFactory(new ClientPipelineFactory());
         cb.setOption("connectTimeoutMillis", 60 * 1000);
-        log.info("Starting new connection to: {}", host + ":" + port);
+        if (log.isDebugEnabled()) {
+            log.debug("Starting new connection to: {}", host + ":" + port);
+        }
         final ChannelFuture future =
                 cb.connect(new InetSocketAddress(host, port));
         return future;

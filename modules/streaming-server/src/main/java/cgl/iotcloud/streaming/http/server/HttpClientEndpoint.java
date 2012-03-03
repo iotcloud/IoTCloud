@@ -131,7 +131,9 @@ public class HttpClientEndpoint extends HttpEndpoint {
             Channel channel = workingChannels.get(messageId);
             if (channel != null) {
                 if (channel.isConnected()) {
-                    log.info("Writing the chunk..");
+                    if (log.isDebugEnabled()) {
+                        log.debug("Writing the chunk to the out channel..");
+                    }
                     channel.write(chunk).addListener(new HandleEvent(messageId));
                 } else {
                     log.warn("Trying to write a chunk without a connected channel:" + messageId);
@@ -140,7 +142,9 @@ public class HttpClientEndpoint extends HttpEndpoint {
                 log.warn("Doesn't have a channel associated with Message id:" + messageId);
             }
         } else {
-            log.info("Offering the chunk..");
+            if (log.isDebugEnabled()) {
+                log.debug("Offering the chunk to the queue..");
+            }
             messages.offer(chunk);
         }
     } 
