@@ -21,9 +21,10 @@ public class HttpListener {
 
     private NioServerSocketChannelFactory channelFactory = null;
 
-    public HttpListener(int port, MessageReceiver receiver) {
+    public HttpListener(int port, MessageReceiver receiver, String path) {
         this.port = port;
         this.receiver = receiver;
+        this.path = path;
         allChannels = new DefaultChannelGroup("http-server-" + path + ":" + port);
     }
 
@@ -35,7 +36,7 @@ public class HttpListener {
         ServerBootstrap bootstrap = new ServerBootstrap(channelFactory);
 
         // Set up the event pipeline factory.
-        bootstrap.setPipelineFactory(new HttpListenerPipelineFactory(receiver));
+        bootstrap.setPipelineFactory(new HttpListenerPipelineFactory(receiver, path));
 
         // Bind and start to accept incoming connections.
         Channel channel = bootstrap.bind(new InetSocketAddress(port));

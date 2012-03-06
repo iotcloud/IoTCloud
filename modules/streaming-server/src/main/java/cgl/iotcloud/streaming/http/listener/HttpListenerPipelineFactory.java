@@ -14,8 +14,11 @@ import static io.netty.channel.Channels.pipeline;
 public class HttpListenerPipelineFactory implements ChannelPipelineFactory {
     private MessageReceiver receiver;
 
-    public HttpListenerPipelineFactory(MessageReceiver receiver) {
+    private String path;
+
+    public HttpListenerPipelineFactory(MessageReceiver receiver, String path) {
         this.receiver = receiver;
+        this.path = path;
     }
 
     public ChannelPipeline getPipeline() throws Exception {
@@ -34,7 +37,7 @@ public class HttpListenerPipelineFactory implements ChannelPipelineFactory {
         // for now we use a chunk aggregator . we have to fix this
         pipeline.addLast("aggregator", new HttpChunkAggregator(1048576));
 
-        pipeline.addLast("handler", new HttpStaticFileServerHandler());
+        pipeline.addLast("handler", new HttpListenerHandler(receiver, path));
         return pipeline;
     }
 }

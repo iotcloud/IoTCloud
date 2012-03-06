@@ -4,6 +4,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPipelineFactory;
 import io.netty.example.http.snoop.HttpSnoopClientHandler;
 import io.netty.example.securechat.SecureChatSslContextFactory;
+import io.netty.handler.codec.http.HttpChunkAggregator;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpContentDecompressor;
 import io.netty.handler.logging.LoggingHandler;
@@ -42,7 +43,7 @@ public class HttpClientPipelineFactory implements ChannelPipelineFactory {
         pipeline.addLast("inflater", new HttpContentDecompressor());
 
         // Uncomment the following line if you don't want to handle HttpChunks.
-        //pipeline.addLast("aggregator", new HttpChunkAggregator(1048576));
+        pipeline.addLast("aggregator", new HttpChunkAggregator(1048576));
 
         pipeline.addLast("handler", new HttpSnoopClientHandler());
         return pipeline;

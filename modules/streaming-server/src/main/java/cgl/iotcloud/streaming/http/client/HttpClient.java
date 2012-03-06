@@ -1,7 +1,7 @@
 package cgl.iotcloud.streaming.http.client;
 
 import io.netty.bootstrap.ClientBootstrap;
-import io.netty.buffer.ChannelBuffer;
+import io.netty.buffer.ChannelBufferOutputStream;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.socket.nio.NioClientSocketChannelFactory;
@@ -22,7 +22,7 @@ public class HttpClient {
         this.uri = uri;
     }
 
-    public void send(ChannelBuffer channelBuffer) {
+    public void send(ChannelBufferOutputStream outputStream) {
         String scheme = uri.getScheme() == null? "http" : uri.getScheme();
         String host = uri.getHost() == null? "localhost" : uri.getHost();
         int port = uri.getPort();
@@ -67,16 +67,10 @@ public class HttpClient {
                 HttpVersion.HTTP_1_1, HttpMethod.GET, uri.getRawPath());
         request.setHeader(HttpHeaders.Names.HOST, host);
         request.setHeader(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
-        request.setHeader(HttpHeaders.Names.ACCEPT_ENCODING, HttpHeaders.Values.GZIP);
-
-        // Set some example cookies.
-        CookieEncoder httpCookieEncoder = new CookieEncoder(false);
-        httpCookieEncoder.addCookie("my-cookie", "foo");
-        httpCookieEncoder.addCookie("another-cookie", "bar");
-        request.setHeader(HttpHeaders.Names.COOKIE, httpCookieEncoder.encode());
+        // request.setHeader(HttpHeaders.Names.ACCEPT_ENCODING, HttpHeaders.Values.GZIP);
 
         // set the content
-        request.setContent(channelBuffer);
+        request.setContent(outputStream.buffer());
 
         // Send the HTTP request.
         channel.write(request);
