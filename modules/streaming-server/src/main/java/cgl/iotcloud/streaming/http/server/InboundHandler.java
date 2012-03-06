@@ -69,18 +69,6 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
         }
     }
 
-//    @Override
-//    public void channelInterestChanged(ChannelHandlerContext ctx,
-//            ChannelStateEvent e) throws Exception {
-//        MessageContext context = (MessageContext) ctx.getChannel().getAttachment();
-//        if (context != null) {
-//            if (e.getChannel().isWritable()) {
-//                // log.info("outbout readable true");
-//                context.getOutChannel().setReadable(true);
-//            }
-//        }
-//    }
-
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
         log.error("Exception occured:", e.getCause());

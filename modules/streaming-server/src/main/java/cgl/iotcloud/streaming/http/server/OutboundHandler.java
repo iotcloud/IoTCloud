@@ -43,21 +43,6 @@ public class OutboundHandler extends SimpleChannelUpstreamHandler {
         }
     }
 
-//    @Override
-//    public void channelInterestChanged(ChannelHandlerContext ctx,
-//                                       ChannelStateEvent e) throws Exception {
-//        // If outboundChannel is not saturated anymore, continue accepting
-//        // the incoming traffic from the inboundChannel.
-//        MessageContext context = (MessageContext) ctx.getChannel().getAttachment();
-//        if (context != null) {
-//            Channel inboundChannel = context.getInChannel();
-//            if (inboundChannel != null && e.getChannel().isWritable()) {
-//                //log.info("inbound readable true");
-//                inboundChannel.setReadable(true);
-//            }
-//        }
-//    }
-
     public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
         log.error("Exception occured:", e.getCause());
         if (e.getChannel().isConnected()) {
