@@ -4,7 +4,7 @@ import cgl.iotcloud.core.Control;
 import cgl.iotcloud.core.ManagedLifeCycle;
 import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.State;
-import cgl.iotcloud.core.message.MessageFactory;
+import cgl.iotcloud.core.message.jms.JMSMessageFactory;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ public class Sender implements Control, ManagedLifeCycle {
     /** The topic to listen to */
     private String destinationPath = null;
 
-    private MessageFactory messageFactory = new JMSDataMessageFactory();
+    private JMSMessageFactory messageFactory = new JMSDataMessageFactory();
 
     public Sender(Connections connections, String destinationPath) {
         this.connections = connections;
@@ -45,15 +45,21 @@ public class Sender implements Control, ManagedLifeCycle {
     }
 
     public void init() {
-        connections.init();
+        try {
+            connections.init();
 
-        connection = connections.getConnection();
-        session = connections.getSession(connection);
-        destination = connections.getDestination(destinationPath, session);
+            connection = connections.getConnection();
+            session = connections.getSession(connection);
+            destination = connections.getDestination(destinationPath, session);
 
-        producer = connections.getMessageProducer(connection, session, destination);
+            producer = connections.getMessageProducer(connection, session, destination);
 
-        state = State.INITIALIZED;
+            state = State.INITIALIZED;
+        } catch (SCException e) {
+            log.error("Error occurred while initializing the broker connections.. " +
+                    "See weather the broker configuration is correct and broker is up..");
+            throw e;
+        }
     }
 
     public void destroy() {
@@ -91,7 +97,7 @@ public class Sender implements Control, ManagedLifeCycle {
         return state.getState();
     }
 
-    public void setMessageFactory(MessageFactory messageFactory) {
+    public void setMessageFactory(JMSMessageFactory messageFactory) {
         this.messageFactory = messageFactory;
     }
 

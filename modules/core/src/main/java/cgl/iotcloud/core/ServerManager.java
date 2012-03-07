@@ -21,7 +21,12 @@ public class ServerManager {
         SCConfiguration config = fac.create(Constants.BROKER_CONFIG_FILE);
         final IoTCloud cloud = new IoTCloud(config);
         // initialize the configurations
-        cloud.init();
+        try {
+            cloud.init();
+        } catch (Exception e) {
+            log.error("Error initializing the IOTCloud...", e);
+            return;
+        }
 
         new Thread(
                 new Runnable() {

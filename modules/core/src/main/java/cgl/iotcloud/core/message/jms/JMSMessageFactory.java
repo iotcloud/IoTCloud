@@ -1,11 +1,11 @@
-package cgl.iotcloud.core.message;
+package cgl.iotcloud.core.message.jms;
 
 import cgl.iotcloud.core.message.SensorMessage;
 
 import javax.jms.Message;
 import javax.jms.Session;
 
-public interface MessageFactory {
+public interface JMSMessageFactory {
     /**
      * Create a sensor message with a JMS message
      * @param message the JMS message

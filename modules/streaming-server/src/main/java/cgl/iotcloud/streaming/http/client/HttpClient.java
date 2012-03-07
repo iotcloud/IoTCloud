@@ -1,5 +1,6 @@
 package cgl.iotcloud.streaming.http.client;
 
+import cgl.iotcloud.streaming.http.HttpServerException;
 import io.netty.bootstrap.ClientBootstrap;
 import io.netty.buffer.ChannelBufferOutputStream;
 import io.netty.channel.Channel;
@@ -11,18 +12,26 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
 
 public class HttpClient {
     private static Logger log = LoggerFactory.getLogger(HttpClient.class);
 
-    private final URI uri;
+    private final String uri;
 
-    public HttpClient(URI uri) {
+    public HttpClient(String uri) {
         this.uri = uri;
     }
 
-    public void send(ChannelBufferOutputStream outputStream) {
+    public void send(ChannelBufferOutputStream outputStream) throws HttpServerException {
+        URI uri = null;
+        try {
+            uri = new URI(this.uri);
+        } catch (URISyntaxException e) {
+            handleError("The given url is invalid..:" + uri);
+        }
+
         String scheme = uri.getScheme() == null? "http" : uri.getScheme();
         String host = uri.getHost() == null? "localhost" : uri.getHost();
         int port = uri.getPort();
@@ -80,5 +89,10 @@ public class HttpClient {
 
         // Shut down executor threads to exit.
         bootstrap.releaseExternalResources();
+    }
+
+    private void handleError(String msg) throws HttpServerException {
+        log.error(msg);
+        throw new HttpServerException(msg);
     }
 }

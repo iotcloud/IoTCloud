@@ -1,7 +1,6 @@
 package cgl.iotcloud.core.message.jms;
 
 import cgl.iotcloud.core.SCException;
-import cgl.iotcloud.core.message.MessageFactory;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
 import org.slf4j.Logger;
@@ -12,7 +11,7 @@ import javax.jms.Message;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-public class JMSControlMessageFactory implements MessageFactory {
+public class JMSControlMessageFactory implements JMSMessageFactory {
     private static Logger log = LoggerFactory.getLogger(JMSControlMessageFactory.class);
 
     public SensorMessage create(Message message) {

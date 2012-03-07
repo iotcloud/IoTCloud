@@ -4,7 +4,7 @@ import cgl.iotcloud.core.Control;
 import cgl.iotcloud.core.ManagedLifeCycle;
 import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.State;
-import cgl.iotcloud.core.message.MessageFactory;
+import cgl.iotcloud.core.message.jms.JMSMessageFactory;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
@@ -41,7 +41,7 @@ public class Listener implements Control, ManagedLifeCycle {
 
     private String destinationPath = null;
 
-    private MessageFactory messageFactory = new JMSDataMessageFactory();
+    private JMSMessageFactory messageFactory = new JMSDataMessageFactory();
 
     public Listener(Connections connections, MessageHandler messageHandler,
                     String destinationPath) {
@@ -116,7 +116,7 @@ public class Listener implements Control, ManagedLifeCycle {
         }
     }
 
-    public void setMessageFactory(MessageFactory messageFactory) {
+    public void setMessageFactory(JMSMessageFactory messageFactory) {
         this.messageFactory = messageFactory;
     }
 
