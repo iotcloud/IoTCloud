@@ -252,7 +252,7 @@ public class HttpCoreListener {
         HttpCoreListener listener = new HttpCoreListener(5000, new MessageReceiver() {
             public void messageReceived(InputStream in) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                File file = new File("Test.txt");
+                File file = new File("Test2.txt");
                 BufferedWriter writer;
                 try {
                     writer = new BufferedWriter(new FileWriter(file));
