@@ -1,21 +1,20 @@
 package cgl.iotcloud.core.stream;
 
-import cgl.iotcloud.core.Control;
 import cgl.iotcloud.core.ManagedLifeCycle;
 import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.message.data.StreamDataMessage;
-import cgl.iotcloud.streaming.http.HttpServerException;
-import cgl.iotcloud.streaming.http.client.HttpClient;
+import cgl.iotcloud.streaming.http.client.core.HttpCoreClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
-public class StreamingSender implements ManagedLifeCycle, Control {
+public class StreamingSender implements ManagedLifeCycle {
     private Logger log = LoggerFactory.getLogger(StreamingSender.class);
 
     /** HTTPClient used to send the data */
-    private HttpClient client = null;
+    private HttpCoreClient client = null;
     /** port to be used */
     private int port = 80;
     /** host name of the server */
@@ -29,23 +28,21 @@ public class StreamingSender implements ManagedLifeCycle, Control {
         this.port = port;
     }
 
-    public void start() {
-
-    }
-
-    public void stop() {
-    }
-
     public String getState() {
         return null;
     }
 
     public void init() {
-        client = new HttpClient("http://" + host + ":" + port + "/" + path);
+        client = new HttpCoreClient(host, port, path);
     }
 
     public void destroy() {
         // nothing to do for now
+        try {
+            client.destroy();
+        } catch (IOException e) {
+            handleError("Error while stopping the streaming client", e);
+        }
     }
 
     public void send(StreamDataMessage message) {
@@ -56,14 +53,30 @@ public class StreamingSender implements ManagedLifeCycle, Control {
         }
 
         try {
-            client.send(null);
-        } catch (HttpServerException e) {
+            client.send(message.getInputStream(), new DefaultSendCallback());
+        } catch (Exception e) {
             handleError("Error sending message to :" + "http://" + host + ":" + port + "/" + path);
+        }
+    }
+
+    private class DefaultSendCallback implements HttpCoreClient.SendCallBack {
+        public void completed() {
+        }
+
+        public void failed(Exception e) {
+        }
+
+        public void cancelled() {
         }
     }
 
     private void handleError(String msg) {
         log.error(msg);
         throw new SCException(msg);
+    }
+
+    private void handleError(String msg, IOException e) {
+        log.error(msg, e);
+        throw new SCException(msg, e);
     }
 }

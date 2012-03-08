@@ -6,8 +6,8 @@ import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.State;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.data.StreamDataMessage;
-import cgl.iotcloud.streaming.http.listener.HttpListener;
 import cgl.iotcloud.streaming.http.listener.MessageReceiver;
+import cgl.iotcloud.streaming.http.listener.core.HttpCoreListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ import java.io.InputStream;
 public class StreamingListener implements ManagedLifeCycle, Control {
     private Logger log = LoggerFactory.getLogger(StreamingListener.class);
 
-    private HttpListener listener;
+    private HttpCoreListener listener;
 
     private int port;
 
@@ -38,7 +38,11 @@ public class StreamingListener implements ManagedLifeCycle, Control {
             throw new IllegalStateException("State should be initialized");
         }
         state = State.STARTED;
-        listener.start();
+        try {
+            listener.start();
+        } catch (Exception e) {
+            handleException("Failed to start the streaming listener", e);
+        }
     }
 
     public void stop() {
@@ -57,7 +61,7 @@ public class StreamingListener implements ManagedLifeCycle, Control {
         if (state != State.DEFAULT) {
             throw new IllegalStateException("Cannot initialize an already initialized listener");
         }
-        listener = new HttpListener(port, new Receiver(), path);
+        listener = new HttpCoreListener(port, new Receiver(), path);
         state = State.INITIALIZED;
     }
 
