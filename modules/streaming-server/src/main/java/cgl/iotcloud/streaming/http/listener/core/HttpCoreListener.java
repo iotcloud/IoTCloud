@@ -7,9 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.InetSocketAddress;
-import java.nio.Buffer;
 import java.util.Locale;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -185,12 +183,16 @@ public class HttpCoreListener {
         private void handleInternal(
                 final HttpRequest request,
                 final HttpResponse response) throws HttpException, IOException {
-
-            String method = request.getRequestLine().getMethod().toUpperCase(Locale.ENGLISH);
-            if (!method.equals("GET") && !method.equals("HEAD") && !method.equals("POST")) {
-                throw new MethodNotSupportedException(method + " method not supported");
+            if (request != null) {
+                String method = request.getRequestLine().getMethod().toUpperCase(Locale.ENGLISH);
+                if (!method.equals("GET") && !method.equals("HEAD") && !method.equals("POST")) {
+                    throw new MethodNotSupportedException(method + " method not supported");
+                }
             }
             response.setStatusCode(HttpStatus.SC_ACCEPTED);
+//          //StringEntity entity = StringEntity.create("OK", ContentType.TEXT_PLAIN);
+
+            response.setEntity(null);
         }
     }
 
@@ -251,14 +253,14 @@ public class HttpCoreListener {
             public void messageReceived(InputStream in) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                 File file = new File("Test.txt");
-                BufferedWriter writer = null;
+                BufferedWriter writer;
                 try {
                     writer = new BufferedWriter(new FileWriter(file));
                 } catch (IOException e) {
                     System.out.println("Error occurred" + e);
                     return;
                 }
-                int i = 0;
+                int i;
                 try {
                     i = reader.read();
                     while (i != -1) {
