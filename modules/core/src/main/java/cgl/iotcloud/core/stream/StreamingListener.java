@@ -1,7 +1,6 @@
 package cgl.iotcloud.core.stream;
 
-import cgl.iotcloud.core.Control;
-import cgl.iotcloud.core.ManagedLifeCycle;
+import cgl.iotcloud.core.Listener;
 import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.State;
 import cgl.iotcloud.core.message.MessageHandler;
@@ -13,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 
-public class StreamingListener implements ManagedLifeCycle, Control {
+public class StreamingListener implements Listener {
     private Logger log = LoggerFactory.getLogger(StreamingListener.class);
 
     private HttpCoreListener listener;

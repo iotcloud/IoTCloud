@@ -2,11 +2,11 @@ package cgl.iotcloud.core.sensor;
 
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.Endpoint;
+import cgl.iotcloud.core.Listener;
 import cgl.iotcloud.core.ManagedLifeCycle;
-import cgl.iotcloud.core.broker.Listener;
-import cgl.iotcloud.core.broker.ListenerFactory;
-import cgl.iotcloud.core.broker.Sender;
-import cgl.iotcloud.core.broker.SenderFactory;
+import cgl.iotcloud.core.Sender;
+import cgl.iotcloud.core.broker.JMSListenerFactory;
+import cgl.iotcloud.core.broker.JMSSenderFactory;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import org.slf4j.Logger;
@@ -48,14 +48,14 @@ public abstract class AbstractSensor implements Sensor, ManagedLifeCycle {
     }
 
     public void init() {
-        SenderFactory senderFactory = new SenderFactory();
+        JMSSenderFactory senderFactory = new JMSSenderFactory();
         sender = senderFactory.create(dataEndpoint);
 
         if (updateEndpoint != null) {
             updateSender = senderFactory.create(updateEndpoint);
         }
 
-        ListenerFactory listenerFactory = new ListenerFactory();
+        JMSListenerFactory listenerFactory = new JMSListenerFactory();
         listener = listenerFactory.createControlListener(
                 controlEndpoint, new ControlMessageReceiver());
 

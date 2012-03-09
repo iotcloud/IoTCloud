@@ -1,9 +1,9 @@
 package cgl.iotcloud.core;
 
-import cgl.iotcloud.core.broker.Listener;
-import cgl.iotcloud.core.broker.ListenerFactory;
-import cgl.iotcloud.core.broker.Sender;
-import cgl.iotcloud.core.broker.SenderFactory;
+import cgl.iotcloud.core.broker.JMSListener;
+import cgl.iotcloud.core.broker.JMSSender;
+import cgl.iotcloud.core.broker.JMSListenerFactory;
+import cgl.iotcloud.core.broker.JMSSenderFactory;
 import cgl.iotcloud.core.config.SCConfiguration;
 import cgl.iotcloud.core.endpoint.JMSEndpoint;
 import cgl.iotcloud.core.message.MessageHandler;
@@ -31,15 +31,15 @@ public class UpdateManager implements ManagedLifeCycle {
     /** Global updates are sent to this endpoint */
     private Endpoint sendingEndpoint = null;
     /** Actual sender for sending global updates */
-    private Sender sender = null;
+    private JMSSender sender = null;
     /** Listener for listening to sensor updates */
-    private Listener listener = null;
+    private JMSListener listener = null;
     /** The Sensor Cloud configuration */
     private SCConfiguration configuration = null;
     /** The Sensor cloud catalog */
     private SensorCatalog catalog = null;
     /** Map of senders to send update messages */
-    private Map<String, Sender> senders = new HashMap<String, Sender>();
+    private Map<String, JMSSender> senders = new HashMap<String, JMSSender>();
 
     public UpdateManager(SCConfiguration configuration, SensorCatalog catalog) {
         this.configuration = configuration;
@@ -66,9 +66,9 @@ public class UpdateManager implements ManagedLifeCycle {
         sendingEndpoint.setAddress("update/send");
         sendingEndpoint.setProperties(configuration.getBroker().getConnections("topic").getParameters());
 
-        sender = new SenderFactory().create(sendingEndpoint);
+        sender = new JMSSenderFactory().create(sendingEndpoint);
 
-        listener = new ListenerFactory().create(receivingEndpoint, new UpdateReceiver());
+        listener = new JMSListenerFactory().create(receivingEndpoint, new UpdateReceiver());
 
         sender.init();
         sender.start();
@@ -115,7 +115,7 @@ public class UpdateManager implements ManagedLifeCycle {
             return;
         }
         String id = update.getSensor().getId();
-        Sender sender = senders.get(id);
+        JMSSender sender = senders.get(id);
         if (sender == null) {
             handleException("Received update for unregistered sensor: " + id);
         } else {
@@ -138,7 +138,7 @@ public class UpdateManager implements ManagedLifeCycle {
         SCSensor sensor = catalog.getSensor(id);
         if (sensor != null) {
             Endpoint endpoint = sensor.getUpdateEndpoint();
-            Sender sender = new SenderFactory().create(endpoint);
+            JMSSender sender = new JMSSenderFactory().create(endpoint);
             sender.init();
             sender.start();
             senders.put(id, sender);
@@ -148,7 +148,7 @@ public class UpdateManager implements ManagedLifeCycle {
     }
 
     private void handleSensorRemoved(String id) {
-        Sender sender = senders.get(id);
+        JMSSender sender = senders.get(id);
         if (sender != null) {
             // send the update message to the listeners
             sender.send(createUpdateMessage(Constants.Updates.REMOVED, id));

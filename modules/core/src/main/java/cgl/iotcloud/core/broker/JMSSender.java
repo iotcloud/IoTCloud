@@ -1,8 +1,7 @@
 package cgl.iotcloud.core.broker;
 
-import cgl.iotcloud.core.Control;
-import cgl.iotcloud.core.ManagedLifeCycle;
 import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.Sender;
 import cgl.iotcloud.core.State;
 import cgl.iotcloud.core.message.jms.JMSMessageFactory;
 import cgl.iotcloud.core.message.SensorMessage;
@@ -20,8 +19,8 @@ import javax.jms.Session;
 /**
 * Every sensor will have a message sender to send messages to the broker
 */
-public class Sender implements Control, ManagedLifeCycle {
-    private static Logger log = LoggerFactory.getLogger(Sender.class);
+public class JMSSender implements Sender {
+    private static Logger log = LoggerFactory.getLogger(JMSSender.class);
     /** The connections used by this sender */
     private Connections connections = null;
     /** The JMS message producer */
@@ -39,7 +38,7 @@ public class Sender implements Control, ManagedLifeCycle {
 
     private JMSMessageFactory messageFactory = new JMSDataMessageFactory();
 
-    public Sender(Connections connections, String destinationPath) {
+    public JMSSender(Connections connections, String destinationPath) {
         this.connections = connections;
         this.destinationPath = destinationPath;
     }

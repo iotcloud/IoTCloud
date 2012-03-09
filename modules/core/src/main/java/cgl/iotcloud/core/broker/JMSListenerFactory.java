@@ -4,7 +4,7 @@ import cgl.iotcloud.core.Endpoint;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.jms.JMSControlMessageFactory;
 
-public class ListenerFactory {
+public class JMSListenerFactory {
     /**
      * Create a Listener using the given endpoint
      *
@@ -12,18 +12,18 @@ public class ListenerFactory {
      * @param handler the message handler
      * @return a Listener
      */
-    public Listener create(Endpoint endpoint, MessageHandler handler) {
+    public JMSListener create(Endpoint endpoint, MessageHandler handler) {
         ConnectionsFactory fac = new ConnectionsFactory();
         Connections connections = fac.create(endpoint.getName(), endpoint.getProperties());
 
-        return new Listener(connections, handler, endpoint.getAddress());
+        return new JMSListener(connections, handler, endpoint.getAddress());
     }
 
-    public Listener createControlListener(Endpoint endpoint, MessageHandler handler) {
+    public JMSListener createControlListener(Endpoint endpoint, MessageHandler handler) {
         ConnectionsFactory fac = new ConnectionsFactory();
         Connections connections = fac.create(endpoint.getName(), endpoint.getProperties());
 
-        Listener listener = new Listener(connections, handler, endpoint.getAddress());
+        JMSListener listener = new JMSListener(connections, handler, endpoint.getAddress());
         listener.setMessageFactory(new JMSControlMessageFactory());
         return listener;
     }

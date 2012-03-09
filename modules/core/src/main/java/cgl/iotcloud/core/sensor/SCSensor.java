@@ -2,10 +2,6 @@ package cgl.iotcloud.core.sensor;
 
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.Endpoint;
-import cgl.iotcloud.core.ManagedLifeCycle;
-import cgl.iotcloud.core.broker.Sender;
-import cgl.iotcloud.core.broker.SenderFactory;
-import cgl.iotcloud.core.message.SensorMessage;
 
 /**
  * This is a dummy sensor to represent actual sensors in the SC.

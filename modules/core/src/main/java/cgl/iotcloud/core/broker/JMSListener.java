@@ -1,7 +1,5 @@
 package cgl.iotcloud.core.broker;
 
-import cgl.iotcloud.core.Control;
-import cgl.iotcloud.core.ManagedLifeCycle;
 import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.State;
 import cgl.iotcloud.core.message.jms.JMSMessageFactory;
@@ -22,8 +20,8 @@ import javax.jms.Session;
 /**
  * This will be used by the Sensors to listen to the control messages by the SC.
  */
-public class Listener implements Control, ManagedLifeCycle {
-    private static Logger log = LoggerFactory.getLogger(Listener.class);
+public class JMSListener implements cgl.iotcloud.core.Listener {
+    private static Logger log = LoggerFactory.getLogger(JMSListener.class);
 
     private Connections connections = null;
 
@@ -43,8 +41,8 @@ public class Listener implements Control, ManagedLifeCycle {
 
     private JMSMessageFactory messageFactory = new JMSDataMessageFactory();
 
-    public Listener(Connections connections, MessageHandler messageHandler,
-                    String destinationPath) {
+    public JMSListener(Connections connections, MessageHandler messageHandler,
+                       String destinationPath) {
         this.connections = connections;
         this.messageHandler = messageHandler;
         this.destinationPath = destinationPath;

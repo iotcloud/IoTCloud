@@ -1,10 +1,10 @@
 package cgl.iotcloud.core.client;
 
 import cgl.iotcloud.core.ManagedLifeCycle;
-import cgl.iotcloud.core.broker.Listener;
-import cgl.iotcloud.core.broker.ListenerFactory;
-import cgl.iotcloud.core.broker.Sender;
-import cgl.iotcloud.core.broker.SenderFactory;
+import cgl.iotcloud.core.broker.JMSListener;
+import cgl.iotcloud.core.broker.JMSListenerFactory;
+import cgl.iotcloud.core.broker.JMSSender;
+import cgl.iotcloud.core.broker.JMSSenderFactory;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.sensor.SCSensor;
@@ -18,11 +18,11 @@ public class Client implements ManagedLifeCycle {
     private static Logger log = LoggerFactory.getLogger(Client.class);
 
     /** Message listener for sensor data */
-    private Listener messageListener = null;
+    private JMSListener messageListener = null;
     /** Message sender for control data */
-    private Sender controlSender = null;
+    private JMSSender controlSender = null;
     /** Message Listener for update data */
-    private Listener updateLister;
+    private JMSListener updateLister;
     /** Message handler specified by the user */
     private MessageHandler handler = null;
     /** Update handler specified by the user */
@@ -43,7 +43,7 @@ public class Client implements ManagedLifeCycle {
     }
 
     public void init() {
-        SenderFactory senderFactory = new SenderFactory();
+        JMSSenderFactory senderFactory = new JMSSenderFactory();
         controlSender = senderFactory.createControlSender(sensor.getControlEndpoint());
 
         if (log.isDebugEnabled()) {
@@ -55,7 +55,7 @@ public class Client implements ManagedLifeCycle {
         }
         controlSender.start();
 
-        ListenerFactory listenerFactory = new ListenerFactory();
+        JMSListenerFactory listenerFactory = new JMSListenerFactory();
         messageListener = listenerFactory.create(sensor.getDataEndpoint(), handler);
 
         if (sensor.getUpdateEndpoint() != null && updateHandler != null) {

@@ -137,7 +137,7 @@ public class HttpCoreListener {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    System.out.println("Starting the io reactor.....");
+                    log.info("Starting the io reactor at port: " + port);
                     ioReactor.execute(ioEventDispatch);
                 } catch (IOException e) {
                     log.error("Exception occurred while starting the listener", e);
