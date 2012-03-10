@@ -21,16 +21,18 @@ public class StreamingListener implements Listener {
 
     private String path;
 
-    private MessageHandler handler;
+    private MessageHandler messageHandler;
 
     private State state = State.DEFAULT;
 
-    public StreamingListener(int port, String path, MessageHandler handler) {
+    public StreamingListener(int port, String path) {
         this.port = port;
         this.path = path;
-        this.handler = handler;
     }
 
+    public void setMessageHandler(MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+    }
 
     public void start() {
         if (state != State.INITIALIZED) {
@@ -68,7 +70,7 @@ public class StreamingListener implements Listener {
         public void messageReceived(InputStream in) {
             StreamDataMessage dataMessage = new StreamDataMessage();
             dataMessage.setInputStream(in);
-            handler.onMessage(dataMessage);
+            messageHandler.onMessage(dataMessage);
         }
     }
 
