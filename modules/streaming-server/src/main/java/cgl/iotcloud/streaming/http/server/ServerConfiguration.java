@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.*;
 
 public class ServerConfiguration {
-    private List<HttpServerEndpoint> serverEndpoints = new ArrayList<HttpServerEndpoint>();
+    private HttpServerEndpoint serverEndpoint;
 
     private List<HttpClientEndpoint> clientEndpoints = new ArrayList<HttpClientEndpoint>();
 
@@ -39,10 +39,6 @@ public class ServerConfiguration {
         clientBootStrap.setPipelineFactory(new ClientPipelineFactory());
     }
 
-    public List<HttpServerEndpoint> getServerEndpoints() {
-        return serverEndpoints;
-    }
-
     public List<HttpClientEndpoint> getClientEndpoints() {
         return clientEndpoints;
     }
@@ -59,8 +55,12 @@ public class ServerConfiguration {
         return clientBootStrap;
     }
 
-    public void addServerEndpoint(HttpServerEndpoint endpoint) {
-        serverEndpoints.add(endpoint);
+    public void setServerEndpoint(HttpServerEndpoint endpoint) {
+        this.serverEndpoint = endpoint;
+    }
+
+    public HttpServerEndpoint getServerEndpoint() {
+        return serverEndpoint;
     }
 
     public void addClientEndpoint(HttpClientEndpoint endpoint) {
@@ -69,10 +69,6 @@ public class ServerConfiguration {
 
     public void addRoutingRule(RoutingRule rule) {
         routingRules.add(rule);
-    }
-
-    public void addServerEndpoints(List<HttpServerEndpoint> serverEndpoints) {
-        serverEndpoints.addAll(serverEndpoints);
     }
 
     public void addClientEndpoints(List<HttpClientEndpoint> clientEndpoints) {

@@ -22,12 +22,14 @@
         </xs:sequence>
         <xs:attribute name="name" type="xs:string" use="required"/>
     </xs:complexType>
+    <xs:element name="streamingServer">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="param" type="po:param" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
     <xs:complexType name="param">
-        <!--<xs:complexContent mixed="true">-->
-            <!--<xs:extension base="xs:anyType">-->
-                <!--<xs:attribute name="name" type="xs:string" use="required"/>-->
-            <!--</xs:extension>-->
-        <!--</xs:complexContent>-->
         <xs:simpleContent>
             <xs:extension base='nonEmptyString'>
                 <xs:attribute name="name" type="xs:string" use="required"/>
