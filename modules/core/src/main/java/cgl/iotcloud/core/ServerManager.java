@@ -3,9 +3,11 @@ package cgl.iotcloud.core;
 import cgl.iotcloud.core.config.SCCConfigurationFactory;
 import cgl.iotcloud.core.config.SCConfiguration;
 import cgl.iotcloud.core.jetty.SGCHTTPServer;
-import cgl.iotcloud.streaming.http.server.StreamingHttpServer;
+import cgl.iotcloud.core.stream.StreamingServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
 
 /**
  * Starts a SGX server. This is the mail class for starting a SGX Server. This class creates
@@ -37,8 +39,11 @@ public class ServerManager {
                     }
                 }).start();
 
-        StreamingHttpServer streamingHttpServer = new StreamingHttpServer();
-        streamingHttpServer.start();
-
+        StreamingServer streamingServer = config.getStreamingServer();
+        if (streamingServer != null) {
+            streamingServer.start();
+        } else {
+            log.warn("Streaming server not found......");
+        }
     }
 }

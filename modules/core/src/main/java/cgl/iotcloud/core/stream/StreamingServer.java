@@ -48,7 +48,8 @@ public class StreamingServer {
         configuration = new ServerConfiguration();
 
         HttpServerEndpoint serverEndpoint = new HttpServerEndpoint(configuration, ".*", 7888);
-        HttpClientEndpoint clientEndpoint = new HttpClientEndpoint(configuration, "aa", "localhost", 6888);
+        HttpClientEndpoint clientEndpoint =
+                new HttpClientEndpoint(configuration, "aa", "localhost", 6888);
 
         List<HttpClientEndpoint> ruleClientEndpoints = new ArrayList<HttpClientEndpoint>();
         ruleClientEndpoints.add(clientEndpoint);
@@ -66,7 +67,22 @@ public class StreamingServer {
         server.start();
     }
 
-    public void addRoute(String path, String host, int port) {
+    public void addRoute(String serverPath, String host, int port, String clientPath) {
+        HttpClientEndpoint clientEndpoint =
+                new HttpClientEndpoint(configuration, clientPath, host, port);
+
+        RoutingRule existingRule = configuration.getRoutingRule(serverPath);
+        if (existingRule == null) {
+            List<HttpClientEndpoint> ruleClientEndpoints = new ArrayList<HttpClientEndpoint>();
+            ruleClientEndpoints.add(clientEndpoint);
+            RoutingRule rule = new RoutingRule(".*", ruleClientEndpoints);
+            configuration.addRoutingRule(rule);
+        } else {
+            existingRule.addTargetEndpoint(clientEndpoint);
+        }
+    }
+
+    public void removeRoute(String serverPath, String host, int port, String clientPath) {
 
     }
 }

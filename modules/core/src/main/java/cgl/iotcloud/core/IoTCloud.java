@@ -3,6 +3,7 @@ package cgl.iotcloud.core;
 import cgl.iotcloud.core.broker.Connections;
 import cgl.iotcloud.core.config.SCConfiguration;
 import cgl.iotcloud.core.endpoint.JMSEndpoint;
+import cgl.iotcloud.core.endpoint.StreamingEndpoint;
 import cgl.iotcloud.core.sensor.AbstractSensorFilter;
 import cgl.iotcloud.core.sensor.FilterCriteria;
 import cgl.iotcloud.core.sensor.SCSensor;
@@ -84,24 +85,31 @@ public class IoTCloud {
         Endpoint dataEndpoint;
         if (Constants.SENSOR_TYPE_BLOCK.equals(type)) {
             dataEndpoint = new JMSEndpoint();
+            dataEndpoint.setAddress(sensor.getId() + "/data");
+            // TODO: we have to decide the connection factory to be used
+            dataEndpoint.setProperties(
+                    configuration.getBroker().getConnections("topic").getParameters());
+        } else if (Constants.SENSOR_TYPE_STREAMING.equals(type)) {
+            dataEndpoint = new StreamingEndpoint();
+
+            dataEndpoint.setProperties(configuration.getStreamingServer().getParameters());
+            dataEndpoint.getProperties().put("PATH", "sensor/" + sensor.getId() + "/data");
+
+            // add the routing to the streaming server
         } else {
             // defaulting to JMS
             dataEndpoint = new JMSEndpoint();
+            dataEndpoint.setAddress(sensor.getId() + "/data");
+            // TODO: we have to decide the connection factory to be used
+            dataEndpoint.setProperties(
+                    configuration.getBroker().getConnections("topic").getParameters());
         }
-        dataEndpoint.setAddress(sensor.getId() + "/data");
-        // TODO: we have to decide the connection factory to be used
-        dataEndpoint.setProperties(
-                configuration.getBroker().getConnections("topic").getParameters());
 
         sensor.setDataEndpoint(dataEndpoint);
 
         Endpoint controlEndpoint;
-        if (Constants.SENSOR_TYPE_BLOCK.equals(type)) {
-            controlEndpoint = new JMSEndpoint();
-        } else {
-            // defaulting to JMS
-            controlEndpoint = new JMSEndpoint();
-        }
+
+        controlEndpoint = new JMSEndpoint();
         controlEndpoint.setAddress(sensor.getId() + "/control");
         // TODO: we have to decide the connection factory to be used
         controlEndpoint.setProperties(
@@ -110,12 +118,8 @@ public class IoTCloud {
 
         // set the update sending endpoint as the global endpoint
         Endpoint updateSendingEndpoint;
-        if (Constants.SENSOR_TYPE_BLOCK.equals(type)) {
-            updateSendingEndpoint = new JMSEndpoint();
-        } else {
-            // defaulting to JMS
-            updateSendingEndpoint = new JMSEndpoint();
-        }
+        updateSendingEndpoint = new JMSEndpoint();
+
         updateSendingEndpoint.setProperties(
                 configuration.getBroker().getConnections("topic").getParameters());
         updateSendingEndpoint.setAddress(sensor.getId() + "/update");

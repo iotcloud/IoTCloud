@@ -47,6 +47,16 @@ public class ServerConfiguration {
         return routingRules;
     }
 
+    public RoutingRule getRoutingRule(String path) {
+        for (RoutingRule rule : routingRules) {
+            if (rule.getEndpoint().getPath().equals(path)) {
+                return rule;
+            }
+        }
+
+        return null;
+    }
+
     public Executor getWorkerExecutor() {
         return workerExecutor;
     }
