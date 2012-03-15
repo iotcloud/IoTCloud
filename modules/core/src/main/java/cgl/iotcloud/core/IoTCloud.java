@@ -66,7 +66,7 @@ public class IoTCloud {
     }
 
     public Sensor registerSensor(String name) {
-        return registerSensor(name, Constants.MESSAGE_TYPE_TEXT);
+        return registerSensor(name, Constants.SENSOR_TYPE_BLOCK);
     }
 
     /**

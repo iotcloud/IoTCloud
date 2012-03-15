@@ -1,7 +1,9 @@
 package cgl.iotcloud.clients;
 
+import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.endpoint.JMSEndpoint;
+import cgl.iotcloud.core.endpoint.StreamingEndpoint;
 import cgl.iotcloud.core.sensor.FilterCriteria;
 import cgl.iotcloud.core.sensor.SCSensor;
 import cgl.iotcloud.gen.clients.ClientRegistrationServiceStub;
@@ -82,7 +84,7 @@ public class RegistrationClient {
     /**
      * Get the information about the particular sensor
      *
-     * @param type
+     * @param type type of the sensor
      * @param criteria filter information
      * @return a Sensor
      */
@@ -130,8 +132,14 @@ public class RegistrationClient {
         sensor.setControlEndpoint(controlEpr);
 
         e = i.getDataEndpoint();
-        cgl.iotcloud.core.Endpoint dataEpr = new JMSEndpoint();
+        cgl.iotcloud.core.Endpoint dataEpr;
+        if (Constants.SENSOR_TYPE_BLOCK.equals(sensor.getType())) {
+            dataEpr = new JMSEndpoint();
+        } else {
+            dataEpr = new StreamingEndpoint();
+        }
         dataEpr.setAddress(e.getAddress());
+
 
         props = e.getProperties();
         propsMap = new HashMap<String, String>();

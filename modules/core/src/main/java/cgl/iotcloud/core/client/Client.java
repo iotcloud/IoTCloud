@@ -1,5 +1,7 @@
 package cgl.iotcloud.core.client;
 
+import cgl.iotcloud.core.Constants;
+import cgl.iotcloud.core.Listener;
 import cgl.iotcloud.core.ManagedLifeCycle;
 import cgl.iotcloud.core.broker.JMSListener;
 import cgl.iotcloud.core.broker.JMSListenerFactory;
@@ -8,6 +10,8 @@ import cgl.iotcloud.core.broker.JMSSenderFactory;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.sensor.SCSensor;
+import cgl.iotcloud.core.stream.StreamingListenerFactory;
+import com.sun.tools.doclets.internal.toolkit.builders.ConstantsSummaryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +22,7 @@ public class Client implements ManagedLifeCycle {
     private static Logger log = LoggerFactory.getLogger(Client.class);
 
     /** Message listener for sensor data */
-    private JMSListener messageListener = null;
+    private Listener messageListener = null;
     /** Message sender for control data */
     private JMSSender controlSender = null;
     /** Message Listener for update data */
@@ -56,7 +60,11 @@ public class Client implements ManagedLifeCycle {
         controlSender.start();
 
         JMSListenerFactory listenerFactory = new JMSListenerFactory();
-        messageListener = listenerFactory.create(sensor.getDataEndpoint(), handler);
+        if (sensor.getType().equals(Constants.SENSOR_TYPE_BLOCK)) {
+            messageListener = listenerFactory.create(sensor.getDataEndpoint(), handler);
+        } else {
+            messageListener = new StreamingListenerFactory().create(sensor.getDataEndpoint());
+        }
 
         if (sensor.getUpdateEndpoint() != null && updateHandler != null) {
             updateLister = listenerFactory.create(sensor.getUpdateEndpoint(), updateHandler);
