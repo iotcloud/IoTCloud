@@ -4,7 +4,6 @@ import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.data.StreamDataMessage;
 import cgl.iotcloud.core.sensor.AbstractSensor;
-import cgl.iotcloud.core.sensor.basic.TextSensor;
 import cgl.iotcloud.sensors.SensorAdaptor;
 
 import java.io.File;
@@ -21,10 +20,16 @@ public class FileTransferSensor extends AbstractSensor {
     public void start() {
         SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8081");
 
-        TextSensor sensor = new TextSensor(Constants.SENSOR_TYPE_STREAMING, "file-sensor");
-        adaptor.registerSensor(sensor);
+        adaptor.registerSensor(this);
 
         adaptor.start();
+
+
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         StreamDataMessage dataMessage = new StreamDataMessage();
 
@@ -32,7 +37,7 @@ public class FileTransferSensor extends AbstractSensor {
         try {
             FileInputStream stream = new FileInputStream(file);
             dataMessage.setInputStream(stream);
-            sensor.sendMessage(dataMessage);
+            sendMessage(dataMessage);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -47,7 +52,8 @@ public class FileTransferSensor extends AbstractSensor {
     }
 
     public static void main(String[] args) {
-
+        FileTransferSensor sensor = new FileTransferSensor(Constants.SENSOR_TYPE_STREAMING, "file-sensor");
+        sensor.start();
     }
 
     @Override

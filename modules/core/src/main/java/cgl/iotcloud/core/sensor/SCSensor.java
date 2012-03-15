@@ -12,7 +12,7 @@ public class SCSensor implements Sensor {
 
     private String id = null;
 
-    private String type = Constants.MESSAGE_TYPE_TEXT;
+    private String type = Constants.SENSOR_TYPE_BLOCK;
 
     private Endpoint dataEndpoint;
 

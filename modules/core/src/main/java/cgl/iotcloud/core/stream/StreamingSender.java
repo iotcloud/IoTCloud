@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 public class StreamingSender implements Sender {
@@ -64,14 +65,14 @@ public class StreamingSender implements Sender {
         }
 
         StreamDataMessage message = (StreamDataMessage) msg;
-        OutputStream outputStream = message.getOutputStream();
+        InputStream inputStream = message.getInputStream();
 
-        if (outputStream == null) {
-            handleError("Output stream cannot be null");
+        if (inputStream == null) {
+            handleError("Input stream cannot be null");
         }
 
         try {
-            client.send(message.getInputStream(), new DefaultSendCallback());
+            client.send(inputStream, new DefaultSendCallback());
         } catch (Exception e) {
             handleError("Error sending message to :" + "http://" + host + ":" + port + "/" + path);
         }

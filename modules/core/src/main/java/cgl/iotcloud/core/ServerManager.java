@@ -41,6 +41,8 @@ public class ServerManager {
 
         StreamingServer streamingServer = config.getStreamingServer();
         if (streamingServer != null) {
+            streamingServer.init();
+
             streamingServer.start();
         } else {
             log.warn("Streaming server not found......");

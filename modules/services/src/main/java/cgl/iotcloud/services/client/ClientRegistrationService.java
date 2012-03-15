@@ -2,9 +2,12 @@ package cgl.iotcloud.services.client;
 
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.IoTCloud;
+import cgl.iotcloud.core.client.SCClient;
+import cgl.iotcloud.core.endpoint.JMSEndpoint;
 import cgl.iotcloud.core.sensor.SCSensor;
 import cgl.iotcloud.core.sensor.Sensor;
 import cgl.iotcloud.core.sensor.SensorException;
+import cgl.iotcloud.services.ClientInformation;
 import cgl.iotcloud.services.Endpoint;
 import cgl.iotcloud.services.Property;
 import cgl.iotcloud.services.SensorInformation;
@@ -17,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * This is a web service used by the clients to get information about the Sensors
@@ -93,6 +97,33 @@ public class ClientRegistrationService {
         return null;
     }
 
+    public ClientInformation registerClient(String sensorId) throws AxisFault {
+        IoTCloud cloud = retrieveIoTCloud();
+        String id = UUID.randomUUID().toString();
+
+        SCClient sensor = cloud.registerClient(id, sensorId);
+
+        if (sensor != null) {
+            return createClientInformation(sensor);
+        }
+
+        return null;
+    }
+
+    public ClientInformation registerClientWithDataEpr(
+            String sensorId, Endpoint dataEndpoint) throws AxisFault {
+        IoTCloud cloud = retrieveIoTCloud();
+        String id = UUID.randomUUID().toString();
+
+        SCClient sensor = cloud.registerClient(id, sensorId, createEprFromMessage(dataEndpoint));
+
+        if (sensor != null) {
+            return createClientInformation(sensor);
+        }
+
+        return null;
+    }
+
     /**
      * Return the global update endpoint
      *
@@ -125,6 +156,25 @@ public class ClientRegistrationService {
         return info;
     }
 
+    private ClientInformation createClientInformation(SCClient sensor) {
+        ClientInformation info = new ClientInformation();
+        info.setId(sensor.getId());
+
+        cgl.iotcloud.core.Endpoint epr = sensor.getControlEndpoint();
+        Endpoint endpoint = createEpr(epr);
+        info.setControlEndpoint(endpoint);
+
+        epr = sensor.getDataEndpoint();
+        endpoint = createEpr(epr);
+        info.setDataEndpoint(endpoint);
+
+        epr = sensor.getUpdateEndpoint();
+        endpoint = createEpr(epr);
+        info.setUpdateEndpoint(endpoint);
+
+        return info;
+    }
+
     private Endpoint createEpr(cgl.iotcloud.core.Endpoint epr) {
         Endpoint endpoint = new Endpoint();
         endpoint.setAddress(epr.getAddress());
@@ -139,6 +189,24 @@ public class ClientRegistrationService {
         }
         endpoint.setProperties(props);
         return endpoint;
+    }
+
+    private cgl.iotcloud.core.Endpoint createEprFromMessage(Endpoint epr) {
+        cgl.iotcloud.core.Endpoint endpoint = new JMSEndpoint();
+        endpoint.setAddress(epr.getAddress());
+//        Set<Map.Entry<String, String>> propSet = epr.getProperties().entrySet();
+//        Property props[] = new Property[propSet.size()];
+//        int i = 0;
+//        for (Map.Entry<String, String> e : propSet) {
+//            Property p = new Property();
+//            p.setName(e.getKey());
+//            p.setValue(e.getValue());
+//            props[i++] = p;
+//        }
+//        endpoint.setProperties(props);
+//        return endpoint;
+
+        return null;
     }
 
     private IoTCloud retrieveIoTCloud() throws AxisFault {

@@ -1,6 +1,7 @@
 package cgl.iotcloud.core;
 
 import cgl.iotcloud.core.broker.Connections;
+import cgl.iotcloud.core.client.SCClient;
 import cgl.iotcloud.core.config.SCConfiguration;
 import cgl.iotcloud.core.endpoint.JMSEndpoint;
 import cgl.iotcloud.core.endpoint.StreamingEndpoint;
@@ -12,9 +13,11 @@ import cgl.iotcloud.core.sensor.SensorException;
 import cgl.iotcloud.core.sensor.filter.SensorIdFilter;
 import cgl.iotcloud.core.sensor.filter.SensorNameFilter;
 import cgl.iotcloud.core.sensor.filter.SensorTypeFilter;
+import cgl.iotcloud.core.stream.StreamingServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -29,6 +32,9 @@ public class IoTCloud {
     private SCConfiguration configuration = null;
     /** Sensor catalog containing the information about the sensors */
     private SensorCatalog sensorCatalog = null;
+
+    private ClientCatalog clientCatalog = null;
+
     /** Updates are send through this */
     private UpdateManager updateManager = null;
 
@@ -48,7 +54,7 @@ public class IoTCloud {
             handleException("Couldn't find the connection factor: " + "topic");
         }
 
-        sensorCatalog = new SensorCatalog(connections);
+        sensorCatalog = new SensorCatalog();
         updateManager = new UpdateManager(configuration, sensorCatalog);
         updateManager.init();
     }
@@ -63,6 +69,10 @@ public class IoTCloud {
 
     public UpdateManager getUpdateManager() {
         return updateManager;
+    }
+
+    public ClientCatalog getClientCatalog() {
+        return clientCatalog;
     }
 
     public Sensor registerSensor(String name) {
@@ -130,6 +140,73 @@ public class IoTCloud {
         return sensor;
     }
 
+    public SCClient registerClient(String clientId, String sensorId) {
+        if (!sensorCatalog.hasSensor(clientId)) {
+            return null;
+        }
+
+        if (clientCatalog.hasClient(clientId)) {
+            return clientCatalog.getClient(clientId);
+        }
+
+        Sensor sensor = sensorCatalog.getSensor(sensorId);
+        SCClient client = new SCClient(clientId);
+        client.setControlEndpoint(sensor.getControlEndpoint());
+        client.setUpdateEndpoint(sensor.getUpdateEndpoint());
+        if (sensor.getType().equals(Constants.SENSOR_TYPE_BLOCK)) {
+            client.setDataEndpoint(sensor.getDataEndpoint());
+        } else {
+            StreamingEndpoint endpoint = new StreamingEndpoint();
+            HashMap<String, String> props = new HashMap<String, String>();
+
+            StreamingServer server = configuration.getStreamingServer();
+            int port = server.getPort() + 1000 + clientCatalog.getClients().size() + 1;
+
+            props.put("HOST", "localhost");
+            props.put("PORT", "" + port);
+            props.put("PATH", "*");
+
+            endpoint.setProperties(props);
+            client.setDataEndpoint(endpoint);
+
+            // add the route to the streaming server
+            server.addRoute("sensor" + sensor.getId() + "/data", "localhost", port, "*");
+        }
+
+        clientCatalog.addClient(client);
+
+        return client;
+    }
+
+    public SCClient registerClient(String clientId, String sensorId, Endpoint dataEpr) {
+        if (!sensorCatalog.hasSensor(clientId)) {
+            return null;
+        }
+
+        if (clientCatalog.hasClient(clientId)) {
+            return clientCatalog.getClient(clientId);
+        }
+
+        Sensor sensor = sensorCatalog.getSensor(sensorId);
+        SCClient client = new SCClient(clientId);
+        client.setControlEndpoint(sensor.getControlEndpoint());
+        client.setUpdateEndpoint(sensor.getUpdateEndpoint());
+        client.setDataEndpoint(dataEpr);
+
+        clientCatalog.addClient(client);
+
+        return client;
+    }
+
+
+    public void unRegisterClient(String id) {
+        if (clientCatalog.hasClient(id)) {
+            clientCatalog.removeClient(id);
+        } else {
+            handleException("Failed to unregister the client, non existing client");
+        }
+    }
+
     /**
      * Un-register a sensor with the given id.
      * @param id id of the sensor
@@ -139,9 +216,7 @@ public class IoTCloud {
             updateManager.sensorChange(Constants.Updates.REMOVED, id);
             sensorCatalog.removeSensor(id);
         } else {
-            String msg = "Failed to unregister the sensor, non existing sensor";
-            log.error(msg);
-            throw new SCException(msg);
+            handleException("Failed to unregister the sensor, non existing sensor");
         }
     }
 
