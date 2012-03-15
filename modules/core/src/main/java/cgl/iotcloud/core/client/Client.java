@@ -10,6 +10,7 @@ import cgl.iotcloud.core.broker.JMSSenderFactory;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.sensor.SCSensor;
+import cgl.iotcloud.core.stream.StreamingListener;
 import cgl.iotcloud.core.stream.StreamingListenerFactory;
 import com.sun.tools.doclets.internal.toolkit.builders.ConstantsSummaryBuilder;
 import org.slf4j.Logger;
@@ -64,6 +65,9 @@ public class Client implements ManagedLifeCycle {
             messageListener = listenerFactory.create(sensor.getDataEndpoint(), handler);
         } else {
             messageListener = new StreamingListenerFactory().create(sensor.getDataEndpoint());
+            if (messageListener instanceof StreamingListener) {
+                ((StreamingListener) messageListener).setMessageHandler(handler);
+            }
         }
 
         if (sensor.getUpdateEndpoint() != null && updateHandler != null) {

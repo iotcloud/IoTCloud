@@ -52,6 +52,8 @@ public class FileClient {
                             outputStream.write(i);
                             i = in.read();
                         }
+                        outputStream.close();
+                        in.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
