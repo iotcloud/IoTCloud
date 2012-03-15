@@ -6,6 +6,8 @@ import cgl.iotcloud.core.Endpoint;
  * A Client is an entity that listens to a specific sensor.
  */
 public class SCClient {
+    /** Type of client */
+    private String type;
     /** Id of the client */
     private String id;
     /** Data endpoint which is listens to */
@@ -21,6 +23,14 @@ public class SCClient {
 
     public String getId() {
         return id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Endpoint getDataEndpoint() {

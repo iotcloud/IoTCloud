@@ -160,6 +160,8 @@ public class ClientRegistrationService {
         ClientInformation info = new ClientInformation();
         info.setId(sensor.getId());
 
+        info.setType(sensor.getType());
+
         cgl.iotcloud.core.Endpoint epr = sensor.getControlEndpoint();
         Endpoint endpoint = createEpr(epr);
         info.setControlEndpoint(endpoint);

@@ -24,7 +24,7 @@ public class FileClient {
         final BufferedReader reader = new BufferedReader(cin);
 
         final boolean[] quit = {false};
-        sensorClient.fixOnSensorWithName("file-sensor");
+        sensorClient.registerWithName("file-sensor");
 
         sensorClient.setUpdateListener(new UpdateMessageHandler() {
             public void onUpdate(UpdateMessage message) {

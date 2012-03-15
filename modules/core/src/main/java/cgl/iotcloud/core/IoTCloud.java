@@ -55,6 +55,7 @@ public class IoTCloud {
         }
 
         sensorCatalog = new SensorCatalog();
+        clientCatalog = new ClientCatalog();
         updateManager = new UpdateManager(configuration, sensorCatalog);
         updateManager.init();
     }
@@ -141,7 +142,7 @@ public class IoTCloud {
     }
 
     public SCClient registerClient(String clientId, String sensorId) {
-        if (!sensorCatalog.hasSensor(clientId)) {
+        if (!sensorCatalog.hasSensor(sensorId)) {
             return null;
         }
 
@@ -153,6 +154,7 @@ public class IoTCloud {
         SCClient client = new SCClient(clientId);
         client.setControlEndpoint(sensor.getControlEndpoint());
         client.setUpdateEndpoint(sensor.getUpdateEndpoint());
+        client.setType(sensor.getType());
         if (sensor.getType().equals(Constants.SENSOR_TYPE_BLOCK)) {
             client.setDataEndpoint(sensor.getDataEndpoint());
         } else {
