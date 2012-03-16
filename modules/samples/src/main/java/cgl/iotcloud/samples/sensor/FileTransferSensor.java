@@ -10,6 +10,7 @@ import cgl.iotcloud.sensors.SensorAdaptor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class FileTransferSensor extends AbstractSensor {
     private boolean send = false;
@@ -33,9 +34,13 @@ public class FileTransferSensor extends AbstractSensor {
                     FileInputStream stream = new FileInputStream(file);
                     dataMessage.setInputStream(stream);
                     sendMessage(dataMessage);
+                    // stream.close();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                send = false;
             }
             try {
                 Thread.sleep(500);
