@@ -29,7 +29,7 @@ public class FileTransferSensor extends AbstractSensor {
         while (run) {
             if (send) {
                 StreamDataMessage dataMessage = new StreamDataMessage();
-                File file = new File("Test.txt");
+                File file = new File("Testtt.bz2");
                 try {
                     FileInputStream stream = new FileInputStream(file);
                     dataMessage.setInputStream(stream);

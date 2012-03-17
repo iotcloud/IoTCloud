@@ -90,7 +90,7 @@ public class HttpCoreListener {
         // HTTP parameters for the server
         HttpParams params = new SyncBasicHttpParams();
         params
-                .setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 5000)
+                .setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 30000)
                 .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, 8 * 1024)
                 .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true)
                 .setParameter(CoreProtocolPNames.ORIGIN_SERVER, "HttpTest/1.1");
@@ -190,7 +190,6 @@ public class HttpCoreListener {
                 }
             }
             response.setStatusCode(HttpStatus.SC_ACCEPTED);
-//          //StringEntity entity = StringEntity.create("OK", ContentType.TEXT_PLAIN);
 
             response.setEntity(null);
         }
@@ -225,14 +224,18 @@ public class HttpCoreListener {
         protected void onContentReceived(ContentDecoder contentDecoder,
                                          IOControl ioControl) throws IOException {
             if (this.inputBuffer == null) {
-                inputBuffer = new SharedInputBuffer(8192, ioControl,
-                        new HeapByteBufferAllocator());
-                is = new ContentInputStream(inputBuffer);
-                executor.execute(new Runnable() {
-                    public void run() {
-                        receiver.messageReceived(is);
+                synchronized (this) {
+                    if (this.inputBuffer == null) {
+                        inputBuffer = new SharedInputBuffer(8 * 2048, ioControl,
+                                new HeapByteBufferAllocator());
+                        is = new ContentInputStream(inputBuffer);
+                        executor.execute(new Runnable() {
+                            public void run() {
+                                receiver.messageReceived(is);
+                            }
+                        });
                     }
-                });
+                }
             }
             this.inputBuffer.consumeContent(contentDecoder);
         }
@@ -252,26 +255,31 @@ public class HttpCoreListener {
         HttpCoreListener listener = new HttpCoreListener(5000, new MessageReceiver() {
             public void messageReceived(InputStream in) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                File file = new File("Test2.txt");
+                File file = new File("Test2.mp3");
                 BufferedWriter writer;
                 try {
+                    file.createNewFile();
                     writer = new BufferedWriter(new FileWriter(file));
                 } catch (IOException e) {
                     System.out.println("Error occurred" + e);
                     return;
                 }
                 int i;
+                int count = 0;
+                char r[] = new char[1];
                 try {
-                    i = reader.read();
+                    i = reader.read(r);
                     while (i != -1) {
-                        writer.write(i);
-                        i =  reader.read();
+                        count++;
+                        writer.write(r);
+                        i =  reader.read(r);
                     }
                     writer.close();
                     reader.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                System.out.println("count :" + count);
             }
         }, "ab");
         try {

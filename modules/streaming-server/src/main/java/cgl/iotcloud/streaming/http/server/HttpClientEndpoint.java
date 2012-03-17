@@ -99,7 +99,7 @@ public class HttpClientEndpoint extends HttpEndpoint {
                 if (message != null) {
                     if (channelFuture.getChannel().isConnected()) {
                         workingChannels.put(id, channelFuture.getChannel());
-                        log.info("writing the message after event completion.........");
+                        log.debug("writing the message after event completion.........");
                         ChannelFuture future = channelFuture.getChannel().write(message);
 
                         if ((message instanceof HttpRequest && !((HttpRequest) message).isChunked()) ||

@@ -65,8 +65,8 @@ public class HttpCoreClient {
     public void init() throws IOReactorException {
         // HTTP parameters for the client
         params = new SyncBasicHttpParams();
-        params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 3000)
-                .setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 3000)
+        params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 30000)
+                .setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 30000)
                 .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, 8 * 1024)
                 .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true)
                 .setParameter(CoreProtocolPNames.USER_AGENT, "iotcloud");
