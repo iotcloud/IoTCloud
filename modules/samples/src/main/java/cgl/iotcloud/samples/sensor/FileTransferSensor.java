@@ -2,6 +2,7 @@ package cgl.iotcloud.samples.sensor;
 
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.message.SensorMessage;
+import cgl.iotcloud.core.message.control.DefaultControlMessage;
 import cgl.iotcloud.core.message.data.StreamDataMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
 import cgl.iotcloud.core.sensor.AbstractSensor;
@@ -60,8 +61,16 @@ public class FileTransferSensor extends AbstractSensor {
 
     @Override
     public void onControlMessage(SensorMessage message) {
-        if (message instanceof TextDataMessage) {
-            String command = ((TextDataMessage) message).getText();
+//        if (message instanceof TextDataMessage) {
+//            String command = ((TextDataMessage) message).getText();
+//            if (command != null && command.equals("send")) {
+//                send = true;
+//            } else if (command != null && command.equals("stop")) {
+//                run = false;
+//            }
+//        } else
+        if (message instanceof DefaultControlMessage) {
+            Object command = ((DefaultControlMessage) message).getControl("action");
             if (command != null && command.equals("send")) {
                 send = true;
             } else if (command != null && command.equals("stop")) {

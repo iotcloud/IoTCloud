@@ -4,15 +4,12 @@ import cgl.iotcloud.core.message.ControlMessage;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class DefaultControlMessage implements ControlMessage {
-    private String id = null;
+    private String id = UUID.randomUUID().toString();
 
-    private Map<String, String> controls = new HashMap<String, String>();
-
-    public DefaultControlMessage(String id) {
-        this.id = id;
-    }
+    private Map<String, Object> controls = new HashMap<String, Object>();
 
     public String getId() {
         return id;
@@ -22,11 +19,15 @@ public class DefaultControlMessage implements ControlMessage {
         this.id = id;
     }
 
-    public void addControl(String key, String value) {
+    public void addControl(String key, Object value) {
         controls.put(key, value);
     }
 
-    public Map<String, String> getControls() {
+    public Map<String, Object> getControls() {
         return controls;
+    }
+
+    public Object getControl(String control) {
+        return controls.get(control);
     }
 }

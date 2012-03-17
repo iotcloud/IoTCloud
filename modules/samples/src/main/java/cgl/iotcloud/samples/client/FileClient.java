@@ -4,6 +4,7 @@ import cgl.iotcloud.clients.SensorClient;
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
+import cgl.iotcloud.core.message.control.DefaultControlMessage;
 import cgl.iotcloud.core.message.data.StreamDataMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
 import cgl.iotcloud.core.message.update.UpdateMessage;
@@ -65,9 +66,9 @@ public class FileClient {
         try {
             in = reader.readLine();
             while (!"quit".equals(in) && !quit[0]) {
-                TextDataMessage message = new TextDataMessage();
-                message.setText(in);
-                sensorClient.sendControlMessage(message);
+                DefaultControlMessage controlMessage = new DefaultControlMessage();
+                controlMessage.addControl("action", in);
+                sensorClient.sendControlMessage(controlMessage);
 
                 in = reader.readLine();
             }
