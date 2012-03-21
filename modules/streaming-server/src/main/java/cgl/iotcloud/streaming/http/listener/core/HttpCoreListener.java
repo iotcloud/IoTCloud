@@ -252,7 +252,7 @@ public class HttpCoreListener {
     }
 
     public static void main(String[] args) {
-        HttpCoreListener listener = new HttpCoreListener(5000, new MessageReceiver() {
+        HttpCoreListener listener = new HttpCoreListener(6000, new MessageReceiver() {
             public void messageReceived(InputStream in) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                 File file = new File("Test2.mp3");

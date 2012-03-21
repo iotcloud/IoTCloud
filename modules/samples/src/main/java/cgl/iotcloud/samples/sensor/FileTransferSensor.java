@@ -4,7 +4,6 @@ import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.control.DefaultControlMessage;
 import cgl.iotcloud.core.message.data.StreamDataMessage;
-import cgl.iotcloud.core.message.data.TextDataMessage;
 import cgl.iotcloud.core.sensor.AbstractSensor;
 import cgl.iotcloud.sensors.SensorAdaptor;
 
@@ -13,6 +12,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+/**
+ * Simple file transfer sensor.
+ */
 public class FileTransferSensor extends AbstractSensor {
     private boolean send = false;
 
@@ -23,7 +25,7 @@ public class FileTransferSensor extends AbstractSensor {
     }
 
     public void start() {
-        SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8081");
+        SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8080");
         adaptor.registerSensor(this);
         adaptor.start();
 
@@ -61,14 +63,6 @@ public class FileTransferSensor extends AbstractSensor {
 
     @Override
     public void onControlMessage(SensorMessage message) {
-//        if (message instanceof TextDataMessage) {
-//            String command = ((TextDataMessage) message).getText();
-//            if (command != null && command.equals("send")) {
-//                send = true;
-//            } else if (command != null && command.equals("stop")) {
-//                run = false;
-//            }
-//        } else
         if (message instanceof DefaultControlMessage) {
             Object command = ((DefaultControlMessage) message).getControl("action");
             if (command != null && command.equals("send")) {

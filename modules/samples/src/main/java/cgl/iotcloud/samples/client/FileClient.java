@@ -6,7 +6,6 @@ import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.control.DefaultControlMessage;
 import cgl.iotcloud.core.message.data.StreamDataMessage;
-import cgl.iotcloud.core.message.data.TextDataMessage;
 import cgl.iotcloud.core.message.update.UpdateMessage;
 import cgl.iotcloud.core.message.update.UpdateMessageHandler;
 
@@ -20,7 +19,7 @@ import java.io.InputStreamReader;
 
 public class FileClient {
     public static void main(String[] args) {
-        SensorClient sensorClient = new SensorClient("http://localhost:8081/");
+        SensorClient sensorClient = new SensorClient("http://localhost:8080/");
         InputStreamReader cin = new InputStreamReader(System.in);
         final BufferedReader reader = new BufferedReader(cin);
 
