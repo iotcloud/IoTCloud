@@ -133,15 +133,21 @@ public class HttpCoreClient {
                 // Handle HTTP response from a callback
                 new FutureCallback<HttpResponse>() {
                     public void completed(final HttpResponse response) {
-                        System.out.println(target + "->" + response.getStatusLine());
+                        if (log.isDebugEnabled()) {
+                            log.debug(target + "->" + response.getStatusLine());
+                        }
                         callBack.completed();
                     }
                     public void failed(final Exception ex) {
-                        System.out.println(target + "->" + ex);
+                        if (log.isDebugEnabled()) {
+                            log.debug(target + "->" + ex);
+                        }
                         callBack.failed(ex);
                     }
                     public void cancelled() {
-                        System.out.println(target + " cancelled");
+                        if (log.isDebugEnabled()) {
+                            log.debug(target + " cancelled");
+                        }
                         callBack.cancelled();
                     }
                 });
@@ -184,15 +190,15 @@ public class HttpCoreClient {
 
     public static class DefaultCallback implements SendCallBack {
         public void completed() {
-
+            log.info("Successfully completed the message");
         }
 
         public void failed(Exception e) {
-
+            log.info("Failed to send the message", e);
         }
 
         public void cancelled() {
-
+            log.info("Cancelled the request");
         }
     }
 }
