@@ -4,14 +4,13 @@ import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.Sender;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.data.StreamDataMessage;
+import cgl.iotcloud.streaming.http.HttpServerException;
 import cgl.iotcloud.streaming.http.client.core.HttpCoreClient;
-import org.apache.http.nio.reactor.IOReactorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 public class StreamingSender implements Sender {
     private Logger log = LoggerFactory.getLogger(StreamingSender.class);
@@ -45,7 +44,7 @@ public class StreamingSender implements Sender {
         client = new HttpCoreClient(host, port, path);
         try {
             client.init();
-        } catch (IOReactorException e) {
+        } catch (HttpServerException e) {
             handleError("Error initializing the client", e);
         }
     }
@@ -94,7 +93,7 @@ public class StreamingSender implements Sender {
         throw new SCException(msg);
     }
 
-    private void handleError(String msg, IOException e) {
+    private void handleError(String msg, Exception e) {
         log.error(msg, e);
         throw new SCException(msg, e);
     }

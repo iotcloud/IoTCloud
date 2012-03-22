@@ -1,5 +1,6 @@
 package cgl.iotcloud.streaming.http.client.core;
 
+import cgl.iotcloud.streaming.http.HttpServerException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
@@ -39,30 +40,45 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 
+/**
+ * A Streaming client written using HTTPCore NIO.
+ */
 public class HttpCoreClient {
     private static Logger log = LoggerFactory.getLogger(HttpCoreClient.class);
-
+    /** Host to send the message tp */
     private String host;
-
+    /** port of the remote machine */
     private int port;
-
+    /** HTTP path */
     private String path;
-
+    /** IOReactor */
     private ConnectingIOReactor ioReactor;
-
+    /** Http processor to process the requests */
     private HttpProcessor httpproc;
-
+    /** Http parameters */
     private HttpParams params;
-
+    /** Connection pool */
     private BasicNIOConnPool pool;
 
+    /**
+     * Create a client using the basic properties
+     *
+     * @param host host name of the remote server
+     * @param port port of the remote server
+     * @param path http path to be used
+     */
     public HttpCoreClient(String host, int port, String path) {
         this.host = host;
         this.port = port;
         this.path = path;
     }
 
-    public void init() throws IOReactorException {
+    /**
+     * Initialize the client. This method should be called before sending the messages.
+     *
+     * @throws HttpServerException if the IORector cannot be started
+     */
+    public void init() throws HttpServerException {
         // HTTP parameters for the client
         params = new SyncBasicHttpParams();
         params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 30000)
@@ -88,8 +104,7 @@ public class HttpCoreClient {
         try {
             ioReactor = new DefaultConnectingIOReactor(config);
         } catch (IOReactorException e) {
-            log.error("Error occurred while starting the IO Reactor", e);
-            throw e;
+            handleError("Error occurred while starting the IO Reactor", e);
         }
         // Create HTTP connection pool
         pool = new BasicNIOConnPool(ioReactor, params);
@@ -103,11 +118,10 @@ public class HttpCoreClient {
                     // Ready to go!
                     ioReactor.execute(ioEventDispatch);
                 } catch (InterruptedIOException ex) {
-                    System.err.println("Interrupted");
+                    log.error("Interrupted");
                 } catch (IOException e) {
-                    System.err.println("I/O error: " + e.getMessage());
+                    log.error("I/O error: " + e.getMessage());
                 }
-                System.out.println("Shutdown");
             }
 
         });
@@ -115,6 +129,12 @@ public class HttpCoreClient {
         t.start();
     }
 
+    /**
+     * Send a message by consuming the input stream.
+     * @param inputStream input stream with the content of the message
+     * @param callBack callback to notify the completion, failure and cancellation
+     * @throws Exception if an error occurs
+     */
     public void send(InputStream inputStream, final SendCallBack callBack) throws Exception {
         // Create HTTP requester
         HttpAsyncRequester requester = new HttpAsyncRequester(
@@ -188,6 +208,9 @@ public class HttpCoreClient {
         }
     }
 
+    /**
+     * Default callback implementation
+     */
     public static class DefaultCallback implements SendCallBack {
         public void completed() {
             log.info("Successfully completed the message");
@@ -200,5 +223,10 @@ public class HttpCoreClient {
         public void cancelled() {
             log.info("Cancelled the request");
         }
+    }
+
+    private void handleError(String msg, IOReactorException e) throws HttpServerException {
+        log.error(msg, e);
+        throw new HttpServerException(msg);
     }
 }

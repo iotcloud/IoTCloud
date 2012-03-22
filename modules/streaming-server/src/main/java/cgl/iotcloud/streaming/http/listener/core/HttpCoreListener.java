@@ -13,6 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import cgl.iotcloud.streaming.http.HttpServerException;
 import cgl.iotcloud.streaming.http.listener.MessageReceiver;
 import cgl.iotcloud.streaming.http.server.CustomThreadFactory;
 import org.apache.http.HttpEntity;
@@ -42,6 +43,7 @@ import org.apache.http.nio.protocol.HttpAsyncRequestHandlerRegistry;
 import org.apache.http.nio.protocol.HttpAsyncExchange;
 import org.apache.http.nio.protocol.HttpAsyncService;
 import org.apache.http.nio.reactor.IOEventDispatch;
+import org.apache.http.nio.reactor.IOReactorException;
 import org.apache.http.nio.reactor.ListeningIOReactor;
 import org.apache.http.nio.util.HeapByteBufferAllocator;
 import org.apache.http.nio.util.SharedInputBuffer;
@@ -65,24 +67,35 @@ import org.slf4j.LoggerFactory;
  */
 public class HttpCoreListener {
     private Logger log = LoggerFactory.getLogger(HttpCoreListener.class);
-
+    /** Port to listen on */
     private int port;
-
+    /** Message receiver to invoke when a message arrives */
     private MessageReceiver receiver;
-
+    /** Path to listen to */
     private String path;
-
+    /** IO Reactor */
     private ListeningIOReactor ioReactor;
-
+    /** Worker pool */
     private ThreadPoolExecutor executor = null;
 
+    /**
+     * Create a Listener using the given configuration
+     * @param port port to listen to
+     * @param receiver message receiver
+     * @param path path to listen to
+     */
     public HttpCoreListener(int port, MessageReceiver receiver, String path) {
         this.port = port;
         this.receiver = receiver;
         this.path = path;
     }
 
-    public void start() throws Exception {
+    /**
+     * Start the listener
+     *
+     * @throws HttpServerException if an error occurs
+     */
+    public void start() throws HttpServerException {
         executor = new ThreadPoolExecutor(20, 100, 10, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(),
                 new CustomThreadFactory(new ThreadGroup("listener-io"), "listener-io-thread"));
@@ -127,9 +140,14 @@ public class HttpCoreListener {
         connFactory = new DefaultNHttpServerConnectionFactory(params);
 
         // Create server-side I/O event dispatch
-        final IOEventDispatch ioEventDispatch = new DefaultHttpServerIODispatch(protocolHandler, connFactory);
+        final IOEventDispatch ioEventDispatch =
+                new DefaultHttpServerIODispatch(protocolHandler, connFactory);
         // Create server-side I/O reactor
-        ioReactor = new DefaultListeningIOReactor();
+        try {
+            ioReactor = new DefaultListeningIOReactor();
+        } catch (IOReactorException e) {
+            handleError("Failed to create the Listening reactor", e);
+        }
 
         // Listen of the given port
         ioReactor.listen(new InetSocketAddress(port));
@@ -146,6 +164,9 @@ public class HttpCoreListener {
         }).start();
     }
 
+    /**
+     * Stop the listener
+     */
     public void stop() {
         log.info("Shutdown the HTTP Listener");
         try {
@@ -156,6 +177,10 @@ public class HttpCoreListener {
 
     }
 
+    /**
+     * A message handler that will read the incoming message using a stream.
+     * The stream is backed by a constant memory buffer
+     */
     private class StreamHandler implements HttpAsyncRequestHandler<HttpRequest> {
         private final MessageReceiver receiver;
 
@@ -195,13 +220,17 @@ public class HttpCoreListener {
         }
     }
 
+    /**
+     * A Message handler for reading the request using a stream handler
+     */
     private  class AsyncStreamHandler extends AbstractAsyncRequestConsumer<HttpRequest> {
+        /** Http request */
         private volatile HttpRequest request;
-
+        /** Input stream */
         private ContentInputStream is;
-
+        /** Constant memory buffer */
         private volatile SharedInputBuffer inputBuffer;
-
+        /** Message receiver */
         private MessageReceiver receiver;
 
         private AsyncStreamHandler(MessageReceiver receiver) {
@@ -288,6 +317,11 @@ public class HttpCoreListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void handleError(String msg, Exception e) throws HttpServerException {
+        log.error(msg, e);
+        throw new HttpServerException(msg);
     }
 }
 

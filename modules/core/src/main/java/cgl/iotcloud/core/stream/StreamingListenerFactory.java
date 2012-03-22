@@ -3,6 +3,9 @@ package cgl.iotcloud.core.stream;
 import cgl.iotcloud.core.Endpoint;
 import cgl.iotcloud.core.Listener;
 
+/**
+ * Create a Listener using the endpoint
+ */
 public class StreamingListenerFactory {
     public Listener create(Endpoint endpoint) {
         String portStr = endpoint.getProperties().get("PORT");
