@@ -12,36 +12,25 @@
     <xs:element name="sensor">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="name" type="po:name" minOccurs="1" maxOccurs="1"/>
-                <xs:element name="group" type="po:group" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="name" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="group" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
                 <xs:element name="properties" type="po:properties" minOccurs="0" maxOccurs="1"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
     <xs:complexType name="properties">
         <xs:sequence>
-            <xs:element name="name" type="po:property" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="name" type="po:nonEmptyString" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
-    <xs:complexType name="group">
-        <xs:simpleContent>
-            <xs:extension base='po:nonEmptyString'>
-                <xs:attribute name="name" type="xs:string" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
+    <xs:complexType name="controls">
+        <xs:sequence>
+            <xs:element name="control" type="po:control" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
     </xs:complexType>
-    <xs:complexType name="name">
-        <xs:simpleContent>
-            <xs:extension base='po:nonEmptyString'>
-                <xs:attribute name="name" type="xs:string" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="property">
-        <xs:simpleContent>
-            <xs:extension base='po:nonEmptyString'>
-                <xs:attribute name="name" type="xs:string" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
+    <xs:complexType name="control">
+        <xs:sequence>
+            <xs:element name="value" type="po:nonEmptyString" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
     </xs:complexType>
 </xs:schema>
