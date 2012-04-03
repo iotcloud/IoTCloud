@@ -25,7 +25,7 @@ public class FileTransferSensor extends AbstractSensor {
     }
 
     public void start() {
-        SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8080");
+        SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8081");
         adaptor.registerSensor(this);
         adaptor.start();
 

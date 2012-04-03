@@ -1,0 +1,47 @@
+<xs:schema
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:po="http://iotcloud.com/sensor/xsd"
+        targetNamespace="http://iotcloud.com/sensor/xsd"
+        elementFormDefault="qualified">
+    <xs:simpleType name='nonEmptyString'>
+        <xs:restriction base='xs:string'>
+            <xs:minLength value='1'/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:element name="sensor">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="po:name" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="group" type="po:group" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="properties" type="po:properties" minOccurs="0" maxOccurs="1"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="properties">
+        <xs:sequence>
+            <xs:element name="name" type="po:property" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="group">
+        <xs:simpleContent>
+            <xs:extension base='po:nonEmptyString'>
+                <xs:attribute name="name" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="name">
+        <xs:simpleContent>
+            <xs:extension base='po:nonEmptyString'>
+                <xs:attribute name="name" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="property">
+        <xs:simpleContent>
+            <xs:extension base='po:nonEmptyString'>
+                <xs:attribute name="name" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+</xs:schema>

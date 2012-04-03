@@ -1,6 +1,5 @@
 package cgl.iotcloud.core;
 
-import cgl.iotcloud.core.broker.Connections;
 import cgl.iotcloud.core.sensor.SCSensor;
 import cgl.iotcloud.core.sensor.Sensor;
 

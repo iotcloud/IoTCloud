@@ -1,0 +1,18 @@
+<sensor>
+    <name></name>
+    <group></group>
+    <properties>
+        <property></property>
+    </properties>
+    <data>
+
+    </data>
+    <updates>
+        <update></update>
+    </updates>
+    <controls>
+        <control name="control">
+            <value>start</value>
+        </control>
+    </controls>
+</sensor>
