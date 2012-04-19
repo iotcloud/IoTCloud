@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * This sender is used for sending a stream message. It uses a Input stream to send the message.
+ */
 public class StreamingSender implements Sender {
     private Logger log = LoggerFactory.getLogger(StreamingSender.class);
 
