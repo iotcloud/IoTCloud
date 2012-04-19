@@ -50,7 +50,7 @@
     <orderEntry type="library" name="Maven: org.apache.woden:woden-impl-commons:1.0M9" level="project" />
     <orderEntry type="library" name="Maven: javax.ws.rs:jsr311-api:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2-transport-http:1.6.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.2-beta2-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.2-beta1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2-transport-local:1.6.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2-adb:1.6.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.activemq:activemq-core:5.5.0" level="project" />
@@ -70,7 +70,7 @@
     <orderEntry type="library" name="Maven: org.jasypt:jasypt:1.7" level="project" />
     <orderEntry type="module" module-name="iotcloud-streaming-server" />
     <orderEntry type="library" name="Maven: io.netty:netty:4.0.0.Alpha1-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore-nio:4.2-beta2-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore-nio:4.2-beta1" level="project" />
     <orderEntry type="module" module-name="iotcloud-sensors" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2-codegen:1.6.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2-adb-codegen:1.6.1" level="project" />
