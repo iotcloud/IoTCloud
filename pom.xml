@@ -23,6 +23,7 @@
         <module>modules/sensors</module>
         <module>modules/samples</module>
         <module>modules/streaming-server</module>
+        <module>modules/http-api</module>
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -147,11 +148,55 @@
                 <artifactId>httpcore-nio</artifactId>
                 <version>4.2-beta1</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxrs</artifactId>
+                <version>2.1.0.GA</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jaxb-provider</artifactId>
+                <version>2.1.0.GA</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-jettison-provider</artifactId>
+                <version>2.1.0.GA</version>
+            </dependency>
             <!--<dependency>-->
                 <!--<groupId>xmlbeans</groupId>-->
                 <!--<artifactId>xmlpublic</artifactId>-->
                 <!--<version>${xmlbeans-version}</version>-->
-            <!--</dependency>-->
+            <!--</dependency>/**
+ * @author rdhartma
+ *
+ */
+@Path("/sgxservice")
+public class SGXService implements SGXClientHandler {
+
+	protected static SGXClient sgxclient=null;
+	public Object m_lock = new Object();
+
+
+	/**
+	 * Here are our RESTful Endpoints
+	 */
+
+	@GET
+    @Path("/init/{ip}")
+    @Produces("text/plain")
+    public String init(@PathParam("ip") String sgxIP){
+		if(sgxclient == null)
+		{
+			sgxclient=new SGXClient(sgxIP, "3035", "niotcp", this);
+			//this.SGXClientConnect("127.0.0.1", "3035", "niotcp");
+
+			return "Begin Client Initialization...";
+		}
+
+        return "Client already Initialized";
+    }-->
         </dependencies>
 
     </dependencyManagement>
