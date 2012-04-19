@@ -52,10 +52,7 @@ public class SGCHTTPServer {
             String webappPath = "webapps/iotcloud-http-api-1.0-SNAPSHOT.war";
             String contextPath = "/iotsc";
             WebAppContext webapp = new WebAppContext(webappPath, contextPath);
-
-            HandlerList hl = new HandlerList();
-            hl.setHandlers(new Handler[]{webapp});
-            server.setHandler(hl);
+            server.setHandler(webapp);
 
             ServletContextHandler servletContextHandler = new ServletContextHandler(server,
                     Constants.CONTEXT_PATH, true, false);
