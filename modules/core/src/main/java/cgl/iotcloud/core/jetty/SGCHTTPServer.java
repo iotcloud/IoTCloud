@@ -7,9 +7,12 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.deployment.FileSystemConfigurator;
 import org.apache.axis2.transport.http.AxisServlet;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.xml.XmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +22,9 @@ import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Start a jetty server.
+ */
 public class SGCHTTPServer {
     private static Logger log = LoggerFactory.getLogger(SGCHTTPServer.class);
 
@@ -42,6 +48,14 @@ public class SGCHTTPServer {
             XmlConfiguration configuration = new XmlConfiguration(serverXML.getInputStream());
 
             Server server = (Server) configuration.configure();
+
+            String webappPath = "webapps/iotcloud-http-api-1.0-SNAPSHOT.war";
+            String contextPath = "/iotsc";
+            WebAppContext webapp = new WebAppContext(webappPath, contextPath);
+
+            HandlerList hl = new HandlerList();
+            hl.setHandlers(new Handler[]{webapp});
+            server.setHandler(hl);
 
             ServletContextHandler servletContextHandler = new ServletContextHandler(server,
                     Constants.CONTEXT_PATH, true, false);
