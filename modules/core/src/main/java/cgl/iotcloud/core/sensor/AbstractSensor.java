@@ -2,13 +2,15 @@ package cgl.iotcloud.core.sensor;
 
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.Endpoint;
+import cgl.iotcloud.core.Listener;
 import cgl.iotcloud.core.ManagedLifeCycle;
-import cgl.iotcloud.core.broker.Listener;
-import cgl.iotcloud.core.broker.ListenerFactory;
-import cgl.iotcloud.core.broker.Sender;
-import cgl.iotcloud.core.broker.SenderFactory;
+import cgl.iotcloud.core.Sender;
+import cgl.iotcloud.core.broker.JMSListenerFactory;
+import cgl.iotcloud.core.broker.JMSSenderFactory;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
+import cgl.iotcloud.core.message.jms.JMSMessageFactory;
+import cgl.iotcloud.core.stream.StreamingSenderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,16 +50,22 @@ public abstract class AbstractSensor implements Sensor, ManagedLifeCycle {
     }
 
     public void init() {
-        SenderFactory senderFactory = new SenderFactory();
-        sender = senderFactory.create(dataEndpoint);
-
         if (updateEndpoint != null) {
-            updateSender = senderFactory.create(updateEndpoint);
+            JMSSenderFactory jmsSenderFactory = new JMSSenderFactory();
+            updateSender = jmsSenderFactory.create(updateEndpoint);
         }
 
-        ListenerFactory listenerFactory = new ListenerFactory();
+        JMSListenerFactory listenerFactory = new JMSListenerFactory();
         listener = listenerFactory.createControlListener(
                 controlEndpoint, new ControlMessageReceiver());
+
+        if (type.equals(Constants.SENSOR_TYPE_BLOCK)) {
+            JMSSenderFactory senderFactory = new JMSSenderFactory();
+            sender = senderFactory.create(dataEndpoint);
+        } else {
+            StreamingSenderFactory senderFactory = new StreamingSenderFactory();
+            sender = senderFactory.create(dataEndpoint);
+        }
 
         if (log.isDebugEnabled()) {
             log.debug("Initializing the Sender for the Sensor with id: " + id);

@@ -1,7 +1,8 @@
 package cgl.iotcloud.streaming.http.client;
 
+import cgl.iotcloud.streaming.http.HttpServerException;
 import io.netty.bootstrap.ClientBootstrap;
-import io.netty.buffer.ChannelBuffer;
+import io.netty.buffer.ChannelBufferOutputStream;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.socket.nio.NioClientSocketChannelFactory;
@@ -11,18 +12,26 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
 
 public class HttpClient {
     private static Logger log = LoggerFactory.getLogger(HttpClient.class);
 
-    private final URI uri;
+    private final String uri;
 
-    public HttpClient(URI uri) {
+    public HttpClient(String uri) {
         this.uri = uri;
     }
 
-    public void send(ChannelBuffer channelBuffer) {
+    public void send(ChannelBufferOutputStream outputStream) throws HttpServerException {
+        URI uri = null;
+        try {
+            uri = new URI(this.uri);
+        } catch (URISyntaxException e) {
+            handleError("The given url is invalid..:" + uri);
+        }
+
         String scheme = uri.getScheme() == null? "http" : uri.getScheme();
         String host = uri.getHost() == null? "localhost" : uri.getHost();
         int port = uri.getPort();
@@ -67,16 +76,10 @@ public class HttpClient {
                 HttpVersion.HTTP_1_1, HttpMethod.GET, uri.getRawPath());
         request.setHeader(HttpHeaders.Names.HOST, host);
         request.setHeader(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
-        request.setHeader(HttpHeaders.Names.ACCEPT_ENCODING, HttpHeaders.Values.GZIP);
-
-        // Set some example cookies.
-        CookieEncoder httpCookieEncoder = new CookieEncoder(false);
-        httpCookieEncoder.addCookie("my-cookie", "foo");
-        httpCookieEncoder.addCookie("another-cookie", "bar");
-        request.setHeader(HttpHeaders.Names.COOKIE, httpCookieEncoder.encode());
+        // request.setHeader(HttpHeaders.Names.ACCEPT_ENCODING, HttpHeaders.Values.GZIP);
 
         // set the content
-        request.setContent(channelBuffer);
+        request.setContent(outputStream.buffer());
 
         // Send the HTTP request.
         channel.write(request);
@@ -86,5 +89,10 @@ public class HttpClient {
 
         // Shut down executor threads to exit.
         bootstrap.releaseExternalResources();
+    }
+
+    private void handleError(String msg) throws HttpServerException {
+        log.error(msg);
+        throw new HttpServerException(msg);
     }
 }

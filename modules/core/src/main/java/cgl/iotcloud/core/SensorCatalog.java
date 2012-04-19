@@ -1,6 +1,5 @@
 package cgl.iotcloud.core;
 
-import cgl.iotcloud.core.broker.Connections;
 import cgl.iotcloud.core.sensor.SCSensor;
 import cgl.iotcloud.core.sensor.Sensor;
 
@@ -13,12 +12,6 @@ import java.util.List;
  */
 public class SensorCatalog {
     private List<SCSensor> sensors = new ArrayList<SCSensor>();
-
-    private Endpoint updateListenerEndpoint;
-
-
-    public SensorCatalog(Connections connections) {
-    }
 
     public List<SCSensor> getSensors() {
         return sensors;
@@ -38,7 +31,6 @@ public class SensorCatalog {
             throw new IllegalArgumentException("The sensor should have an ID");
         }
 
-        // topicManager.createTopic(sensor.getId());
         sensors.add(sensor);
     }
 

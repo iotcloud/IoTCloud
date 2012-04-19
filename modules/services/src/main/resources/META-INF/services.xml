@@ -32,6 +32,16 @@
             <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
                              class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
         </operation>
+        <operation name="registerClient">
+            <actionMapping>urn:registerClient</actionMapping>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
+        <operation name="registerClientWithDataEpr">
+            <actionMapping>urn:registerClient</actionMapping>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
     </service>
 
     <service name="SensorRegistrationService">

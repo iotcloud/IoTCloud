@@ -2,10 +2,6 @@ package cgl.iotcloud.core.sensor;
 
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.Endpoint;
-import cgl.iotcloud.core.ManagedLifeCycle;
-import cgl.iotcloud.core.broker.Sender;
-import cgl.iotcloud.core.broker.SenderFactory;
-import cgl.iotcloud.core.message.SensorMessage;
 
 /**
  * This is a dummy sensor to represent actual sensors in the SC.
@@ -16,7 +12,7 @@ public class SCSensor implements Sensor {
 
     private String id = null;
 
-    private String type = Constants.MESSAGE_TYPE_TEXT;
+    private String type = Constants.SENSOR_TYPE_BLOCK;
 
     private Endpoint dataEndpoint;
 

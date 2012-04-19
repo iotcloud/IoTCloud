@@ -3,7 +3,7 @@ package cgl.iotcloud.core.config.xml;
 import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.broker.Broker;
 import cgl.iotcloud.core.broker.Connections;
-import com.iotcloud.xsd.BrokerDocument;
+import com.iotcloud.xsd.BrokerConfigDocument;
 import com.iotcloud.xsd.ConnectionFactory;
 import com.iotcloud.xsd.Param;
 import org.apache.xmlbeans.XmlException;
@@ -30,9 +30,9 @@ public class BrokerFactory {
         Broker broker = new Broker();
 
         File brokerFile = new File(filePath);
-        BrokerDocument document;
+        BrokerConfigDocument document;
         try {
-            document = BrokerDocument.Factory.parse(brokerFile);
+            document = BrokerConfigDocument.Factory.parse(brokerFile);
         } catch (XmlException e) {
             handleException("Error parsing the broker configuration xml file: " + filePath, e);
             return null;
@@ -41,7 +41,9 @@ public class BrokerFactory {
             return null;
         }
 
-        BrokerDocument.Broker b = document.getBroker();
+        BrokerConfigDocument.BrokerConfig bc = document.getBrokerConfig();
+
+        com.iotcloud.xsd.Broker b = bc.getBroker();
         ConnectionFactory fac[] = b.getConnectionFactoryArray();
 
         for (ConnectionFactory f : fac) {

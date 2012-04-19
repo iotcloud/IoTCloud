@@ -1,13 +1,18 @@
 package cgl.iotcloud.core.client;
 
+import cgl.iotcloud.core.Constants;
+import cgl.iotcloud.core.Listener;
 import cgl.iotcloud.core.ManagedLifeCycle;
-import cgl.iotcloud.core.broker.Listener;
-import cgl.iotcloud.core.broker.ListenerFactory;
-import cgl.iotcloud.core.broker.Sender;
-import cgl.iotcloud.core.broker.SenderFactory;
+import cgl.iotcloud.core.broker.JMSListener;
+import cgl.iotcloud.core.broker.JMSListenerFactory;
+import cgl.iotcloud.core.broker.JMSSender;
+import cgl.iotcloud.core.broker.JMSSenderFactory;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.sensor.SCSensor;
+import cgl.iotcloud.core.stream.StreamingListener;
+import cgl.iotcloud.core.stream.StreamingListenerFactory;
+import com.sun.tools.doclets.internal.toolkit.builders.ConstantsSummaryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +25,9 @@ public class Client implements ManagedLifeCycle {
     /** Message listener for sensor data */
     private Listener messageListener = null;
     /** Message sender for control data */
-    private Sender controlSender = null;
+    private JMSSender controlSender = null;
     /** Message Listener for update data */
-    private Listener updateLister;
+    private JMSListener updateLister;
     /** Message handler specified by the user */
     private MessageHandler handler = null;
     /** Update handler specified by the user */
@@ -43,7 +48,7 @@ public class Client implements ManagedLifeCycle {
     }
 
     public void init() {
-        SenderFactory senderFactory = new SenderFactory();
+        JMSSenderFactory senderFactory = new JMSSenderFactory();
         controlSender = senderFactory.createControlSender(sensor.getControlEndpoint());
 
         if (log.isDebugEnabled()) {
@@ -55,8 +60,15 @@ public class Client implements ManagedLifeCycle {
         }
         controlSender.start();
 
-        ListenerFactory listenerFactory = new ListenerFactory();
-        messageListener = listenerFactory.create(sensor.getDataEndpoint(), handler);
+        JMSListenerFactory listenerFactory = new JMSListenerFactory();
+        if (sensor.getType().equals(Constants.SENSOR_TYPE_BLOCK)) {
+            messageListener = listenerFactory.create(sensor.getDataEndpoint(), handler);
+        } else {
+            messageListener = new StreamingListenerFactory().create(sensor.getDataEndpoint());
+            if (messageListener instanceof StreamingListener) {
+                ((StreamingListener) messageListener).setMessageHandler(handler);
+            }
+        }
 
         if (sensor.getUpdateEndpoint() != null && updateHandler != null) {
             updateLister = listenerFactory.create(sensor.getUpdateEndpoint(), updateHandler);

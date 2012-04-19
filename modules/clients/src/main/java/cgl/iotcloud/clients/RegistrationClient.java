@@ -1,11 +1,14 @@
 package cgl.iotcloud.clients;
 
+import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.endpoint.JMSEndpoint;
+import cgl.iotcloud.core.endpoint.StreamingEndpoint;
 import cgl.iotcloud.core.sensor.FilterCriteria;
 import cgl.iotcloud.core.sensor.SCSensor;
 import cgl.iotcloud.gen.clients.ClientRegistrationServiceStub;
 import cgl.iotcloud.gen.services.client.xsd.SensorFilter;
+import cgl.iotcloud.gen.services.xsd.ClientInformation;
 import cgl.iotcloud.gen.services.xsd.Endpoint;
 import cgl.iotcloud.gen.services.xsd.Property;
 import cgl.iotcloud.gen.services.xsd.SensorInformation;
@@ -82,7 +85,7 @@ public class RegistrationClient {
     /**
      * Get the information about the particular sensor
      *
-     * @param type
+     * @param type type of the sensor
      * @param criteria filter information
      * @return a Sensor
      */
@@ -112,6 +115,18 @@ public class RegistrationClient {
         return null;
     }
 
+    public SCSensor registerClient(String sensorId) {
+        try {
+            ClientInformation info = stub.registerClient(sensorId);
+            if (info != null) {
+                return infoToSensor(info);
+            }
+        } catch (RemoteException e) {
+            handleException("Failed to invoke the getSensorInformation operation", e);
+        }
+        return null;
+    }
+
     private SCSensor infoToSensor(SensorInformation i) {
         SCSensor sensor = new SCSensor(i.getName());
         sensor.setId(i.getId());
@@ -130,8 +145,65 @@ public class RegistrationClient {
         sensor.setControlEndpoint(controlEpr);
 
         e = i.getDataEndpoint();
-        cgl.iotcloud.core.Endpoint dataEpr = new JMSEndpoint();
+        cgl.iotcloud.core.Endpoint dataEpr;
+        if (Constants.SENSOR_TYPE_BLOCK.equals(sensor.getType())) {
+            dataEpr = new JMSEndpoint();
+        } else {
+            dataEpr = new StreamingEndpoint();
+        }
         dataEpr.setAddress(e.getAddress());
+
+
+        props = e.getProperties();
+        propsMap = new HashMap<String, String>();
+        for (Property p : props) {
+            propsMap.put(p.getName(), p.getValue());
+        }
+        dataEpr.setProperties(propsMap);
+        sensor.setDataEndpoint(dataEpr);
+
+        e = i.getUpdateEndpoint();
+        cgl.iotcloud.core.Endpoint updateEpr = new JMSEndpoint();
+        updateEpr.setAddress(e.getAddress());
+
+        props = e.getProperties();
+        propsMap = new HashMap<String, String>();
+        for (Property p : props) {
+            propsMap.put(p.getName(), p.getValue());
+        }
+        updateEpr.setProperties(propsMap);
+        sensor.setUpdateEndpoint(updateEpr);
+
+        return sensor;
+    }
+
+
+    private SCSensor infoToSensor(ClientInformation i) {
+        SCSensor sensor = new SCSensor(i.getName());
+        sensor.setId(i.getId());
+        sensor.setType(i.getType());
+
+        Endpoint e = i.getControlEndpoint();
+        cgl.iotcloud.core.Endpoint controlEpr = new JMSEndpoint();
+        controlEpr.setAddress(e.getAddress());
+
+        Property props[] = e.getProperties();
+        Map<String, String> propsMap = new HashMap<String, String>();
+        for (Property p : props) {
+            propsMap.put(p.getName(), p.getValue());
+        }
+        controlEpr.setProperties(propsMap);
+        sensor.setControlEndpoint(controlEpr);
+
+        e = i.getDataEndpoint();
+        cgl.iotcloud.core.Endpoint dataEpr;
+        if (Constants.SENSOR_TYPE_BLOCK.equals(sensor.getType())) {
+            dataEpr = new JMSEndpoint();
+        } else {
+            dataEpr = new StreamingEndpoint();
+        }
+        dataEpr.setAddress(e.getAddress());
+
 
         props = e.getProperties();
         propsMap = new HashMap<String, String>();

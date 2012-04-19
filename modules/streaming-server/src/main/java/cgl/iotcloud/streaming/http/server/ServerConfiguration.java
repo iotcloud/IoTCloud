@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.concurrent.*;
 
 public class ServerConfiguration {
-    private List<HttpServerEndpoint> serverEndpoints = new ArrayList<HttpServerEndpoint>();
+    private HttpServerEndpoint serverEndpoint;
 
     private List<HttpClientEndpoint> clientEndpoints = new ArrayList<HttpClientEndpoint>();
 
@@ -22,21 +22,21 @@ public class ServerConfiguration {
     private ClientSocketChannelFactory clientSocketChannelFactory = null;
 
     public ServerConfiguration() {
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 100, 10, TimeUnit.SECONDS, new LinkedBlockingQueue(),
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 100, 10,
+                TimeUnit.SECONDS, new LinkedBlockingQueue(),
                 new CustomThreadFactory(new ThreadGroup("io"), "client-io-thread"));
+
         clientSocketChannelFactory = new NioClientSocketChannelFactory(
-                Executors.newCachedThreadPool(new CustomThreadFactory(new ThreadGroup("boss"), "client-boss-thread")),
+                Executors.newCachedThreadPool(
+                        new CustomThreadFactory(new ThreadGroup("boss"), "client-boss-thread")),
                 executor);
 
-        workerExecutor = new ThreadPoolExecutor(20, 100, 10, TimeUnit.SECONDS, new LinkedBlockingQueue(),
+        workerExecutor = new ThreadPoolExecutor(20, 100, 10,
+                TimeUnit.SECONDS, new LinkedBlockingQueue(),
                 new CustomThreadFactory(new ThreadGroup("io"), "worker-thread"));
 
         clientBootStrap = new ClientBootstrap(clientSocketChannelFactory);
         clientBootStrap.setPipelineFactory(new ClientPipelineFactory());
-    }
-
-    public List<HttpServerEndpoint> getServerEndpoints() {
-        return serverEndpoints;
     }
 
     public List<HttpClientEndpoint> getClientEndpoints() {
@@ -47,6 +47,16 @@ public class ServerConfiguration {
         return routingRules;
     }
 
+    public RoutingRule getRoutingRule(String path) {
+        for (RoutingRule rule : routingRules) {
+            if (rule.getEndpoint().getPath().equals(path)) {
+                return rule;
+            }
+        }
+
+        return null;
+    }
+
     public Executor getWorkerExecutor() {
         return workerExecutor;
     }
@@ -55,8 +65,12 @@ public class ServerConfiguration {
         return clientBootStrap;
     }
 
-    public void addServerEndpoint(HttpServerEndpoint endpoint) {
-        serverEndpoints.add(endpoint);
+    public void setServerEndpoint(HttpServerEndpoint endpoint) {
+        this.serverEndpoint = endpoint;
+    }
+
+    public HttpServerEndpoint getServerEndpoint() {
+        return serverEndpoint;
     }
 
     public void addClientEndpoint(HttpClientEndpoint endpoint) {
@@ -65,10 +79,6 @@ public class ServerConfiguration {
 
     public void addRoutingRule(RoutingRule rule) {
         routingRules.add(rule);
-    }
-
-    public void addServerEndpoints(List<HttpServerEndpoint> serverEndpoints) {
-        serverEndpoints.addAll(serverEndpoints);
     }
 
     public void addClientEndpoints(List<HttpClientEndpoint> clientEndpoints) {

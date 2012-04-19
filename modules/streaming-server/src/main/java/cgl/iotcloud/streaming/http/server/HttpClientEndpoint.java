@@ -6,13 +6,15 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.handler.codec.http.HttpChunk;
-import io.netty.handler.codec.http.HttpMessage;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class HttpClientEndpoint extends HttpEndpoint {
     private static Logger log = LoggerFactory.getLogger(HttpClientEndpoint.class);
@@ -23,7 +25,10 @@ public class HttpClientEndpoint extends HttpEndpoint {
 
     private final LinkedList<ChannelFuture> openChannels = new LinkedList<ChannelFuture>();
     
-    private final Map<String, ChannelFuture> workingChannels = new HashMap<String, ChannelFuture>(); 
+    private final Map<String, Channel> workingChannels = new HashMap<String, Channel>();
+
+    private final Map<String, ConcurrentLinkedQueue<Object>> messageList =
+            new ConcurrentHashMap<String, ConcurrentLinkedQueue<Object>>();
     
     private ChannelGroup channelGroup = null;
 
@@ -46,73 +51,101 @@ public class HttpClientEndpoint extends HttpEndpoint {
             }
         }
 
+        // put the message in to the queue
+        ConcurrentLinkedQueue<Object> messages =
+                new ConcurrentLinkedQueue<Object>();
+        messageList.put(id, messages);
+
+        if (request.isChunked()) {
+            request.removeHeader(HttpHeaders.Names.CONTENT_LENGTH);
+        }
+
         final OnConnect onConnect = new OnConnect();
 
         ChannelFuture future = getChannelFuture();
         if (future != null) {
             log.debug("Using existing connection...");
             if (future.getChannel().isConnected()) {
-                onConnect.onConnect(future);
+                workingChannels.put(id, future.getChannel());
+                future.getChannel().write(request).addListener(new HandleEvent(id));
             } else {
-                final ChannelFutureListener cfl = new ChannelFutureListener() {
-                    public void operationComplete(final ChannelFuture future)
-                            throws Exception {
-                        onConnect.onConnect(future);
-                    }
-                };
-                future.addListener(cfl);
+                // there is messages to follow. so put the message in a the map
+                messages.offer(request);
+                future.addListener(new HandleEvent(id));
             }
         } else {
-            final ChannelFuture cf = newChannelFuture();
-            final class LocalChannelFutureListener implements ChannelFutureListener {
+            messages.offer(request);
 
-                public void operationComplete(final ChannelFuture future)
-                        throws Exception {
-                    final Channel channel = future.getChannel();
-                    if (channelGroup != null) {
-                        channelGroup.add(channel);
-                    }
-                    if (future.isSuccess()) {
-                        log.debug("Connected successfully to: {}", channel);
-                        log.debug("Writing message on channel...");
-                        final ChannelFuture wf = onConnect.onConnect(cf);
-                        wf.addListener(new ChannelFutureListener() {
-                            public void operationComplete(final ChannelFuture wcf)
-                                    throws Exception {
-                                log.debug("Finished write: " + wcf + " to: " +
-                                        request.getMethod() + " " +
-                                        request.getUri());
-                            }
-                        });
+            final ChannelFuture cf = newChannelFuture();
+            cf.addListener(new HandleEvent(id));
+        }        
+    }
+
+    private class HandleEvent implements ChannelFutureListener {
+        private String id;
+
+        private HandleEvent(String id) {
+            this.id = id;
+        }
+
+        public void operationComplete(ChannelFuture channelFuture)
+                throws Exception {
+
+            final ConcurrentLinkedQueue<Object> messages =
+                    messageList.get(id);
+
+            if (messages != null) {
+                Object message = messages.poll();
+                if (message != null) {
+                    if (channelFuture.getChannel().isConnected()) {
+                        workingChannels.put(id, channelFuture.getChannel());
+                        log.debug("writing the message after event completion.........");
+                        ChannelFuture future = channelFuture.getChannel().write(message);
+
+                        if ((message instanceof HttpRequest && !((HttpRequest) message).isChunked()) ||
+                                (message instanceof HttpChunk && ((HttpChunk) message).isLast())) {
+                            workingChannels.remove(id);
+                            messageList.remove(id);
+                        } else {
+                            future.addListener(new HandleEvent(id));
+                        }
                     } else {
-                        log.warn("Could not connect to " + host + ":" + port,
-                                future.getCause());
+                        channelFuture.addListener(new HandleEvent(id));
                     }
                 }
             }
-
-            cf.addListener(new LocalChannelFutureListener());
-        }        
+        }
     }
     
     public void writeChunk(final HttpChunk chunk, String messageId) {
-        final ChannelFuture currentChannelFuture = workingChannels.remove(messageId);
-        if (currentChannelFuture == null) {
+        // put the message in to the queue
+        final ConcurrentLinkedQueue<Object> messages =
+                messageList.get(messageId);
+
+        if (messages == null) {
+            log.warn("a chunk came without a list associated it with it...");
             return;
         }
-        // We don't necessarily know the channel is connected yet!! This can
-        // happen if the client sends a chunk directly after the initial 
-        // request.
-        if (currentChannelFuture.getChannel().isConnected()) {
-            currentChannelFuture.getChannel().write(chunk);
-        } else {
-            currentChannelFuture.addListener(new ChannelFutureListener() {
 
-                public void operationComplete(final ChannelFuture future)
-                        throws Exception {
-                    currentChannelFuture.getChannel().write(chunk);
+        if (messages.isEmpty()) {
+            Channel channel = workingChannels.get(messageId);
+            if (channel != null) {
+                if (channel.isConnected()) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Writing the chunk to the out channel..");
+                    }
+                    channel.write(chunk).addListener(new HandleEvent(messageId));
+                } else {
+                    log.warn("Trying to write a chunk without a connected channel:" + messageId);
                 }
-            });
+            } else {
+                log.warn("Doesn't have a channel associated with Message id:" + messageId);
+            }
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("Offering the chunk to the queue..");
+            }
+            messages.offer(chunk);
         }
     } 
 

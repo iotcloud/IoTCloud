@@ -1,13 +1,11 @@
 package cgl.iotcloud.streaming.http.server;
 
-import io.netty.bootstrap.ClientBootstrap;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.HttpChunk;
 import io.netty.handler.codec.http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetSocketAddress;
 import java.util.UUID;
 
 import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
@@ -47,10 +45,6 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
             readingChunks = request.isChunked();
 
             if (rule != null) {
-                // e.getChannel().setReadable(false);
-                MessageContext context = new MessageContext(request, e.getChannel(), rule);
-                //Worker worker = new Worker(context);
-                //configuration.getWorkerExecutor().execute(worker);
                 messageId = UUID.randomUUID().toString();
                 rule.getEndpoint().writeRequest(request, messageId);
 
@@ -69,18 +63,7 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
 
             if (chunk.isLast()) {
                 new ResponseWriter(e.getChannel(), !isKeepAlive(request), request.isChunked()).write();
-            }
-        }
-    }
-
-    @Override
-    public void channelInterestChanged(ChannelHandlerContext ctx,
-            ChannelStateEvent e) throws Exception {
-        MessageContext context = (MessageContext) ctx.getChannel().getAttachment();
-        if (context != null) {
-            if (e.getChannel().isWritable()) {
-                // log.info("outbout readable true");
-                context.getOutChannel().setReadable(true);
+                readingChunks = false;
             }
         }
     }
@@ -91,21 +74,5 @@ public class InboundHandler extends SimpleChannelUpstreamHandler {
         if (e.getChannel().isConnected()) {
             e.getChannel().close();
         }
-    }
-
-    private ChannelFuture newChannelFuture(final HttpRequest httpRequest,
-                                           final Channel browserToProxyChannel, String host, int port) {
-        if (port == -1) {
-            port = 80;
-        }
-
-        ClientBootstrap cb = new ClientBootstrap(configuration.getClientSocketChannelFactory());
-
-        cb.setPipelineFactory(new ClientPipelineFactory());
-        cb.setOption("connectTimeoutMillis", 60 * 1000);
-        log.info("Starting new connection to: {}", host + ":" + port);
-        final ChannelFuture future =
-                cb.connect(new InetSocketAddress(host, port));
-        return future;
     }
 }

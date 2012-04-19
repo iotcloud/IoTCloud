@@ -24,8 +24,8 @@ public class SensorRegistrationService {
      * Register the sensor to the sensor grid.
      *
      * @param information the information about the sensor
-     * @return
-     * @throws AxisFault
+     * @return sensor information
+     * @throws AxisFault if an error occurs
      */
     public SensorInformation registerSensor(SensorRegistrationInformation information) throws AxisFault {
         IoTCloud cloud =  retrieveIoTCloud();
@@ -70,9 +70,9 @@ public class SensorRegistrationService {
     }
 
     private Endpoint createEndpoint(cgl.iotcloud.core.Endpoint epr) throws AxisFault {
-        Endpoint dataEpr = new Endpoint();
+        Endpoint endpoint = new Endpoint();
 
-        dataEpr.setAddress(epr.getAddress());
+        endpoint.setAddress(epr.getAddress());
 
         Set<Map.Entry<String, String>> props = epr.getProperties().entrySet();
         Property properties[] = new Property[props.size()];
@@ -83,8 +83,8 @@ public class SensorRegistrationService {
             p.setValue(e.getValue());
             properties[i++] = p;
         }
-        dataEpr.setProperties(properties);
-        return dataEpr;
+        endpoint.setProperties(properties);
+        return endpoint;
     }
 
     private IoTCloud retrieveIoTCloud() throws AxisFault {

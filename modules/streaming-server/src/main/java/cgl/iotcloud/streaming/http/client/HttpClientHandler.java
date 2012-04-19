@@ -10,7 +10,9 @@ import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * We don't expect a response. So we don't do anything.
+ */
 public class HttpClientHandler extends SimpleChannelUpstreamHandler {
     private static Logger log = LoggerFactory.getLogger(HttpClientHandler.class);
 
@@ -30,7 +32,7 @@ public class HttpClientHandler extends SimpleChannelUpstreamHandler {
                         log.debug("HEADER: " + name + " = " + value);
                     }
                 }
-                System.out.println();
+
             }
 
             if (response.isChunked()) {

@@ -53,14 +53,28 @@ public class SensorClient {
         sensorClient = new Client(sensor);
     }
 
-    public void fixOnSensor(String id) {
-        SCSensor sensor = client.getSensor(id);
+    public void register(String sensorId) {
+        SCSensor sensor = client.registerClient(sensorId);
         if (sensor == null) {
-            handleException("Sensor with the id: " + id + " cannot be fount");
+            handleException("Sensor with the id: " + sensorId + " cannot be fount");
         }
 
         sensorClient = new Client(sensor);
     }
+
+    public void registerWithName(String name) {
+        FilterCriteria criteria = new FilterCriteria();
+        criteria.addProperty("type", "name");
+        criteria.addProperty("name", name);
+        SCSensor sensor = client.getSensor("name", criteria);
+        if (sensor == null) {
+            handleException("Sensor with the name: " + name + " cannot be fount");
+            return;
+        }
+        register(sensor.getId());
+    }
+
+
 
     public void setUpdateListener(UpdateMessageHandler handler) {
         sensorClient.setUpdateMessageHandler(new UpdateMessageReceiver(handler));
