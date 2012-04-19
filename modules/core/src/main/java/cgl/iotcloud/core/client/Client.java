@@ -12,7 +12,6 @@ import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.sensor.SCSensor;
 import cgl.iotcloud.core.stream.StreamingListener;
 import cgl.iotcloud.core.stream.StreamingListenerFactory;
-import com.sun.tools.doclets.internal.toolkit.builders.ConstantsSummaryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
