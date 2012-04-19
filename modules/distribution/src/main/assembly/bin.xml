@@ -39,6 +39,7 @@
                 <exclude>org.apache.axis2:axis2-webapp:war</exclude>
                 <exclude>iotcloud:iotcloud-services:aar</exclude>
                 <exclude>org.apache.axis2:addressing:mar</exclude>
+                <exclude>iotcloud:iotcloud-http-api:war</exclude>
             </excludes>
         </dependencySet>
         <!--<dependencySet>-->
@@ -53,6 +54,13 @@
             <outputDirectory>iotcloud-${pom.version}/repository/axis2/services</outputDirectory>
             <includes>
                 <include>iotcloud:iotcloud-services:aar</include>
+            </includes>
+        </dependencySet>
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>iotcloud-${pom.version}/webapps</outputDirectory>
+            <includes>
+                <include>iotcloud:iotcloud-http-api:war</include>
             </includes>
         </dependencySet>
         <dependencySet>
