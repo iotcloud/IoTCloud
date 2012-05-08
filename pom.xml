@@ -76,7 +76,7 @@
 
             <dependency>
                 <groupId>org.eclipse.jetty.aggregate</groupId>
-                <artifactId>jetty-all-server</artifactId>
+                <artifactId>jetty-all</artifactId>
                 <version>${jetty-version}</version>
             </dependency>
 
@@ -164,39 +164,6 @@
                 <artifactId>resteasy-jettison-provider</artifactId>
                 <version>2.1.0.GA</version>
             </dependency>
-            <!--<dependency>-->
-                <!--<groupId>xmlbeans</groupId>-->
-                <!--<artifactId>xmlpublic</artifactId>-->
-                <!--<version>${xmlbeans-version}</version>-->
-            <!--</dependency>/**
- * @author rdhartma
- *
- */
-@Path("/sgxservice")
-public class SGXService implements SGXClientHandler {
-
-	protected static SGXClient sgxclient=null;
-	public Object m_lock = new Object();
-
-
-	/**
-	 * Here are our RESTful Endpoints
-	 */
-
-	@GET
-    @Path("/init/{ip}")
-    @Produces("text/plain")
-    public String init(@PathParam("ip") String sgxIP){
-		if(sgxclient == null)
-		{
-			sgxclient=new SGXClient(sgxIP, "3035", "niotcp", this);
-			//this.SGXClientConnect("127.0.0.1", "3035", "niotcp");
-
-			return "Begin Client Initialization...";
-		}
-
-        return "Client already Initialized";
-    }-->
         </dependencies>
 
     </dependencyManagement>
@@ -249,7 +216,7 @@ public class SGXService implements SGXClientHandler {
         <jms-1.1-spec.version>1.1</jms-1.1-spec.version>
         <jta-spec.version>1.0</jta-spec.version>
         <xmlbeans-version>2.4.0</xmlbeans-version>
-        <jetty-version>7.5.3.v20111011</jetty-version>
+        <jetty-version>8.1.3.v20120416</jetty-version>
         <log4j.version>1.2.14</log4j.version>
         <activemq.version>5.5.0</activemq.version>
         <axis2.version>1.6.1</axis2.version>
