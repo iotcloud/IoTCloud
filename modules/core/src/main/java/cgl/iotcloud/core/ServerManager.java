@@ -4,6 +4,7 @@ import cgl.iotcloud.core.config.SCCConfigurationFactory;
 import cgl.iotcloud.core.config.SCConfiguration;
 import cgl.iotcloud.core.jetty.SGCHTTPServer;
 import cgl.iotcloud.core.stream.StreamingServer;
+import cgl.iotcloud.core.tomcat.TomcatServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,12 +31,21 @@ public class ServerManager {
             return;
         }
 
+        final TomcatServer server = new TomcatServer(cloud);
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                server.stop();
+            }
+        });
+
         new Thread(
                 new Runnable() {
                     public void run() {
                         // start the HTTP server
-                        SGCHTTPServer httpServer = new SGCHTTPServer(cloud);
-                        httpServer.start();
+//                        SGCHTTPServer httpServer = new SGCHTTPServer(cloud);
+//                        httpServer.start();
+                        server.start();
                     }
                 }).start();
 
