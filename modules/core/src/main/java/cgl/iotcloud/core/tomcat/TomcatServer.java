@@ -43,15 +43,20 @@ public class TomcatServer {
         tomcat.getHost().setAppBase(webAppsSir);
 
         // register apache axis2
-        Context soapContext = tomcat.addContext(Constants.CONTEXT_PATH, new File(".").getAbsolutePath());
-        Tomcat.addServlet(soapContext, "axisServlet", AxisServlet.class.getCanonicalName());
+        Context soapContext = tomcat.addContext(Constants.CONTEXT_PATH,
+                new File(".").getAbsolutePath());
+        Tomcat.addServlet(soapContext, "axisServlet",
+                AxisServlet.class.getCanonicalName());
         soapContext.addServletMapping(Constants.SERVICES_PATH, "axisServlet");
-        soapContext.getServletContext().setAttribute(AxisServlet.CONFIGURATION_CONTEXT, initConfigContext());
+        soapContext.getServletContext().setAttribute(
+                AxisServlet.CONFIGURATION_CONTEXT, initConfigContext());
 
         // register the resteasy
         Context restContext = tomcat.addContext("/rest", new File(".").getAbsolutePath());
-        restContext.addParameter("resteasy.resources", "cgl.iotcloud.api.http.IOTCloud");
-        restContext.addApplicationListener("org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap");
+        restContext.addParameter("resteasy.resources",
+                "cgl.iotcloud.api.http.IOTCloud");
+        restContext.addApplicationListener(
+                "org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap");
         Tomcat.addServlet(restContext, "rest", new HttpServletDispatcher());
         restContext.addServletMapping("/*", "rest");
 
