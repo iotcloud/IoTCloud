@@ -1,7 +1,7 @@
 <xs:schema
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        xmlns:po="http://iotcloud.com/sensor/xsd"
-        targetNamespace="http://iotcloud.com/sensor/xsd"
+        xmlns:po="http://iotcloud.com/sensorInfo/xsd"
+        targetNamespace="http://iotcloud.com/sensorInfo/xsd"
         elementFormDefault="qualified">
     <xs:simpleType name='nonEmptyString'>
         <xs:restriction base='xs:string'>
@@ -9,12 +9,17 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:element name="sensor">
+    <xs:element name="sensorInfo">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="name" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="id" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="type" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
                 <xs:element name="group" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
                 <xs:element name="properties" type="po:properties" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="controlEndpoint" type="po:endpoint" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="dataEndpoint" type="po:endpoint" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="updateEndpoint" type="po:endpoint" minOccurs="0" maxOccurs="1"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -23,14 +28,10 @@
             <xs:element name="name" type="po:nonEmptyString" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
-    <xs:complexType name="controls">
+    <xs:complexType name="endpoint">
         <xs:sequence>
-            <xs:element name="control" type="po:control" minOccurs="1" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="control">
-        <xs:sequence>
-            <xs:element name="value" type="po:nonEmptyString" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="address" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="properties" type="po:properties" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 </xs:schema>
