@@ -7,7 +7,6 @@ import com.iotcloud.sensorInfo.xsd.Endpoint;
 public class SCSensorUtils {
 
     public static String convertToString(SCSensor sensor) {
-
         SensorInfoDocument document = SensorInfoDocument.Factory.newInstance();
         SensorInfoDocument.SensorInfo sensorInfo = document.addNewSensorInfo();
 
@@ -22,9 +21,8 @@ public class SCSensorUtils {
         cgl.iotcloud.core.Endpoint epr = sensor.getControlEndpoint();
         controlEndpoint.setAddress(epr.getAddress());
         Properties properties = controlEndpoint.addNewProperties();
-
-
-        // controlEndpoint.setProperties();
+//        Pro
+//        controlEndpoint.setProperties();
 
         return null;
     }

@@ -20,7 +20,7 @@
     </xs:element>
     <xs:complexType name="properties">
         <xs:sequence>
-            <xs:element name="name" type="po:nonEmptyString" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="property" type="po:property" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="controls">
@@ -32,5 +32,13 @@
         <xs:sequence>
             <xs:element name="value" type="po:nonEmptyString" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="property">
+        <xs:simpleContent>
+            <xs:extension base='po:nonEmptyString'>
+                <xs:attribute name="name" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
     </xs:complexType>
 </xs:schema>
