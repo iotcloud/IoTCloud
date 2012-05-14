@@ -37,6 +37,8 @@ public class Constants {
 
     public static final String SENSOR_CLOUD_AXIS2_PROPERTY = "SC_PROPERTY";
 
+    public static final String IOT_CLOUD_SERVLET_PROPERTY = "IOT_SERVLET_PROPERTY";
+
     public class Updates {
         public static final String ADDED = "ADDED";
         public static final String REMOVED = "REMOVED";

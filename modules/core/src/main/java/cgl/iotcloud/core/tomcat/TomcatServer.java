@@ -69,6 +69,8 @@ public class TomcatServer {
         restContext.addChild(jspServlet);
         restContext.addServletMapping("*.jsp", "jsp");
 
+        restContext.getServletContext().setAttribute(Constants.IOT_CLOUD_SERVLET_PROPERTY, iotCloud);
+
         try {
             tomcat.start();
         } catch (LifecycleException e) {
