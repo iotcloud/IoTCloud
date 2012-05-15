@@ -15,21 +15,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import javax.servlet.ServletContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.Response.status;
 
 @Path("/iotcs")
 public class SensorServices {
-    @Resource
+    @Context
     private ServletContext servletContext;
-
-    private IoTCloud iotCloud = null;
-
-    public SensorServices() {
-        iotCloud = (IoTCloud) servletContext.getAttribute(
-                Constants.IOT_CLOUD_SERVLET_PROPERTY);
-    }
 
     @GET
     @Path("/init/{ip}")
@@ -42,6 +36,9 @@ public class SensorServices {
     @Path("/register")
     @Produces("text/xml")
     public Response registerSensor(@QueryParam("name") String name, @QueryParam("type") String type) {
+        IoTCloud iotCloud = (IoTCloud) servletContext.getAttribute(
+                Constants.IOT_CLOUD_SERVLET_PROPERTY);
+
         Sensor s = iotCloud.registerSensor(name, type);
         if (s instanceof SCSensor) {
             SCSensor sc = (SCSensor) s;

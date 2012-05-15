@@ -94,13 +94,13 @@ public class IoTCloud {
         sensor.setType(type);
 
         Endpoint dataEndpoint;
-        if (Constants.SENSOR_TYPE_BLOCK.equals(type)) {
+        if (Constants.SENSOR_TYPE_BLOCK.equalsIgnoreCase(type)) {
             dataEndpoint = new JMSEndpoint();
             dataEndpoint.setAddress(sensor.getId() + "/data");
             // TODO: we have to decide the connection factory to be used
             dataEndpoint.setProperties(
                     configuration.getBroker().getConnections("topic").getParameters());
-        } else if (Constants.SENSOR_TYPE_STREAMING.equals(type)) {
+        } else if (Constants.SENSOR_TYPE_STREAMING.equalsIgnoreCase(type)) {
             dataEndpoint = new StreamingEndpoint();
 
             dataEndpoint.setProperties(configuration.getStreamingServer().getParameters());
