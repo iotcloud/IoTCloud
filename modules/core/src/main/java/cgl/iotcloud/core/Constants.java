@@ -1,6 +1,8 @@
 package cgl.iotcloud.core;
 
-
+/**
+ * Constants used in the project.
+ */
 public class Constants {
     public static final String BROKER_CONFIG_FILE = "repository/conf/broker-config.xml";
 
