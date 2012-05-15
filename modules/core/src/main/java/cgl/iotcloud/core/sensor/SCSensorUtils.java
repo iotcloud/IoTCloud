@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,9 +21,31 @@ import java.util.Map;
 public class SCSensorUtils {
     private static Logger log = LoggerFactory.getLogger(SCSensorUtils.class);
 
+    public static String convertToString(List<SCSensor> sensors) {
+        AllSensorsDocument document = AllSensorsDocument.Factory.newInstance();
+        AllSensorsDocument.AllSensors allSensors = document.addNewAllSensors();
+
+        Sensor []sensorArray = new Sensor[sensors.size()];
+        for (int i = 0; i < sensors.size(); i++) {
+            sensorArray[i] = convertToXML(sensors.get(i));
+        }
+
+        if (sensors.size() > 0) {
+            allSensors.setSensorArray(sensorArray);
+        }
+        return document.toString();
+    }
+
     public static String convertToString(SCSensor sensor) {
         SensorInfoDocument document = SensorInfoDocument.Factory.newInstance();
-        Sensor sensorInfo = document.addNewSensorInfo();
+        Sensor s = convertToXML(sensor);
+        document.setSensorInfo(s);
+
+        return document.toString();
+    }
+
+    private static Sensor convertToXML(SCSensor sensor) {
+        Sensor sensorInfo = Sensor.Factory.newInstance();
         //SensorInfoDocument.SensorInfo sensorInfo = document.addNewSensorInfo();
 
         sensorInfo.setName(sensor.getName());
@@ -62,8 +85,7 @@ public class SCSensorUtils {
             property.setName(e.getKey());
             property.setStringValue(e.getValue());
         }
-
-        return document.toString();
+        return sensorInfo;
     }
 
     public static SCSensor convertToSensor(String string) {
