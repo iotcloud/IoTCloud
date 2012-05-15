@@ -1,16 +1,20 @@
 package cgl.iotcloud.services;
 
+/**
+ * Client information as a bean
+ */
 public class ClientInformation {
+    /** id of the client */
     private String id;
-
+    /** type of the client */
     private String type;
-
+    /** name of the client */
     private String name;
-
+    /** control endpoint */
     private Endpoint controlEndpoint;
-
+    /** data endpoint */
     private Endpoint dataEndpoint;
-
+    /** update endpoint */
     private Endpoint updateEndpoint;
 
     public String getName() {

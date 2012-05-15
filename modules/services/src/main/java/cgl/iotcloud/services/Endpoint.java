@@ -1,8 +1,13 @@
 package cgl.iotcloud.services;
 
+/**
+ * Represent an endpoint as a bean
+ */
 public class Endpoint {
+    /** address */
     private String address;
 
+    /** array of properties */
     private Property[] properties;
 
     public String getAddress() {
