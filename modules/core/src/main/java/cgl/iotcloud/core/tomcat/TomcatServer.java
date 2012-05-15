@@ -36,6 +36,9 @@ public class TomcatServer {
         this.iotCloud = iotCloud;
     }
 
+    /**
+     * Start the tomcat server.
+     */
     public void start() {
         tomcat = new Tomcat();
         tomcat.setPort(8080);
@@ -54,7 +57,7 @@ public class TomcatServer {
         // register the resteasy
         Context restContext = tomcat.addContext("/rest", new File(".").getAbsolutePath());
         restContext.addParameter("resteasy.resources",
-                "cgl.iotcloud.api.http.SensorServices");
+                "cgl.iotcloud.api.http.SensorServices, cgl.iotcloud.api.http.ClientServices");
         restContext.addApplicationListener(
                 "org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap");
         Tomcat.addServlet(restContext, "rest", new HttpServletDispatcher());
