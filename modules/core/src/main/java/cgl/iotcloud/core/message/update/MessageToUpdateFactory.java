@@ -8,7 +8,9 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * Create a update message from the text.
+ */
 public class MessageToUpdateFactory {
     private static Logger log = LoggerFactory.getLogger(MessageToUpdateFactory.class);
 

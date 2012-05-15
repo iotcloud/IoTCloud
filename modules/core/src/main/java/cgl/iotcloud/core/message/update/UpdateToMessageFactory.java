@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-
 public class UpdateToMessageFactory {
     private static Logger log = LoggerFactory.getLogger(UpdateToMessageFactory.class);
     public SensorMessage create(UpdateMessage message) {
