@@ -9,20 +9,29 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:element name="sensorInfo">
+    <xs:element name="allSensors">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="name" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
-                <xs:element name="id" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
-                <xs:element name="type" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
-                <xs:element name="group" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
-                <xs:element name="properties" type="po:properties" minOccurs="0" maxOccurs="1"/>
-                <xs:element name="controlEndpoint" type="po:endpoint" minOccurs="0" maxOccurs="1"/>
-                <xs:element name="dataEndpoint" type="po:endpoint" minOccurs="0" maxOccurs="1"/>
-                <xs:element name="updateEndpoint" type="po:endpoint" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="sensor" type="po:sensor" minOccurs="1" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:element name="sensorInfo" type="po:sensor"/>
+
+    <xs:complexType name="sensor">
+        <xs:sequence>
+            <xs:element name="name" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="id" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="type" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="group" type="po:nonEmptyString" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="properties" type="po:properties" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="controlEndpoint" type="po:endpoint" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="dataEndpoint" type="po:endpoint" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="updateEndpoint" type="po:endpoint" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="properties">
         <xs:sequence>
             <xs:element name="property" type="po:property" minOccurs="0" maxOccurs="unbounded"/>

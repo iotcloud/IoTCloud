@@ -6,6 +6,7 @@ import cgl.iotcloud.core.endpoint.JMSEndpoint;
 import cgl.iotcloud.core.endpoint.StreamingEndpoint;
 import com.iotcloud.sensorInfo.xsd.*;
 import com.iotcloud.sensorInfo.xsd.Endpoint;
+import com.iotcloud.sensorInfo.xsd.Sensor;
 import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,8 @@ public class SCSensorUtils {
 
     public static String convertToString(SCSensor sensor) {
         SensorInfoDocument document = SensorInfoDocument.Factory.newInstance();
-        SensorInfoDocument.SensorInfo sensorInfo = document.addNewSensorInfo();
+        Sensor sensorInfo = document.addNewSensorInfo();
+        //SensorInfoDocument.SensorInfo sensorInfo = document.addNewSensorInfo();
 
         sensorInfo.setName(sensor.getName());
         sensorInfo.setType(sensor.getType());
