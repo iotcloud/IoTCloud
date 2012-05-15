@@ -1,12 +1,16 @@
 package cgl.iotcloud.core.sensor;
 
+import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.endpoint.JMSEndpoint;
+import cgl.iotcloud.core.endpoint.StreamingEndpoint;
 import com.iotcloud.sensorInfo.xsd.*;
 import com.iotcloud.sensorInfo.xsd.Endpoint;
 import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -69,15 +73,54 @@ public class SCSensorUtils {
             sensor.setId(document.getSensorInfo().getId());
             sensor.setType(document.getSensorInfo().getType());
 
-            document.getSensorInfo().getDataEndpoint();
+            cgl.iotcloud.core.Endpoint epr;
+            if (sensor.getType().equals(Constants.SENSOR_TYPE_BLOCK)) {
+                epr = convertToEndpoint(document.getSensorInfo().getDataEndpoint(), 0);
+                sensor.setDataEndpoint(epr);
+            } else if (sensor.getType().equals(Constants.SENSOR_TYPE_STREAMING)) {
+                epr = convertToEndpoint(document.getSensorInfo().getDataEndpoint(), 1);
+                sensor.setDataEndpoint(epr);
+            }
+
+            if (document.getSensorInfo().getControlEndpoint() != null) {
+                epr = convertToEndpoint(document.getSensorInfo().getControlEndpoint(), 0);
+                sensor.setControlEndpoint(epr);
+            }
+
+            if (document.getSensorInfo().getUpdateEndpoint() != null) {
+                epr = convertToEndpoint(document.getSensorInfo().getUpdateEndpoint(), 0);
+                sensor.setControlEndpoint(epr);
+            }
+
+            return sensor;
         } catch (XmlException e) {
             handleException("Failed to convert the text to a XML", e);
         }
         return null;
     }
 
-    private static cgl.iotcloud.core.Endpoint convertToEndpoint(Endpoint endpoint) {
-        return null;
+    private static cgl.iotcloud.core.Endpoint convertToEndpoint(Endpoint endpoint, int type) {
+        cgl.iotcloud.core.Endpoint epr;
+
+        if (type == 0) {
+            epr = new JMSEndpoint();
+        } else if (type == 1) {
+            epr = new StreamingEndpoint();
+        } else {
+            handleException("");
+            return null;
+        }
+
+        epr.setAddress(endpoint.getAddress());
+        Properties properties = endpoint.getProperties();
+
+        Map<String, String> props = new HashMap<String, String>();
+        for (Property p : properties.getPropertyArray()) {
+            props.put(p.getName(), p.getStringValue());
+        }
+
+        epr.setProperties(props);
+        return epr;
     }
 
     private static void handleException(String s, Exception e) {
@@ -85,4 +128,8 @@ public class SCSensorUtils {
         throw new SCException(s, e);
     }
 
+    private static void handleException(String s) {
+        log.error(s);
+        throw new SCException(s);
+    }
 }

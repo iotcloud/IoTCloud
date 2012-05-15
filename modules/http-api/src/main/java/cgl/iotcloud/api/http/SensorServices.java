@@ -3,6 +3,7 @@ package cgl.iotcloud.api.http;
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.IoTCloud;
 import cgl.iotcloud.core.sensor.SCSensor;
+import cgl.iotcloud.core.sensor.SCSensorUtils;
 import cgl.iotcloud.core.sensor.Sensor;
 
 import javax.annotation.Resource;
@@ -38,14 +39,17 @@ public class SensorServices {
     }
 
     @PUT
-    @Path("/register?id={ip}")
-    @Produces("text/plain")
+    @Path("/register")
+    @Produces("text/xml")
     public Response registerSensor(@QueryParam("name") String name, @QueryParam("type") String type) {
         Sensor s = iotCloud.registerSensor(name, type);
         if (s instanceof SCSensor) {
             SCSensor sc = (SCSensor) s;
 
             Response.ResponseBuilder r = status(200);
+
+            String info = SCSensorUtils.convertToString(sc);
+            r = r.entity(info);
 
             return r.build();
         } else {
