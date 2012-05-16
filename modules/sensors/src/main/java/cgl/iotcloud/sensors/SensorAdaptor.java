@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SensorAdaptor {
-    private static Logger log = LoggerFactory.getLogger(SensorRegistrationClient.class);
+    private static Logger log = LoggerFactory.getLogger(RegistrationWSClient.class);
 
     private Sensor sensor = null;
 
-    private SensorRegistrationClient client = null;
+    private RegistrationWSClient client = null;
 
     public SensorAdaptor(String url) {
-        client = new SensorRegistrationClient(url + "/soap/services/SensorRegistrationService");
+        client = new RegistrationWSClient(url + "/soap/services/SensorRegistrationService");
     }
 
     public void registerSensor(String name, String type, String sensorClass) {

@@ -150,6 +150,12 @@
             </dependency>
 
             <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.2-beta1</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxrs</artifactId>
                 <version>2.1.0.GA</version>

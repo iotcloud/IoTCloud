@@ -21,7 +21,7 @@ public class SensorClient {
     /** Sensor grid url */
     private String sensorUrl;
     /** Client to get information about the sensors */
-    private RegistrationClient client;
+    private RegistrationWSClient client;
     /** Use to send messages and receive messages */
     private Client sensorClient;
 
@@ -38,7 +38,7 @@ public class SensorClient {
     private void init() {
         log.debug("Initializing the Sensor Client for the URL: " + sensorUrl);
 
-        client = new RegistrationClient(sensorUrl + "soap/services/ClientRegistrationService");
+        client = new RegistrationWSClient(sensorUrl + "soap/services/ClientRegistrationService");
     }
 
     public void fixOnSensorWithName(String name) {
@@ -89,7 +89,7 @@ public class SensorClient {
         sensorClient.sendMessage(message);
     }
 
-    public RegistrationClient getClient() {
+    public RegistrationWSClient getClient() {
         return client;
     }
 

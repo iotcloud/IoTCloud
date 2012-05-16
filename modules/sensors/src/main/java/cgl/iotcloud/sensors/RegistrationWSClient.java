@@ -13,12 +13,12 @@ import java.rmi.RemoteException;
 /**
  * A wrapper class for getting sensor information.
  */
-public class SensorRegistrationClient {
-    private static Logger log = LoggerFactory.getLogger(SensorRegistrationClient.class);
+public class RegistrationWSClient {
+    private static Logger log = LoggerFactory.getLogger(RegistrationWSClient.class);
 
     private SensorRegistrationServiceStub stub;
 
-    public SensorRegistrationClient(String url) {
+    public RegistrationWSClient(String url) {
         try {
             stub = new SensorRegistrationServiceStub(url);
         } catch (AxisFault axisFault) {

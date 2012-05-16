@@ -26,12 +26,12 @@ import java.util.Set;
 /**
  * A wrapper class to the WebService client.
  */
-public class RegistrationClient {
-    private static Logger log = LoggerFactory.getLogger(RegistrationClient.class);
+public class RegistrationWSClient {
+    private static Logger log = LoggerFactory.getLogger(RegistrationWSClient.class);
 
     private ClientRegistrationServiceStub stub;
 
-    public RegistrationClient(String url) {
+    public RegistrationWSClient(String url) {
         try {
             stub = new ClientRegistrationServiceStub(url);
         } catch (AxisFault axisFault) {
