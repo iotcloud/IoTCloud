@@ -26,7 +26,7 @@ import java.util.Set;
 /**
  * A wrapper class to the WebService client.
  */
-public class RegistrationWSClient {
+public class RegistrationWSClient implements RegistrationClient {
     private static Logger log = LoggerFactory.getLogger(RegistrationWSClient.class);
 
     private ClientRegistrationServiceStub stub;
