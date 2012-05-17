@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
 
 public class ChatClient {
     public static void main(String[] args) {
-        SensorClient sensorClient = new SensorClient("http://localhost:8081/");
+        SensorClient sensorClient = new SensorClient("http://localhost:8080/");
         InputStreamReader cin = new InputStreamReader(System.in);
         final BufferedReader reader = new BufferedReader(cin);
 

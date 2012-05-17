@@ -9,6 +9,7 @@ import java.util.List;
  * Uses the HTTP API to communicate with the IOT
  */
 public class RegistrationHttpClient implements RegistrationClient {
+    private String hostName =  "";
 
     public List<SCSensor> getSensors() {
         return null;

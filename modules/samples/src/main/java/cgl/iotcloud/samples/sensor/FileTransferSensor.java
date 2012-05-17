@@ -25,14 +25,14 @@ public class FileTransferSensor extends AbstractSensor {
     }
 
     public void start() {
-        SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8081");
+        SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8080");
         adaptor.registerSensor(this);
         adaptor.start();
 
         while (run) {
             if (send) {
                 StreamDataMessage dataMessage = new StreamDataMessage();
-                File file = new File("Testtt.bz2");
+                File file = new File("Test.bz2");
                 try {
                     FileInputStream stream = new FileInputStream(file);
                     dataMessage.setInputStream(stream);
