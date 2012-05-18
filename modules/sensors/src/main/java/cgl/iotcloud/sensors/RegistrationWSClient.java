@@ -44,6 +44,11 @@ public class RegistrationWSClient implements RegistrationClient {
         return null;
     }
 
+    /**
+     * Un-register the sensor from the grid.
+     *
+     * @param id id of the sensor to be un-registered
+     */
     public void unRegisterSensor(String id) {
         try {
             stub.unregisterSensor(id);

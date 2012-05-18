@@ -5,6 +5,10 @@ import cgl.iotcloud.core.sensor.SCSensor;
 
 import java.util.List;
 
+/**
+ * Interface for communicating with the IOTServer. REST and WS are two
+ * implementations that uses this specification.
+ */
 public interface RegistrationClient {
     public List<SCSensor> getSensors();
 

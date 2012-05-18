@@ -27,7 +27,7 @@ public class TomcatServer {
     private Tomcat tomcat = null;
     /** IOTCloud instance */
     private IoTCloud iotCloud = null;
-    /** base diretory */
+    /** base directory */
     private static final String baseDir = ".";
     /** web apps directory */
     private static final String webAppsSir = "webapps";
