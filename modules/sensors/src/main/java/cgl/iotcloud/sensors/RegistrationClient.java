@@ -12,5 +12,10 @@ public interface RegistrationClient {
      */
     public SensorInformation registerSensor(String name, String type);
 
+    /**
+     * Un-register the sensor from the grid.
+     *
+     * @param id id of the sensor to be un-registered
+     */
     public void unRegisterSensor(String id);
 }
