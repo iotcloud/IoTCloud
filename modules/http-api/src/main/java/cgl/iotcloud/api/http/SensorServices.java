@@ -18,15 +18,16 @@ import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.Response.status;
 
-@Path("/sensor")
+@Path(HttpAPIConstants.SENSOR_API)
 public class SensorServices {
     @Context
     private ServletContext servletContext;
 
     @PUT
-    @Path("/register")
+    @Path(HttpAPIConstants.REGISTER)
     @Produces("text/xml")
-    public Response registerSensor(@QueryParam("name") String name, @QueryParam("type") String type) {
+    public Response registerSensor(@QueryParam(HttpAPIConstants.NAME) String name,
+                                   @QueryParam(HttpAPIConstants.TYPE) String type) {
         IoTCloud iotCloud = (IoTCloud) servletContext.getAttribute(
                 Constants.IOT_CLOUD_SERVLET_PROPERTY);
 
@@ -46,9 +47,9 @@ public class SensorServices {
     }
 
     @POST
-    @Path("/unregister")
+    @Path(HttpAPIConstants.UNREGISTER)
     @Produces("text/plain")
-    public Response unRegisterSensor(@QueryParam("id") String id) {
+    public Response unRegisterSensor(@QueryParam(HttpAPIConstants.ID) String id) {
         IoTCloud iotCloud = (IoTCloud) servletContext.getAttribute(
                 Constants.IOT_CLOUD_SERVLET_PROPERTY);
 

@@ -16,13 +16,14 @@ import java.util.List;
 
 import static javax.ws.rs.core.Response.status;
 
-@Path("/client")
+@Path(HttpAPIConstants.CLIENT_API)
 public class ClientServices {
+
     @Context
     private ServletContext servletContext;
 
     @GET
-    @Path("/sensors")
+    @Path(HttpAPIConstants.SENSORS)
     @Produces("text/xml")
     public Response getSensors() {
         IoTCloud iotCloud = (IoTCloud) servletContext.getAttribute(
@@ -39,9 +40,9 @@ public class ClientServices {
     }
 
     @GET
-    @Path("/sensors/{id}")
+    @Path(HttpAPIConstants.SENSORS + "/{" + HttpAPIConstants.ID +"}")
     @Produces("text/xml")
-    public Response getSensor(@PathParam("id") String id) {
+    public Response getSensor(@PathParam(HttpAPIConstants.ID) String id) {
         IoTCloud iotCloud = (IoTCloud) servletContext.getAttribute(
                 Constants.IOT_CLOUD_SERVLET_PROPERTY);
 

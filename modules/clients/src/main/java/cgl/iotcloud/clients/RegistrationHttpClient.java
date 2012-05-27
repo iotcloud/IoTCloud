@@ -1,5 +1,6 @@
 package cgl.iotcloud.clients;
 
+import cgl.iotcloud.api.http.HttpAPIConstants;
 import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.sensor.FilterCriteria;
 import cgl.iotcloud.core.sensor.SCSensor;
@@ -17,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import static cgl.iotcloud.core.sensor.SCSensorUtils.convertToSensor;
+import static cgl.iotcloud.core.sensor.SCSensorUtils.convertToSensors;
+
 /**
  * Uses the HTTP API to communicate with the IOT
  */
@@ -25,33 +29,29 @@ public class RegistrationHttpClient implements RegistrationClient {
 
     private DefaultHttpClient httpClient = new DefaultHttpClient();
 
-    private String hostName =  "";
-
-    private int port;
-
-    private boolean ssl = false;
-
     private HttpHost target = null;
 
     public RegistrationHttpClient(String hostName, int port, boolean ssl) {
-        this.hostName = hostName;
-        this.port = port;
-        this.ssl = ssl;
-
         target = new HttpHost(hostName, port, ssl ? "https" : "http");
     }
 
     public RegistrationHttpClient(int port, String hostName) {
-        this.port = port;
-        this.hostName = hostName;
+        this(hostName, port, false);
     }
 
     public List<SCSensor> getSensors() {
-        return null;
+        String url = HttpAPIConstants.CLIENT_API + HttpAPIConstants.SENSORS;
+
+        InputStream in = getContent(url);
+
+        return convertToSensors(in);
     }
 
     public SCSensor getSensor(String id) {
-        return null;
+        String url = HttpAPIConstants.CLIENT_API + HttpAPIConstants.SENSORS + "/" + id;
+        InputStream in = getContent(url);
+
+        return convertToSensor(in);
     }
 
     public SCSensor getSensor(String type, FilterCriteria criteria) {

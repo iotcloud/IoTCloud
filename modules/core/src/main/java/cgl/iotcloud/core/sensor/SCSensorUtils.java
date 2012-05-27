@@ -11,6 +11,9 @@ import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +49,6 @@ public class SCSensorUtils {
 
     private static Sensor convertToXML(SCSensor sensor) {
         Sensor sensorInfo = Sensor.Factory.newInstance();
-        //SensorInfoDocument.SensorInfo sensorInfo = document.addNewSensorInfo();
 
         sensorInfo.setName(sensor.getName());
         sensorInfo.setType(sensor.getType());
@@ -88,39 +90,90 @@ public class SCSensorUtils {
         return sensorInfo;
     }
 
+    public static List<SCSensor> convertToSensors(InputStream in) {
+        try {
+            AllSensorsDocument document = AllSensorsDocument.Factory.parse(in);
+            List<SCSensor> ss = new ArrayList<SCSensor>();
+
+            Sensor sensors[] = document.getAllSensors().getSensorArray();
+            for (Sensor s : sensors) {
+                ss.add(convertToSensor(s));
+            }
+            return ss;
+        } catch (XmlException e) {
+            handleException("Invalid XML returned", e);
+        } catch (IOException e) {
+            handleException("Error reading the XML from the input stream", e);
+        }
+        return null;
+    }
+
+    public static List<SCSensor> convertToSensors(String string) {
+        try {
+            AllSensorsDocument document = AllSensorsDocument.Factory.parse(string);
+            List<SCSensor> ss = new ArrayList<SCSensor>();
+
+            Sensor sensors[] = document.getAllSensors().getSensorArray();
+            for (Sensor s : sensors) {
+                ss.add(convertToSensor(s));
+            }
+            return ss;
+        } catch (XmlException e) {
+            handleException("Invalid XML returned", e);
+        }
+        return null;
+    }
+
+    public static SCSensor convertToSensor(InputStream in) {
+        try {
+            SensorInfoDocument document = SensorInfoDocument.Factory.parse(in);
+
+            return convertToSensor(document.getSensorInfo());
+        } catch (XmlException e) {
+            handleException("Failed to convert the text to a XML", e);
+        } catch (IOException e) {
+            handleException("Error reading the XML from the input stream", e);
+        }
+        return null;
+    }
+
     public static SCSensor convertToSensor(String string) {
         try {
             SensorInfoDocument document = SensorInfoDocument.Factory.parse(string);
 
-            SCSensor sensor = new SCSensor(document.getSensorInfo().getName());
-
-            sensor.setId(document.getSensorInfo().getId());
-            sensor.setType(document.getSensorInfo().getType());
-
-            cgl.iotcloud.core.Endpoint epr;
-            if (sensor.getType().equals(Constants.SENSOR_TYPE_BLOCK)) {
-                epr = convertToEndpoint(document.getSensorInfo().getDataEndpoint(), 0);
-                sensor.setDataEndpoint(epr);
-            } else if (sensor.getType().equals(Constants.SENSOR_TYPE_STREAMING)) {
-                epr = convertToEndpoint(document.getSensorInfo().getDataEndpoint(), 1);
-                sensor.setDataEndpoint(epr);
-            }
-
-            if (document.getSensorInfo().getControlEndpoint() != null) {
-                epr = convertToEndpoint(document.getSensorInfo().getControlEndpoint(), 0);
-                sensor.setControlEndpoint(epr);
-            }
-
-            if (document.getSensorInfo().getUpdateEndpoint() != null) {
-                epr = convertToEndpoint(document.getSensorInfo().getUpdateEndpoint(), 0);
-                sensor.setControlEndpoint(epr);
-            }
-
-            return sensor;
+            return convertToSensor(document.getSensorInfo());
         } catch (XmlException e) {
             handleException("Failed to convert the text to a XML", e);
         }
         return null;
+    }
+
+    public static SCSensor convertToSensor(Sensor xmlSensor) {
+        SCSensor sensor = new SCSensor(xmlSensor.getName());
+
+        sensor.setId(xmlSensor.getId());
+        sensor.setType(xmlSensor.getType());
+
+        cgl.iotcloud.core.Endpoint epr;
+        if (sensor.getType().equals(Constants.SENSOR_TYPE_BLOCK)) {
+            epr = convertToEndpoint(xmlSensor.getDataEndpoint(), 0);
+            sensor.setDataEndpoint(epr);
+        } else if (sensor.getType().equals(Constants.SENSOR_TYPE_STREAMING)) {
+            epr = convertToEndpoint(xmlSensor.getDataEndpoint(), 1);
+            sensor.setDataEndpoint(epr);
+        }
+
+        if (xmlSensor.getControlEndpoint() != null) {
+            epr = convertToEndpoint(xmlSensor.getControlEndpoint(), 0);
+            sensor.setControlEndpoint(epr);
+        }
+
+        if (xmlSensor.getUpdateEndpoint() != null) {
+            epr = convertToEndpoint(xmlSensor.getUpdateEndpoint(), 0);
+            sensor.setControlEndpoint(epr);
+        }
+
+        return sensor;
     }
 
     private static cgl.iotcloud.core.Endpoint convertToEndpoint(Endpoint endpoint, int type) {
