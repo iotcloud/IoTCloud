@@ -129,7 +129,7 @@
         <dependency>
             <groupId>iotcloud</groupId>
             <artifactId>iotcloud-streaming-server</artifactId>
-            <version>${pom.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

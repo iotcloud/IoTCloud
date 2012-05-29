@@ -50,19 +50,19 @@
         <dependency>
             <groupId>iotcloud</groupId>
             <artifactId>iotcloud-core</artifactId>
-            <version>${pom.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>iotcloud</groupId>
             <artifactId>iotcloud-sensors</artifactId>
-            <version>${pom.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>iotcloud</groupId>
             <artifactId>iotcloud-clients</artifactId>
-            <version>${pom.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

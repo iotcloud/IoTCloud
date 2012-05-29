@@ -36,7 +36,7 @@
                                 <descriptor>src/main/assembly/bin.xml</descriptor>
                                 <!--<descriptor>src/main/assembly/src.xml</descriptor>-->
                             </descriptors>
-                            <finalName>iotcloud-${pom.version}</finalName>
+                            <finalName>iotcloud-${project.version}</finalName>
                         </configuration>
                     </execution>
                 </executions>
@@ -46,35 +46,35 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>iotcloud-core</artifactId>
-			<version>${pom.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>iotcloud-services</artifactId>
             <type>aar</type>
-			<version>${pom.version}</version>
+			<version>${project.version}</version>
 		</dependency>
         <dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>iotcloud-sensors</artifactId>
-			<version>${pom.version}</version>
+			<version>${project.version}</version>
 		</dependency>
         <dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>iotcloud-clients</artifactId>
-			<version>${pom.version}</version>
+			<version>${project.version}</version>
 		</dependency>
         <dependency>
-			<groupId>${pom.groupId}</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>iotcloud-samples</artifactId>
-			<version>${pom.version}</version>
+			<version>${project.version}</version>
 		</dependency>
         <dependency>
-            <groupId>${pom.groupId}</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>iotcloud-http-api</artifactId>
-            <version>${pom.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

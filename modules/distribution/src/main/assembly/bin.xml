@@ -9,32 +9,32 @@
     <fileSets>
         <fileSet>
             <directory>./src/release/bin</directory>
-            <outputDirectory>iotcloud-${pom.version}/bin</outputDirectory>
+            <outputDirectory>iotcloud-${project.version}/bin</outputDirectory>
             <fileMode>755</fileMode>
         </fileSet>
         <fileSet>
             <directory>../../repository</directory>
-            <outputDirectory>iotcloud-${pom.version}/repository</outputDirectory>
+            <outputDirectory>iotcloud-${project.version}/repository</outputDirectory>
         </fileSet>
     </fileSets>
     <files>
         <file>
             <source>./src/release/.empty</source>
-            <outputDirectory>iotcloud-${pom.version}/work/temp</outputDirectory>
+            <outputDirectory>iotcloud-${project.version}/work/temp</outputDirectory>
         </file>
         <file>
             <source>./src/release/log4j.properties</source>
-            <outputDirectory>iotcloud-${pom.version}/lib</outputDirectory>
+            <outputDirectory>iotcloud-${project.version}/lib</outputDirectory>
         </file>
         <file>
             <source>./src/release/.empty</source>
-            <outputDirectory>iotcloud-${pom.version}/webapps/axis2/WEB-INF/services</outputDirectory>
+            <outputDirectory>iotcloud-${project.version}/webapps/axis2/WEB-INF/services</outputDirectory>
         </file>
     </files>
     <dependencySets>
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
-            <outputDirectory>iotcloud-${pom.version}/lib</outputDirectory>
+            <outputDirectory>iotcloud-${project.version}/lib</outputDirectory>
             <excludes>
                 <exclude>org.apache.axis2:axis2-webapp:war</exclude>
                 <exclude>iotcloud:iotcloud-services:aar</exclude>
@@ -44,28 +44,28 @@
         </dependencySet>
         <!--<dependencySet>-->
             <!--<useProjectArtifact>false</useProjectArtifact>-->
-            <!--<outputDirectory>iotcloud-${pom.version}/webapps</outputDirectory>-->
+            <!--<outputDirectory>iotcloud-${project.version}/webapps</outputDirectory>-->
             <!--<includes>-->
                 <!--<include>org.apache.axis2:axis2-webapp:war</include>-->
             <!--</includes>-->
         <!--</dependencySet>-->
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
-            <outputDirectory>iotcloud-${pom.version}/repository/axis2/services</outputDirectory>
+            <outputDirectory>iotcloud-${project.version}/repository/axis2/services</outputDirectory>
             <includes>
                 <include>iotcloud:iotcloud-services:aar</include>
             </includes>
         </dependencySet>
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
-            <outputDirectory>iotcloud-${pom.version}/webapps</outputDirectory>
+            <outputDirectory>iotcloud-${project.version}/webapps</outputDirectory>
             <includes>
                 <include>iotcloud:iotcloud-http-api:war</include>
             </includes>
         </dependencySet>
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
-            <outputDirectory>iotcloud-${pom.version}/repository/axis2/modules</outputDirectory>
+            <outputDirectory>iotcloud-${project.version}/repository/axis2/modules</outputDirectory>
             <includes>
                 <include>org.apache.axis2:addressing:mar</include>
             </includes>
