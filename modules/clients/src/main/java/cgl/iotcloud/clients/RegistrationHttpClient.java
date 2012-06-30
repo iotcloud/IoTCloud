@@ -39,6 +39,11 @@ public class RegistrationHttpClient implements RegistrationClient {
         this(hostName, port, false);
     }
 
+    /**
+     * Get the list of sensors in the IOTCloud
+     *
+     * @return list of sensors
+     */
     public List<SCSensor> getSensors() {
         String url = HttpAPIConstants.CLIENT_API + HttpAPIConstants.SENSORS;
 
@@ -47,6 +52,12 @@ public class RegistrationHttpClient implements RegistrationClient {
         return convertToSensors(in);
     }
 
+    /**
+     * Get the sensor by the id
+     *
+     * @param id if of the sensor id of the sensor
+     * @return the Sensor with the given id
+     */
     public SCSensor getSensor(String id) {
         String url = HttpAPIConstants.CLIENT_API + HttpAPIConstants.SENSORS + "/" + id;
         InputStream in = getContent(url);
@@ -62,11 +73,14 @@ public class RegistrationHttpClient implements RegistrationClient {
         return null;
     }
 
+    /**
+     * Shutdown this client. This method should be called after using this client.
+     */
     public void shutdown() {
         httpClient.getConnectionManager().shutdown();
     }
 
-    public InputStream getContent(String url) {
+    private InputStream getContent(String url) {
         try {
             HttpGet req = new HttpGet("/");
 
