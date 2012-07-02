@@ -6,7 +6,6 @@ import cgl.iotcloud.core.sensor.Sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class SensorAdaptor {
     private static Logger log = LoggerFactory.getLogger(RegistrationWSClient.class);
 
@@ -14,19 +13,20 @@ public class SensorAdaptor {
 
     private RegistrationClient client = null;
 
-    private boolean isRest = false;
-    
     public SensorAdaptor(String url) {
         client = new RegistrationWSClient(url + "/soap/services/SensorRegistrationService");
     }
 
     public SensorAdaptor(String host, int port, boolean rest) {
-        isRest = rest;
-        if (isRest) {
+        if (rest) {
             client = new RegistrationHttpClient(host, port, false);
         } else {
             client = new RegistrationWSClient("http://" + host + ":" + port);
         }
+    }
+
+    public SensorAdaptor(String host, int port) {
+        this(host, port, false);
     }
 
     public void registerSensor(String name, String type, String sensorClass) {                
