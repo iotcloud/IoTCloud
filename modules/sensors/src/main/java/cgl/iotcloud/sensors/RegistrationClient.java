@@ -1,21 +1,19 @@
 package cgl.iotcloud.sensors;
 
-import cgl.iotcloud.gen.services.xsd.SensorInformation;
+import cgl.iotcloud.core.sensor.Sensor;
 
 public interface RegistrationClient {
     /**
      * Register the sensor to the grid
      *
-     * @param name name of the sensor
-     * @param type type of the sensor
-     * @return creates a sensor adaptor
+     * @param sensor the sensor to register
      */
-    public SensorInformation registerSensor(String name, String type);
+    public void registerSensor(Sensor sensor);
 
     /**
      * Un-register the sensor from the grid.
      *
-     * @param id id of the sensor to be un-registered
+     * @param sensor sensor to un-register
      */
-    public void unRegisterSensor(String id);
+    public void unRegisterSensor(Sensor sensor);
 }

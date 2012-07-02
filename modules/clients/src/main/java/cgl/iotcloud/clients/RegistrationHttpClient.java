@@ -82,7 +82,7 @@ public class RegistrationHttpClient implements RegistrationClient {
 
     private InputStream getContent(String url) {
         try {
-            HttpGet req = new HttpGet("/");
+            HttpGet req = new HttpGet(url);
 
             HttpResponse rsp = httpClient.execute(target, req);
             HttpEntity entity = rsp.getEntity();

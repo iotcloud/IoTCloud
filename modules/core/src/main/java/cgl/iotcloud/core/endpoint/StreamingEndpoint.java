@@ -5,6 +5,9 @@ import cgl.iotcloud.core.Endpoint;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Streaming endpoint.
+ */
 public class StreamingEndpoint implements Endpoint {
     private String address;
 

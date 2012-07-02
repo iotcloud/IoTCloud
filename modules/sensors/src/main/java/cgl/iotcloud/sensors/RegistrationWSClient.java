@@ -1,14 +1,20 @@
 package cgl.iotcloud.sensors;
 
 import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.endpoint.JMSEndpoint;
+import cgl.iotcloud.core.sensor.Sensor;
 import cgl.iotcloud.gen.clients.SensorRegistrationServiceStub;
 import cgl.iotcloud.gen.services.sensor.xsd.SensorRegistrationInformation;
+import cgl.iotcloud.gen.services.xsd.Endpoint;
+import cgl.iotcloud.gen.services.xsd.Property;
 import cgl.iotcloud.gen.services.xsd.SensorInformation;
 import org.apache.axis2.AxisFault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A wrapper class for getting sensor information.
@@ -66,8 +72,94 @@ public class RegistrationWSClient implements RegistrationClient {
         return info;
     }
 
+    private void populateSensor(Sensor sensor, SensorInformation i) {
+        sensor.setId(i.getId());
+        sensor.setType(i.getType());
+
+        Endpoint e = i.getControlEndpoint();
+        if (e == null) {
+            handleException("Required endpoint control endpoint cannot be found");
+            return;
+        }
+        cgl.iotcloud.core.Endpoint controlEpr = new JMSEndpoint();
+        controlEpr.setAddress(e.getAddress());
+
+        Property props[] = e.getProperties();
+        Map<String, String> propsMap = new HashMap<String, String>();
+        for (Property p : props) {
+            propsMap.put(p.getName(), p.getValue());
+        }
+        controlEpr.setProperties(propsMap);
+        sensor.setControlEndpoint(controlEpr);
+
+        e = i.getDataEndpoint();
+        if (e == null) {
+            handleException("Required endpoint data endpoint cannot be found");
+            return;
+        }
+        cgl.iotcloud.core.Endpoint dataEpr = new JMSEndpoint();
+        dataEpr.setAddress(e.getAddress());
+
+        props = e.getProperties();
+        propsMap = new HashMap<String, String>();
+        for (Property p : props) {
+            propsMap.put(p.getName(), p.getValue());
+        }
+        dataEpr.setProperties(propsMap);
+        sensor.setDataEndpoint(dataEpr);
+
+        e = i.getUpdateEndpoint();
+        if (e == null) {
+            handleException("Required endpoint update endpoint cannot be found");
+            return;
+        }
+        cgl.iotcloud.core.Endpoint updateEpr = new JMSEndpoint();
+        updateEpr.setAddress(e.getAddress());
+
+        props = e.getProperties();
+        propsMap = new HashMap<String, String>();
+        for (Property p : props) {
+            propsMap.put(p.getName(), p.getValue());
+        }
+        updateEpr.setProperties(propsMap);
+        sensor.setUpdateEndpoint(updateEpr);
+    }
+
     protected static void handleException(String s, Exception e) {
         log.error(s, e);
         throw new SCException(s, e);
+    }
+
+    protected static void handleException(String s) {
+        log.error(s);
+        throw new SCException(s);
+    }
+
+    @Override
+    public void registerSensor(Sensor sensor) {
+        try {
+            SensorInformation info = stub.registerSensor(
+                    createSensorInformation(sensor.getName(), sensor.getType()));
+
+            if (info != null) {
+                populateSensor(sensor, info);
+            } else {
+                handleException("Failed to invoke the method registerSensor in service: " +
+                        "SensorRegistrationService");
+            }
+        } catch (RemoteException e) {
+            handleException("Failed to invoke the method registerSensor in service: " +
+                    "SensorRegistrationService", e);
+        }
+    }
+
+    @Override
+    public void unRegisterSensor(Sensor sensor) {
+        try {
+            stub.unregisterSensor(sensor.getId());
+        } catch (RemoteException e) {
+            handleException("Failed to un-register the sensor with the id: " +
+                    sensor.getId() + " and name: " + sensor.getName());
+        }
     }
 }

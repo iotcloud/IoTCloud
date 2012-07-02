@@ -1,16 +1,29 @@
 package cgl.iotcloud.sensors;
 
-import cgl.iotcloud.gen.services.xsd.SensorInformation;
+import cgl.iotcloud.core.sensor.Sensor;
+import org.apache.http.HttpHost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * HTTP based implementation for retrieving information
  */
 public class RegistrationHttpClient implements RegistrationClient {
-    public SensorInformation registerSensor(String name, String type) {
-        return null;
+
+    private Logger log = LoggerFactory.getLogger(RegistrationHttpClient.class);
+
+    private DefaultHttpClient httpClient = new DefaultHttpClient();
+
+    private HttpHost target = null;
+
+    @Override
+    public void registerSensor(Sensor sensor) {
+
     }
 
-    public void unRegisterSensor(String id) {
+    @Override
+    public void unRegisterSensor(Sensor sensor) {
 
     }
 }
