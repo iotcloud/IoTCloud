@@ -118,5 +118,10 @@
             <artifactId>httpclient</artifactId>
             <version>4.2-beta1</version>
         </dependency>
+        <dependency>
+            <groupId>iotcloud</groupId>
+            <artifactId>iotcloud-http-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

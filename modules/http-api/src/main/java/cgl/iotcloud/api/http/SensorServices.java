@@ -23,7 +23,7 @@ public class SensorServices {
     @Context
     private ServletContext servletContext;
 
-    @PUT
+    @POST
     @Path(HttpAPIConstants.REGISTER)
     @Produces("text/xml")
     public Response registerSensor(@QueryParam(HttpAPIConstants.NAME) String name,
