@@ -21,7 +21,7 @@ public class SensorClient {
     /** Sensor grid url */
     private String sensorUrl;
     /** Client to get information about the sensors */
-    private RegistrationWSClient client;
+    private RegistrationClient client;
     /** Use to send messages and receive messages */
     private Client sensorClient;
 
@@ -29,6 +29,18 @@ public class SensorClient {
         this.sensorUrl = sensorUrl;
 
         init();
+    }
+
+    public SensorClient(String host, int port) {
+        this(host, port, false);
+    }
+
+    public SensorClient(String host, int port, boolean isRest) {
+        if (isRest) {
+            client = new RegistrationHttpClient(host, port, false);
+        } else {
+            client = new RegistrationWSClient("http://" + host + ":" + port);
+        }
     }
 
     /**
@@ -74,8 +86,6 @@ public class SensorClient {
         register(sensor.getId());
     }
 
-
-
     public void setUpdateListener(UpdateMessageHandler handler) {
         sensorClient.setUpdateMessageHandler(new UpdateMessageReceiver(handler));
     }
@@ -89,7 +99,7 @@ public class SensorClient {
         sensorClient.sendMessage(message);
     }
 
-    public RegistrationWSClient getClient() {
+    public RegistrationClient getClient() {
         return client;
     }
 
