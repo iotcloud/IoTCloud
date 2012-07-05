@@ -2,14 +2,17 @@ package cgl.iotcloud.core.message.jms;
 
 import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.message.SensorMessage;
+import cgl.iotcloud.core.message.data.ObjectDataMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import java.io.Serializable;
 
 /**
  *
@@ -27,6 +30,17 @@ public class JMSDataMessageFactory implements JMSMessageFactory {
             }
 
             return txtMessage;
+        } else if (message instanceof ObjectMessage) {
+            try {
+                Serializable o = ((ObjectMessage) message).getObject();
+                if (o instanceof ObjectDataMessage) {
+                    return (ObjectDataMessage) o;
+                } else {
+                    handleException("The message in not a ObjectDataMessage");
+                }
+            } catch (JMSException e) {
+                handleException("Error retrieving the message", e);
+            }
         }
         return null;
     }
@@ -37,10 +51,21 @@ public class JMSDataMessageFactory implements JMSMessageFactory {
             try {
                 txtMessage = session.createTextMessage();
                 txtMessage.setText(((TextDataMessage) message).getText());
+
+                return txtMessage;
             } catch (JMSException e) {
                 handleException("Failed to create text message from the session " + session, e);
             }
-            return txtMessage;
+        } else if (message instanceof ObjectDataMessage) {
+            try {
+                ObjectMessage objectMessage = session.createObjectMessage();
+                Serializable s = (Serializable) message;
+                objectMessage.setObject(s);
+
+                return objectMessage;
+            } catch (JMSException e) {
+                handleException("Failed to create the object message with the JMS session: " + session, e);
+            }
         }
         return null;
     }
@@ -48,5 +73,10 @@ public class JMSDataMessageFactory implements JMSMessageFactory {
     private static void handleException(String s, Exception e) {
         log.error(s, e);
         throw new SCException(s, e);
+    }
+
+    private static void handleException(String s) {
+        log.error(s);
+        throw new SCException(s);
     }
 }

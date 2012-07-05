@@ -1,8 +1,10 @@
 package cgl.iotcloud.core.message.data;
 
+import cgl.iotcloud.core.message.DataMessage;
+
 import java.io.Serializable;
 
-public abstract class ObjectDataMessage implements Serializable {
+public abstract class ObjectDataMessage implements Serializable, DataMessage {
     private static final long serialVersionUID = 1L;
     private long timestamp = 0;
 

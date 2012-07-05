@@ -62,7 +62,6 @@ public class JMSSender implements Sender {
     }
 
     public void destroy() {
-
         state = State.DESTROYED;
     }
 
