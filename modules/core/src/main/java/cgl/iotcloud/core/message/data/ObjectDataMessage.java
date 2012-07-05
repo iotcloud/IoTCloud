@@ -19,4 +19,13 @@ public abstract class ObjectDataMessage implements Serializable, DataMessage {
     public long getTimestamp() {
         return timestamp;
     }
+
+    @Override
+    public String getId() {
+        return null;
+    }
+
+    @Override
+    public void setId(String id) {
+    }
 }
