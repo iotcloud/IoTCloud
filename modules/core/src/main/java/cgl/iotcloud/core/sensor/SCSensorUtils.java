@@ -170,7 +170,7 @@ public class SCSensorUtils {
 
         if (xmlSensor.getUpdateEndpoint() != null) {
             epr = convertToEndpoint(xmlSensor.getUpdateEndpoint(), 0);
-            sensor.setControlEndpoint(epr);
+            sensor.setUpdateEndpoint(epr);
         }
 
         return sensor;
