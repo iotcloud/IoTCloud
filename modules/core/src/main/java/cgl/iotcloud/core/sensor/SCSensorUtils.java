@@ -79,7 +79,7 @@ public class SCSensorUtils {
         }
 
         epr = sensor.getUpdateEndpoint();
-        dataEndpoint.setAddress(epr.getAddress());
+        updateEndpoint.setAddress(epr.getAddress());
         properties = updateEndpoint.addNewProperties();
 
         for (Map.Entry<String, String> e : epr.getProperties().entrySet()) {
