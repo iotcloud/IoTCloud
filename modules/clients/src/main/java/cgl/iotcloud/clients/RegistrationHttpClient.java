@@ -45,7 +45,7 @@ public class RegistrationHttpClient implements RegistrationClient {
      * @return list of sensors
      */
     public List<SCSensor> getSensors() {
-        String url = HttpAPIConstants.CLIENT_API + HttpAPIConstants.SENSORS;
+        String url = HttpAPIConstants.REST_APT + HttpAPIConstants.CLIENT_API + HttpAPIConstants.SENSORS;
 
         InputStream in = getContent(url);
 
@@ -59,7 +59,7 @@ public class RegistrationHttpClient implements RegistrationClient {
      * @return the Sensor with the given id
      */
     public SCSensor getSensor(String id) {
-        String url = HttpAPIConstants.CLIENT_API + HttpAPIConstants.SENSORS + "/" + id;
+        String url = HttpAPIConstants.REST_APT + HttpAPIConstants.CLIENT_API + HttpAPIConstants.SENSORS + "/" + id;
         InputStream in = getContent(url);
 
         return convertToSensor(in);

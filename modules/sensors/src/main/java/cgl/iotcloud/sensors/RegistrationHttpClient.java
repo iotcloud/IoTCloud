@@ -39,8 +39,8 @@ public class RegistrationHttpClient implements RegistrationClient {
 
     @Override
     public void registerSensor(Sensor sensor) {
-        String url = HttpAPIConstants.SENSOR_API + HttpAPIConstants.REGISTER + 
-                "?name=" + sensor.getName() + "type=" + sensor.getType() ;
+        String url = HttpAPIConstants.REST_APT + HttpAPIConstants.SENSOR_API + HttpAPIConstants.REGISTER +
+                "?name=" + sensor.getName() + "&type=" + sensor.getType() ;
 
         InputStream in = getContent(url);
 
@@ -50,7 +50,7 @@ public class RegistrationHttpClient implements RegistrationClient {
 
     @Override
     public void unRegisterSensor(Sensor sensor) {
-        String url = HttpAPIConstants.SENSOR_API + HttpAPIConstants.UNREGISTER +
+        String url = HttpAPIConstants.REST_APT + HttpAPIConstants.SENSOR_API + HttpAPIConstants.UNREGISTER +
                 "?" + HttpAPIConstants.ID + "=" + sensor.getId();
 
         HttpPost req = new HttpPost(url);
