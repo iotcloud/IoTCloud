@@ -36,7 +36,7 @@
                                 <descriptor>src/main/assembly/bin.xml</descriptor>
                                 <!--<descriptor>src/main/assembly/src.xml</descriptor>-->
                             </descriptors>
-                            <finalName>iotcloud-${project.version}</finalName>
+                            <finalName>iotcloud-${pom.version}</finalName>
                         </configuration>
                     </execution>
                 </executions>

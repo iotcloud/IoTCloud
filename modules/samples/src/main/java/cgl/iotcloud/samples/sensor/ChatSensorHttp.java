@@ -10,8 +10,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class ChatSensor extends AbstractSensor {
-    public ChatSensor(String type, String name) {
+public class ChatSensorHttp extends AbstractSensor {
+    public ChatSensorHttp(String type, String name) {
         super(type, name);
     }
 
@@ -23,9 +23,9 @@ public class ChatSensor extends AbstractSensor {
     }
 
     public static void main(String[] args) {
-        SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8080");
+        SensorAdaptor adaptor = new SensorAdaptor("localhost", 8080, true);
 
-        ChatSensor sensor = new ChatSensor(Constants.SENSOR_TYPE_BLOCK, "chat-sensor");
+        ChatSensorHttp sensor = new ChatSensorHttp(Constants.SENSOR_TYPE_BLOCK, "chat-sensor");
         adaptor.registerSensor(sensor);
 
         adaptor.start();
