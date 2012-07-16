@@ -14,6 +14,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import java.util.Map;
 
 /**
  * Create a update message from the text.
@@ -75,7 +76,34 @@ public class MessageToUpdateFactory implements JMSMessageFactory {
     }
 
     @Override
-    public Message create(SensorMessage message, Session session) {
+    public Message create(SensorMessage m, Session session) {
+        if (m instanceof UpdateMessage) {
+            UpdateMessage message = (UpdateMessage) m;
+            UpdateDocument document = UpdateDocument.Factory.newInstance();
+            UpdateDocument.Update update = document.addNewUpdate();
+            Sensor sensor = update.addNewSensor();
+            sensor.setId(message.getId());
+
+            for (Map.Entry<String, String> e : message.getAllUpdates().entrySet()) {
+                com.iotcloud.message.xsd.Param param = sensor.addNewParam();
+                param.setName(e.getKey());
+                param.setValue(e.getValue());
+            }
+
+            String text = document.toString();
+            if (log.isDebugEnabled()) {
+                log.debug("Creating sensor update message for sensor ID: " + message.getId() + " " + text);
+            }
+
+            try {
+                TextMessage textMessage = session.createTextMessage();
+
+                textMessage.setText(text);
+                return  textMessage;
+            } catch (JMSException e) {
+                handleException("Failed to create a text message with the session" + session, e);
+            }
+        }        
         return null;
     }
 }
