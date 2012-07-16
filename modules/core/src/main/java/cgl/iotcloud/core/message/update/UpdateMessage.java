@@ -1,9 +1,11 @@
 package cgl.iotcloud.core.message.update;
 
+import cgl.iotcloud.core.message.SensorMessage;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class UpdateMessage {
+public class UpdateMessage implements SensorMessage {
     private String sensorId;
 
     private Map<String, String> updates = new HashMap<String, String>();
@@ -12,7 +14,7 @@ public class UpdateMessage {
         this.sensorId = sensorId;
     }
 
-    public String getSensorId() {
+    public String getId() {
         return sensorId;
     }
 
@@ -30,5 +32,10 @@ public class UpdateMessage {
 
     public Map<String, String> getAllUpdates() {
         return updates;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.sensorId = id;
     }
 }

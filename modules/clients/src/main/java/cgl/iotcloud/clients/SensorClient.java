@@ -75,7 +75,7 @@ public class SensorClient {
     }
 
     public void registerWithName(String name) {
-        FilterCriteria criteria = new FilterCriteria();
+        FilterCriteria criteria = new FilterCriteria();                                  mama porata kiyannam kata karanna kiyala..
         criteria.addProperty("type", "name");
         criteria.addProperty("name", name);
         SCSensor sensor = client.getSensor("name", criteria);

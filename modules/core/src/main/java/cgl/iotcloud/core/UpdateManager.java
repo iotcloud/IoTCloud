@@ -41,9 +41,13 @@ public class UpdateManager implements ManagedLifeCycle {
     /** Map of senders to send update messages */
     private Map<String, JMSSender> senders = new HashMap<String, JMSSender>();
 
+    private HeartBeatListener heartBeatListener;
+
     public UpdateManager(SCConfiguration configuration, SensorCatalog catalog) {
         this.configuration = configuration;
         this.catalog = catalog;
+
+        this.heartBeatListener = new HeartBeatListener(catalog);
     }
 
     public Endpoint getReceivingEndpoint() {
@@ -90,6 +94,9 @@ public class UpdateManager implements ManagedLifeCycle {
 
     private class UpdateReceiver implements MessageHandler {
         public void onMessage(SensorMessage message) {
+            // check weather it is a heartbeat message
+
+
             sendToSensor(message);
         }
     }

@@ -16,7 +16,7 @@ public class UpdateToMessageFactory {
         UpdateDocument document = UpdateDocument.Factory.newInstance();
         UpdateDocument.Update update = document.addNewUpdate();
         Sensor sensor = update.addNewSensor();
-        sensor.setId(message.getSensorId());
+        sensor.setId(message.getId());
 
         for (Map.Entry<String, String> e : message.getAllUpdates().entrySet()) {
             com.iotcloud.message.xsd.Param param = sensor.addNewParam();
@@ -26,7 +26,7 @@ public class UpdateToMessageFactory {
 
         String text = document.toString();
         if (log.isDebugEnabled()) {
-            log.debug("Creating sensor update message for sensor ID: " + message.getSensorId() + " " + text);
+            log.debug("Creating sensor update message for sensor ID: " + message.getId() + " " + text);
         }
         txtMsg.setText(text);
 
