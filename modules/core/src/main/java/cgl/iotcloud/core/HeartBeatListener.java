@@ -27,7 +27,9 @@ public class HeartBeatListener implements ManagedLifeCycle {
 
     private final ScheduledExecutorService fScheduler;
 
-    private List<List<SCSensor>> heartBeatListener = new ArrayList<List<SCSensor>>();
+    private List<List<HeartBeat>> faultySensors = new ArrayList<List<HeartBeat>>();
+    
+    private List<HeartBeat> aliveSensors = new ArrayList<HeartBeat>();
 
     public HeartBeatListener(SensorCatalog catalog) {
         this.catalog = catalog;
@@ -39,25 +41,109 @@ public class HeartBeatListener implements ManagedLifeCycle {
 
     public boolean onUpdateMessage(SensorMessage message) {
         if (message instanceof UpdateMessage) {
+            UpdateMessage updateMessage = (UpdateMessage) message;
 
+            String status = updateMessage.getUpdate(Constants.Updates.STATUS);
+            if (status.equalsIgnoreCase(Constants.Updates.ALIVE)) {
+                String id = updateMessage.getId();
+
+                
+                
+                return true;
+            }
         }
         return false;
     }
 
     @Override
     public void init() {
+        // put all the sensors to the fixed queue
+        for (SCSensor scSensor : catalog.getSensors()) {
+            aliveSensors.add(new HeartBeat(System.currentTimeMillis(), scSensor.getId()));
+        }
+        
         fScheduler.scheduleWithFixedDelay(task, 1000, 10000, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Remove a sensor from the system so that we no longer keep track of it
+     *
+     * @param scSensor sensor to be removed
+     */
+    public void removeSensor(SCSensor scSensor) {
+        HeartBeat h = new HeartBeat(0, scSensor.getId());
+        aliveSensors.remove(h);
+
+        for (List<HeartBeat> list : faultySensors) {
+            list.remove(h);
+        }
+    }
+
+    /**
+     * Add a sensor so that we can keep track of it
+     *
+     * @param scSensor keep track of the sensor
+     */
+    public void addSensor(SCSensor scSensor) {
+        aliveSensors.add(new HeartBeat(System.currentTimeMillis(), scSensor.getId()));
     }
 
     @Override
     public void destroy() {
-
+        if (!fScheduler.isShutdown()) {
+            fScheduler.shutdown();
+        }
+    }
+    
+    private void sensorAlive(String id) {
+        HeartBeat heartBeat = new HeartBeat(0, id);
+        for (List<HeartBeat> sensorList : faultySensors) {
+            if (sensorList.contains(heartBeat)) {
+                // remove the sensor from the list
+                sensorList.remove(heartBeat);
+            }
+        }
     }
 
     private class CleanupTask implements Runnable {
         @Override
         public void run() {
 
+        }
+    }
+    
+    private class HeartBeat {
+        private String id;
+        
+        private long time;
+
+        private HeartBeat(long time, String id) {
+            this.time = time;
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public long getTime() {
+            return time;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            HeartBeat heartBeat = (HeartBeat) o;
+
+            return !(id != null ? !id.equals(heartBeat.id) : heartBeat.id != null);
+
+        }
+
+        @Override
+        public int hashCode() {
+            return id != null ? id.hashCode() : 0;
         }
     }
     
