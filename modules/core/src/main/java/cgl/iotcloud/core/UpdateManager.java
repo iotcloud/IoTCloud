@@ -79,6 +79,8 @@ public class UpdateManager implements ManagedLifeCycle {
 
         listener.init();
         listener.start();
+
+        heartBeatListener.init();
     }
 
     /**
@@ -90,6 +92,8 @@ public class UpdateManager implements ManagedLifeCycle {
 
         listener.stop();
         listener.destroy();
+
+        heartBeatListener.destroy();
     }
 
     private class UpdateReceiver implements MessageHandler {
