@@ -31,18 +31,21 @@ goto end
 rem check the SCG_HOME environment variable
 if not "%SCG_HOME%" == "" goto gotHome
 set SCG_HOME=%CURRENT_DIR%/..
-if exist "%SCG_HOME%\bin\ciphertool.bat" goto okHome
+
+if exist "%SCG_HOME%\bin\iotserver.bat" goto okHome
 
 rem guess the home. Jump one directory up to check if that is the home
 cd ..
 set SCG_HOME=%cd%/..
 cd %SCG_HOME%
 
+echo %SCG_HOME%
+
 :gotHome
-if exist "%SCG_HOME%\bin\scserver.bat" goto okHome
+if exist "%SCG_HOME%\bin\iotserver.bat" goto okHome
 
 rem set SCG_HOME=%~dp0..
-if exist "%SCG_HOME%\bin\scserver.bat" goto okHome
+if exist "%SCG_HOME%\bin\iotserver.bat" goto okHome
 
 echo The SCG_HOME environment variable is not defined correctly
 echo This environment variable is needed to run this program
