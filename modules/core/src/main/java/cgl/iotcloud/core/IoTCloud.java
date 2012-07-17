@@ -56,7 +56,7 @@ public class IoTCloud {
 
         sensorCatalog = new SensorCatalog();
         clientCatalog = new ClientCatalog();
-        updateManager = new UpdateManager(configuration, sensorCatalog);
+        updateManager = new UpdateManager(configuration, sensorCatalog, this);
         updateManager.init();
     }
 

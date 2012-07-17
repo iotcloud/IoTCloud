@@ -43,11 +43,11 @@ public class UpdateManager implements ManagedLifeCycle {
 
     private HeartBeatListener heartBeatListener;
 
-    public UpdateManager(SCConfiguration configuration, SensorCatalog catalog) {
+    public UpdateManager(SCConfiguration configuration, SensorCatalog catalog, IoTCloud ioTCloud) {
         this.configuration = configuration;
         this.catalog = catalog;
 
-        this.heartBeatListener = new HeartBeatListener(catalog);
+        this.heartBeatListener = new HeartBeatListener(catalog, ioTCloud);
     }
 
     public Endpoint getReceivingEndpoint() {

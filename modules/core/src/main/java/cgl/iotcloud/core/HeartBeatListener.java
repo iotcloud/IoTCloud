@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -25,18 +26,36 @@ public class HeartBeatListener implements ManagedLifeCycle {
     /** A task to un-register the sensors that we haven't heard from a while */
     private CleanupTask task;
 
+    private final long maxFaultyTime;
+
+    private final long factor;
+
     private final ScheduledExecutorService fScheduler;
 
-    private List<List<HeartBeat>> faultySensors = new ArrayList<List<HeartBeat>>();
+    private final List<HeartBeat> faultySensors = new ArrayList<HeartBeat>();
     
-    private List<HeartBeat> aliveSensors = new ArrayList<HeartBeat>();
+    private final List<HeartBeat> aliveSensors = new ArrayList<HeartBeat>();
 
-    public HeartBeatListener(SensorCatalog catalog) {
+    private final IoTCloud ioTCloud;
+
+    public HeartBeatListener(SensorCatalog catalog, IoTCloud ioTCloud) {
+        this.maxFaultyTime = 120000;
+        this.factor = 2;
+        this.ioTCloud = ioTCloud;
         this.catalog = catalog;
-        
-        task = new CleanupTask();
 
         fScheduler = Executors.newScheduledThreadPool(1);
+        task = new CleanupTask();
+    }
+
+    public HeartBeatListener(SensorCatalog catalog, IoTCloud ioTCloud, long maxFaultyTime, long factor) {
+        this.maxFaultyTime = maxFaultyTime;
+        this.factor = factor;
+        this.ioTCloud = ioTCloud;
+        this.catalog = catalog;
+
+        fScheduler = Executors.newScheduledThreadPool(1);
+        task = new CleanupTask();
     }
 
     public boolean onUpdateMessage(SensorMessage message) {
@@ -46,8 +65,11 @@ public class HeartBeatListener implements ManagedLifeCycle {
             String status = updateMessage.getUpdate(Constants.Updates.STATUS);
             if (status.equalsIgnoreCase(Constants.Updates.ALIVE)) {
                 String id = updateMessage.getId();
-
-                
+                if (log.isDebugEnabled()) {
+                    log.debug("Received a Heartbeat from the sensor ID: " + id);
+                }
+                // mark the sensor as alive
+                sensorAlive(id);
                 
                 return true;
             }
@@ -74,9 +96,7 @@ public class HeartBeatListener implements ManagedLifeCycle {
         HeartBeat h = new HeartBeat(0, scSensor.getId());
         aliveSensors.remove(h);
 
-        for (List<HeartBeat> list : faultySensors) {
-            list.remove(h);
-        }
+        faultySensors.remove(h);
     }
 
     /**
@@ -96,19 +116,71 @@ public class HeartBeatListener implements ManagedLifeCycle {
     }
     
     private void sensorAlive(String id) {
-        HeartBeat heartBeat = new HeartBeat(0, id);
-        for (List<HeartBeat> sensorList : faultySensors) {
-            if (sensorList.contains(heartBeat)) {
-                // remove the sensor from the list
-                sensorList.remove(heartBeat);
+        HeartBeat heartBeat = new HeartBeat(System.currentTimeMillis(), id);
+        boolean found = false;
+
+        // first see weather the sensor is in alive list
+        for (HeartBeat h : aliveSensors) {
+            if (h.equals(heartBeat)) {
+                h.setTime(System.currentTimeMillis());
+                found = true;
             }
+        }
+
+        // if not in alive list it can be in the faulty sensors list
+        if (!found) {
+
+            if (faultySensors.contains(heartBeat)) {
+                // remove the sensor from the list
+                faultySensors.remove(heartBeat);
+
+                aliveSensors.add(heartBeat);
+                found = true;
+            }
+        }
+
+        // if not found in any of the lists, add it to the alive list
+        if (!found) {
+            aliveSensors.add(new HeartBeat(System.currentTimeMillis(), id));
         }
     }
 
     private class CleanupTask implements Runnable {
         @Override
         public void run() {
+            Iterator<HeartBeat> it = aliveSensors.iterator();
 
+            while (it.hasNext()) {
+                HeartBeat h = it.next();
+                long duration = System.currentTimeMillis() - h.getTime();
+                // we have the time limit exceeded
+                if (duration > h.getNextFaultyTime()) {
+                    // put the sensor as it is to the faulty list
+                    it.remove();
+
+                    h.setNextFaultyTime(h.getNextFaultyTime() * factor);
+                    faultySensors.add(h);
+
+                }
+            }
+
+            Iterator<HeartBeat> itf = faultySensors.iterator();
+            while (itf.hasNext()) {
+                HeartBeat h = itf.next();
+
+                long duration = System.currentTimeMillis() - h.getTime();
+                // we have the time limit exceeded
+                if (duration > h.getNextFaultyTime() && duration < maxFaultyTime) {
+                    h.setNextFaultyTime(h.getNextFaultyTime() * factor);
+
+                    faultySensors.add(h);
+                } else if (duration > h.getNextFaultyTime() && duration > maxFaultyTime) {
+                    // remove the sensor from our lists
+                    itf.remove();
+                    // un-register the sensor
+                    ioTCloud.unRegisterSensor(h.getId());
+                }
+            }
         }
     }
     
@@ -116,6 +188,8 @@ public class HeartBeatListener implements ManagedLifeCycle {
         private String id;
         
         private long time;
+
+        private long nextFaultyTime = 30000;
 
         private HeartBeat(long time, String id) {
             this.time = time;
@@ -128,6 +202,18 @@ public class HeartBeatListener implements ManagedLifeCycle {
 
         public long getTime() {
             return time;
+        }
+
+        public void setTime(long time) {
+            this.time = time;
+        }
+
+        public long getNextFaultyTime() {
+            return nextFaultyTime;
+        }
+
+        public void setNextFaultyTime(long nextFaultyTime) {
+            this.nextFaultyTime = nextFaultyTime;
         }
 
         @Override
