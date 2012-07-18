@@ -19,6 +19,7 @@ public class GPSSerialPortHandler implements SerialPortEventListener,GPSControll
 	private static GPSSerialPortHandler serialPortHandler;
 	private Map<String,List<GPSReciever>> portReceiversMap;
 	private Map<String,SerialPort> portNameMap;
+	private StringBuffer gpsDataBuffer;
 	
 	/**
 	 * Opens a serial port.
@@ -28,15 +29,17 @@ public class GPSSerialPortHandler implements SerialPortEventListener,GPSControll
 	private GPSSerialPortHandler(){
 		portReceiversMap = new HashMap<String,List<GPSReciever>>();
 		portNameMap = new HashMap<String,SerialPort>();
+		gpsDataBuffer = new StringBuffer();
 	}
 	
 	public static GPSSerialPortHandler getInstance(){
+		System.out.println("Entering getInstance");
 		if(serialPortHandler == null)
 			serialPortHandler =  new GPSSerialPortHandler();
 		return serialPortHandler;
 	}
 	
-	public boolean openPort(String port,int speed){
+	public SerialPort openPort(String port,int speed){
 		Boolean portOpen = true;
 		SerialPort serialPort = null;
 	
@@ -68,7 +71,7 @@ public class GPSSerialPortHandler implements SerialPortEventListener,GPSControll
 		if(portOpen && serialPort != null)
 			portNameMap.put(serialPort.getName(),serialPort);
 		
-		return portOpen;
+		return serialPort;
 	}
 
 	/**
@@ -91,15 +94,23 @@ public class GPSSerialPortHandler implements SerialPortEventListener,GPSControll
 	}
 
 
-	public boolean isPortOpen(String portName){
-		if(portNameMap.containsKey(portName)){
+	public Boolean isPortOpen(String portName){
+		if(portNameMap!= null && portNameMap.containsKey(portName)){
 			return true;
 		}
 		return false;
 	}
 
+	public SerialPort getPortByName(String portName){
+		if(portNameMap!= null && portNameMap.containsKey(portName)){
+			return portNameMap.get(portName);
+		}
+		return null;
+	}
+	
 	@Override
 	public void serialEvent(SerialPortEvent event) {
+		System.out.println("Recieved serial event");
 		SerialPort port = (SerialPort)event.getSource();
 		
 		if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
@@ -107,10 +118,15 @@ public class GPSSerialPortHandler implements SerialPortEventListener,GPSControll
 				InputStream in = port.getInputStream();
 				int data;
 				while((data = in.read()) != -1) {
-					notifyRecievers(data,port.getName());
+					gpsDataBuffer.append((char)data);
+					if(data == 13){
+						System.out.println("data end recieved "+gpsDataBuffer.toString()+"=== end");
+						notifyRecievers(gpsDataBuffer.toString(),port.getName());
+						gpsDataBuffer = new StringBuffer();
+					}
 				}
 			}catch(Exception e){
-				System.out.println("Failed to get data from serial port");
+				e.printStackTrace();
 			}
 		}
 	}
@@ -129,12 +145,16 @@ public class GPSSerialPortHandler implements SerialPortEventListener,GPSControll
 
 
 	@Override
-	public synchronized void notifyRecievers(int data,String portName) {
+	public synchronized void notifyRecievers(String data,String portName) {
+		System.out.println("entering notifyrecievers");
 		if(portReceiversMap.containsKey(portName)){
 			List<GPSReciever> recievers = portReceiversMap.get(portName);
+			System.out.println("no of recievers is "+recievers.size());
 			for(GPSReciever reciever :recievers){
 				reciever.onData(data,portName);
 			}
+		}else{
+			System.out.println("No recievers registered for the port "+portName);
 		}
 	}
 

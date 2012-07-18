@@ -1,13 +1,18 @@
 package cgl.iotcloud.samples.sensor.gps;
 
+import gnu.io.SerialPort;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.control.DefaultControlMessage;
 import cgl.iotcloud.core.sensor.AbstractSensor;
+import cgl.iotcloud.samples.sensor.ChatSensor;
+import cgl.iotcloud.samples.sensor.FileTransferSensor;
 import cgl.iotcloud.sensors.SensorAdaptor;
 
 public class GPSSensor extends AbstractSensor implements GPSReciever{
@@ -18,9 +23,10 @@ public class GPSSensor extends AbstractSensor implements GPSReciever{
 	private Boolean run = true;
 	private GPSSerialPortHandler serialPortHandler;
 	private static int DATA_END = 13;
+	private SerialPort serialPort = null;
 
 	//TODO : Add WatchDog, Virtual GPS sensor.
-	public GPSSensor(String type, String name) { 
+	public GPSSensor(String type,String name) { 
 		super(type, name);
 
 		SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8080");
@@ -32,8 +38,9 @@ public class GPSSensor extends AbstractSensor implements GPSReciever{
 
 		//port set to null when user input is not valid.
 		if(port != null){
-			if(serialPortHandler.openPort(port, baudRate)){
-				serialPortHandler.addReciever(this,port);
+			if((serialPort = serialPortHandler.openPort(port, baudRate))!= null){
+				System.out.println("port name is "+serialPort.getName());
+				serialPortHandler.addReciever(this,serialPort.getName());
 
 				while (run) {
 					try {
@@ -45,9 +52,10 @@ public class GPSSensor extends AbstractSensor implements GPSReciever{
 				adaptor.stop();
 			}else{
 				
-				if(serialPortHandler.isPortOpen(port))
-					serialPortHandler.addReciever(this,port);
-				else{
+				if(serialPortHandler.isPortOpen(port)){
+					serialPort = serialPortHandler.getPortByName(port);
+					serialPortHandler.addReciever(this,serialPort.getName());
+				}else{
 					adaptor.stop();
 					System.out.println("Failed to open comm port :"+port+"for GPS communication");
 				}
@@ -97,32 +105,30 @@ public class GPSSensor extends AbstractSensor implements GPSReciever{
 	}
 
 	@Override
-	public void onData(int data,String port) {
-		while(data != DATA_END){
-			gpsData += (char)data;
-		}
+	public void onData(String data,String port) {
+		System.out.println("onData data is  "+data);
 
-		if(data == DATA_END){
-			List<String> parsedData = GPSEventParser.parseData(gpsData);
+		List<String> parsedData = GPSEventParser.parseData(data);
 
-			if (parsedData.size() == 0) {
-				System.out.println("Parse Error: No data after parsing");
-			} else {
-				String msgType = (String) parsedData.get(0);
+		if (parsedData.size() == 0) {
+			System.out.println("Parse Error: No data after parsing");
+		} else {
+			String msgType = (String) parsedData.get(0);
 
-				if (msgType.equals("$GPRMC")) {
-					count++;
-					if (count % 10 == 0) {
-						GpsData gpsData = getGPSData(parsedData);
-						sendMessage(gpsData);
-					}
-				}
+			if (msgType.equals("$GPRMC")) {
+				System.out.println("calling the getGPSDATA");
+				//count++;
+				//if (count % 10 == 0) {
+					GpsData gpsData = getGPSData(parsedData);
+					//sendMessage(gpsData);
+				//}
 			}
 		}
 	}
 
 
 	private GpsData getGPSData(List<String> parsedData){
+		System.out.println("Entering getGPSData");
 		try {
 			String lats = (String) parsedData.get(3);
 			lats = Double.toString(Integer.parseInt(lats
@@ -163,5 +169,10 @@ public class GPSSensor extends AbstractSensor implements GPSReciever{
 			return null;
 		}
 	}
+	
+	public static void main(String[] args) {
+		GPSSensor sensor = new GPSSensor(Constants.SENSOR_TYPE_BLOCK, "gps-sensor");
+	}
+
 
 }
