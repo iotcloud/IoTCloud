@@ -8,14 +8,24 @@ import java.util.Map;
 public class UpdateMessage implements SensorMessage {
     private String sensorId;
 
+    private String id;
+    
     private Map<String, String> updates = new HashMap<String, String>();
+
+    public String getSensorId() {
+        return sensorId;
+    }
+
+    public void setSensorId(String sensorId) {
+        this.sensorId = sensorId;
+    }
 
     public UpdateMessage(String sensorId) {
         this.sensorId = sensorId;
     }
 
     public String getId() {
-        return sensorId;
+        return id;
     }
 
     public void addUpdate(String name, String value) {
@@ -36,6 +46,6 @@ public class UpdateMessage implements SensorMessage {
 
     @Override
     public void setId(String id) {
-        this.sensorId = id;
+        this.id = id;
     }
 }

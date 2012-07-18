@@ -82,7 +82,7 @@ public class MessageToUpdateFactory implements JMSMessageFactory {
             UpdateDocument document = UpdateDocument.Factory.newInstance();
             UpdateDocument.Update update = document.addNewUpdate();
             Sensor sensor = update.addNewSensor();
-            sensor.setId(message.getId());
+            sensor.setId(message.getSensorId());
 
             for (Map.Entry<String, String> e : message.getAllUpdates().entrySet()) {
                 com.iotcloud.message.xsd.Param param = sensor.addNewParam();
@@ -92,7 +92,7 @@ public class MessageToUpdateFactory implements JMSMessageFactory {
 
             String text = document.toString();
             if (log.isDebugEnabled()) {
-                log.debug("Creating sensor update message for sensor ID: " + message.getId() + " " + text);
+                log.debug("Creating sensor update message for sensor ID: " + message.getSensorId() + " " + text);
             }
 
             try {
