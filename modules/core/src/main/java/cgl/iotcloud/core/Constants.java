@@ -44,8 +44,11 @@ public class Constants {
     public class Updates {
         public static final String ADDED = "ADDED";
         public static final String REMOVED = "REMOVED";
+        public static final String ALIVE = "ALIVE";
         public static final String CUSTOM = "CUSTOM";
 
         public static final String STATUS = "STATUS";
+
+
     }
 }

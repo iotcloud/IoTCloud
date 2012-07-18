@@ -9,8 +9,8 @@ import cgl.iotcloud.core.endpoint.JMSEndpoint;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
+import cgl.iotcloud.core.message.update.MessageToUpdateFactory;
 import cgl.iotcloud.core.message.update.UpdateMessage;
-import cgl.iotcloud.core.message.update.UpdateToMessageFactory;
 import cgl.iotcloud.core.sensor.SCSensor;
 import com.iotcloud.message.xsd.Sensor;
 import com.iotcloud.message.xsd.UpdateDocument;
@@ -41,9 +41,13 @@ public class UpdateManager implements ManagedLifeCycle {
     /** Map of senders to send update messages */
     private Map<String, JMSSender> senders = new HashMap<String, JMSSender>();
 
-    public UpdateManager(SCConfiguration configuration, SensorCatalog catalog) {
+    private HeartBeatListener heartBeatListener;
+
+    public UpdateManager(SCConfiguration configuration, SensorCatalog catalog, IoTCloud ioTCloud) {
         this.configuration = configuration;
         this.catalog = catalog;
+
+        this.heartBeatListener = new HeartBeatListener(catalog, ioTCloud);
     }
 
     public Endpoint getReceivingEndpoint() {
@@ -69,12 +73,16 @@ public class UpdateManager implements ManagedLifeCycle {
         sender = new JMSSenderFactory().create(sendingEndpoint);
 
         listener = new JMSListenerFactory().create(receivingEndpoint, new UpdateReceiver());
+        listener.setMessageFactory(new MessageToUpdateFactory());
 
+        sender.setMessageFactory(new MessageToUpdateFactory());
         sender.init();
         sender.start();
 
         listener.init();
         listener.start();
+
+        heartBeatListener.init();
     }
 
     /**
@@ -86,35 +94,46 @@ public class UpdateManager implements ManagedLifeCycle {
 
         listener.stop();
         listener.destroy();
+
+        heartBeatListener.destroy();
     }
 
     private class UpdateReceiver implements MessageHandler {
         public void onMessage(SensorMessage message) {
-            sendToSensor(message);
+            // check weather it is a heartbeat message
+            if (!heartBeatListener.onUpdateMessage(message)) {
+                sendToSensor(message);
+            }
         }
     }
 
     private void sendToSensor(SensorMessage message) {
-        UpdateDocument document;
-        try {
-            if (message instanceof TextDataMessage) {
-                document = UpdateDocument.Factory.parse(((TextDataMessage) message).getText());
-            } else {
-                handleException("Un-expected message type received");
+        String id;
+        if (message instanceof UpdateMessage) {
+            id = ((UpdateMessage) message).getSensorId();
+        } else {
+            UpdateDocument document;
+            try {
+                if (message instanceof TextDataMessage) {
+                    document = UpdateDocument.Factory.parse(((TextDataMessage) message).getText());
+                } else {
+                    handleException("Un-expected message type received");
+                    return;
+                }
+            } catch (Exception e) {
+                handleException("Error parsing the update message", e);
                 return;
             }
-        } catch (Exception e) {
-            handleException("Error parsing the update message", e);
-            return;
+
+            UpdateDocument.Update update = document.getUpdate();
+            Sensor sensor = update.getSensor();
+            if (sensor == null) {
+                handleException("Sensor infoUpdateToMessageFactoryrmation should be present in the update message");
+                return;
+            }
+            id = update.getSensor().getId();
         }
 
-        UpdateDocument.Update update = document.getUpdate();
-        Sensor sensor = update.getSensor();
-        if (sensor == null) {
-            handleException("Sensor information should be present in the update message");
-            return;
-        }
-        String id = update.getSensor().getId();
         JMSSender sender = senders.get(id);
         if (sender == null) {
             handleException("Received update for unregistered sensor: " + id);
@@ -136,9 +155,12 @@ public class UpdateManager implements ManagedLifeCycle {
 
     private void handleSensorAdded(String id) {
         SCSensor sensor = catalog.getSensor(id);
+        heartBeatListener.addSensor(id);
         if (sensor != null) {
             Endpoint endpoint = sensor.getUpdateEndpoint();
             JMSSender sender = new JMSSenderFactory().create(endpoint);
+            sender.setMessageFactory(new MessageToUpdateFactory());
+
             sender.init();
             sender.start();
             senders.put(id, sender);
@@ -148,6 +170,8 @@ public class UpdateManager implements ManagedLifeCycle {
     }
 
     private void handleSensorRemoved(String id) {
+        heartBeatListener.removeSensor(id);
+
         JMSSender sender = senders.get(id);
         if (sender != null) {
             // send the update message to the listeners
@@ -167,8 +191,7 @@ public class UpdateManager implements ManagedLifeCycle {
     private SensorMessage createUpdateMessage(String change, String id) {
         UpdateMessage updateMessage = new UpdateMessage(id);
         updateMessage.addUpdate(Constants.Updates.STATUS, change);
-        UpdateToMessageFactory fac = new UpdateToMessageFactory();
-        return fac.create(updateMessage);
+        return updateMessage;
     }
 
     private void handleException(String s, Exception e) {

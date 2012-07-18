@@ -20,7 +20,7 @@ public class ChatClient {
         final boolean[] quit = {false};
         sensorClient.fixOnSensorWithName("chat-sensor");
 
-        sensorClient.setUpdateListener(new UpdateMessageHandler() {
+        sensorClient.setUpdateHandler(new UpdateMessageHandler() {
             public void onUpdate(UpdateMessage message) {
                 if (message.getUpdate(Constants.Updates.STATUS) != null &&
                         message.getUpdate(Constants.Updates.STATUS).equals(Constants.Updates.REMOVED)) {

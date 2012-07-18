@@ -1,10 +1,19 @@
 package cgl.iotcloud.sensors;
 
+import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.ManagedLifeCycle;
 import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.broker.JMSSender;
+import cgl.iotcloud.core.broker.JMSSenderFactory;
+import cgl.iotcloud.core.message.update.MessageToUpdateFactory;
+import cgl.iotcloud.core.message.update.UpdateMessage;
 import cgl.iotcloud.core.sensor.Sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class SensorAdaptor {
     private static Logger log = LoggerFactory.getLogger(RegistrationWSClient.class);
@@ -12,6 +21,10 @@ public class SensorAdaptor {
     private Sensor sensor = null;
 
     private RegistrationClient client = null;
+
+    private JMSSender heartBeatSender = null;
+
+    private ScheduledExecutorService fScheduler;
 
     public SensorAdaptor(String url) {
         client = new RegistrationWSClient(url + "/soap/services/SensorRegistrationService");
@@ -23,6 +36,8 @@ public class SensorAdaptor {
         } else {
             client = new RegistrationWSClient("http://" + host + ":" + port);
         }
+
+        fScheduler = Executors.newScheduledThreadPool(1);
     }
 
     public SensorAdaptor(String host, int port) {
@@ -60,13 +75,39 @@ public class SensorAdaptor {
         if (sensor instanceof ManagedLifeCycle)  {
             ((ManagedLifeCycle) sensor).init();
         }
+        if (sensor.getUpdateEndpoint() != null) {
+            heartBeatSender = new JMSSenderFactory().create(sensor.getUpdateEndpoint());
+            heartBeatSender.setMessageFactory(new MessageToUpdateFactory());
+            
+            heartBeatSender.init();
+            heartBeatSender.start();
+
+            fScheduler.scheduleAtFixedRate(new HeartBeatTask(), 1000, 15000, TimeUnit.MILLISECONDS);
+        }
     }
 
     public void stop() {
+        fScheduler.shutdown();
+
+        try {
+            fScheduler.awaitTermination(15000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            handleException("Interruption while awaiting termination of heartbeat scheduler", e);
+        }
+
         client.unRegisterSensor(sensor);
 
         if (sensor instanceof ManagedLifeCycle) {
             ((ManagedLifeCycle) sensor).destroy();
+        }
+    }
+
+    private class HeartBeatTask implements Runnable {
+        @Override
+        public void run() {
+            UpdateMessage updateMessage = new UpdateMessage(sensor.getId());
+            updateMessage.addUpdate(Constants.Updates.STATUS, Constants.Updates.ALIVE);
+            heartBeatSender.send(updateMessage);
         }
     }
 

@@ -26,14 +26,17 @@ public class FileClient {
         final boolean[] quit = {false};
         sensorClient.registerWithName("file-sensor");
 
-        sensorClient.setUpdateListener(new UpdateMessageHandler() {
-            public void onUpdate(UpdateMessage message) {
-                if (message.getUpdate(Constants.Updates.STATUS) != null &&
-                        message.getUpdate(Constants.Updates.STATUS).equals(Constants.Updates.REMOVED)) {
-                    quit[0] = true;
-                    try {
-                        reader.close();
-                    } catch (IOException ignored) {
+        sensorClient.setUpdateHandler(new MessageHandler() {
+            public void onMessage(SensorMessage message) {
+                if (message instanceof UpdateMessage) {
+                    UpdateMessage updateMessage = (UpdateMessage) message;
+                    if (updateMessage.getUpdate(Constants.Updates.STATUS) != null &&
+                            updateMessage.getUpdate(Constants.Updates.STATUS).equals(Constants.Updates.REMOVED)) {
+                        quit[0] = true;
+                        try {
+                            reader.close();
+                        } catch (IOException ignored) {
+                        }
                     }
                 }
             }
