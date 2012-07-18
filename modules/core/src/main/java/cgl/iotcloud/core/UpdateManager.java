@@ -155,6 +155,7 @@ public class UpdateManager implements ManagedLifeCycle {
 
     private void handleSensorAdded(String id) {
         SCSensor sensor = catalog.getSensor(id);
+        heartBeatListener.addSensor(id);
         if (sensor != null) {
             Endpoint endpoint = sensor.getUpdateEndpoint();
             JMSSender sender = new JMSSenderFactory().create(endpoint);
@@ -169,6 +170,8 @@ public class UpdateManager implements ManagedLifeCycle {
     }
 
     private void handleSensorRemoved(String id) {
+        heartBeatListener.removeSensor(id);
+
         JMSSender sender = senders.get(id);
         if (sender != null) {
             // send the update message to the listeners

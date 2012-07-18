@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * A sensor should send a status message periodically over the update channel to indicate its aliveness,
  */
 public class HeartBeatListener implements ManagedLifeCycle {
-    private Logger log = LoggerFactory.getLogger(HeartBeatListener.class);
+    private static Logger log = LoggerFactory.getLogger(HeartBeatListener.class);
 
     /** Information about the registered sensors */
     private SensorCatalog catalog;
@@ -39,13 +39,7 @@ public class HeartBeatListener implements ManagedLifeCycle {
     private final IoTCloud ioTCloud;
 
     public HeartBeatListener(SensorCatalog catalog, IoTCloud ioTCloud) {
-        this.maxFaultyTime = 120000;
-        this.factor = 2;
-        this.ioTCloud = ioTCloud;
-        this.catalog = catalog;
-
-        fScheduler = Executors.newScheduledThreadPool(1);
-        task = new CleanupTask();
+        this(catalog, ioTCloud, 120000, 2);
     }
 
     public HeartBeatListener(SensorCatalog catalog, IoTCloud ioTCloud, long maxFaultyTime, long factor) {
@@ -90,10 +84,10 @@ public class HeartBeatListener implements ManagedLifeCycle {
     /**
      * Remove a sensor from the system so that we no longer keep track of it
      *
-     * @param scSensor sensor to be removed
+     * @param id sensor to be removed
      */
-    public void removeSensor(SCSensor scSensor) {
-        HeartBeat h = new HeartBeat(0, scSensor.getId());
+    public void removeSensor(String id) {
+        HeartBeat h = new HeartBeat(0, id);
         aliveSensors.remove(h);
 
         faultySensors.remove(h);
@@ -102,16 +96,22 @@ public class HeartBeatListener implements ManagedLifeCycle {
     /**
      * Add a sensor so that we can keep track of it
      *
-     * @param scSensor keep track of the sensor
+     * @param id keep track of the sensor
      */
-    public void addSensor(SCSensor scSensor) {
-        aliveSensors.add(new HeartBeat(System.currentTimeMillis(), scSensor.getId()));
+    public void addSensor(String id) {
+        aliveSensors.add(new HeartBeat(System.currentTimeMillis(), id));
     }
 
     @Override
     public void destroy() {
         if (!fScheduler.isShutdown()) {
             fScheduler.shutdown();
+
+            try {
+                fScheduler.awaitTermination(15000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                handleException("Interruption while awaiting termination of heartbeat scheduler", e);
+            }
         }
     }
     
@@ -231,6 +231,11 @@ public class HeartBeatListener implements ManagedLifeCycle {
         public int hashCode() {
             return id != null ? id.hashCode() : 0;
         }
+    }
+
+    protected static void handleException(String s, Exception e) {
+        log.error(s, e);
+        throw new SCException(s, e);
     }
     
 }
