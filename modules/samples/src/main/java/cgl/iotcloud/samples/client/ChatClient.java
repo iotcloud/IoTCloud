@@ -6,7 +6,6 @@ import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
 import cgl.iotcloud.core.message.update.UpdateMessage;
-import cgl.iotcloud.core.message.update.UpdateMessageHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;

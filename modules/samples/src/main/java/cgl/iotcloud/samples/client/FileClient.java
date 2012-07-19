@@ -7,7 +7,6 @@ import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.control.DefaultControlMessage;
 import cgl.iotcloud.core.message.data.StreamDataMessage;
 import cgl.iotcloud.core.message.update.UpdateMessage;
-import cgl.iotcloud.core.message.update.UpdateMessageHandler;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
