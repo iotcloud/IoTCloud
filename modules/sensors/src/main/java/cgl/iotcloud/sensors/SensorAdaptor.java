@@ -28,6 +28,7 @@ public class SensorAdaptor {
 
     public SensorAdaptor(String url) {
         client = new RegistrationWSClient(url + "/soap/services/SensorRegistrationService");
+        fScheduler = Executors.newScheduledThreadPool(1);
     }
 
     public SensorAdaptor(String host, int port, boolean rest) {

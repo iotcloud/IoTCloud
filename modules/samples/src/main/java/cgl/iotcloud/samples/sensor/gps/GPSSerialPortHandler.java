@@ -1,5 +1,6 @@
 package cgl.iotcloud.samples.sensor.gps;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -19,26 +20,38 @@ public class GPSSerialPortHandler implements SerialPortEventListener,GPSControll
 	private static GPSSerialPortHandler serialPortHandler;
 	private Map<String,List<GPSReciever>> portReceiversMap;
 	private Map<String,SerialPort> portNameMap;
-	private StringBuffer gpsDataBuffer;
+	private String gpsDataBuffer;
 	
-	/**
-	 * Opens a serial port.
-	 * @return returns true a port is opened successfully.
-	 */
+	
 	
 	private GPSSerialPortHandler(){
 		portReceiversMap = new HashMap<String,List<GPSReciever>>();
 		portNameMap = new HashMap<String,SerialPort>();
-		gpsDataBuffer = new StringBuffer();
+		gpsDataBuffer = new String();
+
+		String os = System.getProperty("os.name");
+		
+		String ldPath ="";
+		if(os.equals("Linux")){
+			ldPath = System.getProperty("user.dir")+"/native/linux:"+System.getProperty("java.library.path");
+		}else if(os.equalsIgnoreCase("windows")){
+			ldPath = System.getProperty("user.dir")+"\\native\\windows;"+System.getProperty("java.library.path");
+		}
+		System.setProperty("java.library.path",ldPath);
+		System.loadLibrary("rxtxSerial");
 	}
 	
 	public static GPSSerialPortHandler getInstance(){
-		System.out.println("Entering getInstance");
 		if(serialPortHandler == null)
 			serialPortHandler =  new GPSSerialPortHandler();
 		return serialPortHandler;
 	}
 	
+	
+	/**
+	 * Opens a serial port.
+	 * @return returns SerialPort if port is opened successfully.
+	 */
 	public SerialPort openPort(String port,int speed){
 		Boolean portOpen = true;
 		SerialPort serialPort = null;
@@ -110,19 +123,18 @@ public class GPSSerialPortHandler implements SerialPortEventListener,GPSControll
 	
 	@Override
 	public void serialEvent(SerialPortEvent event) {
-		System.out.println("Recieved serial event");
 		SerialPort port = (SerialPort)event.getSource();
 		
 		if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try{
 				InputStream in = port.getInputStream();
 				int data;
-				while((data = in.read()) != -1) {
-					gpsDataBuffer.append((char)data);
+				while((data = in.read()) !=-1) {
+					gpsDataBuffer+=(char)data;
 					if(data == 13){
-						System.out.println("data end recieved "+gpsDataBuffer.toString()+"=== end");
+						System.out.println("Data recieved from the gps device : "+gpsDataBuffer.toString());
 						notifyRecievers(gpsDataBuffer.toString(),port.getName());
-						gpsDataBuffer = new StringBuffer();
+						gpsDataBuffer = new String();
 					}
 				}
 			}catch(Exception e){
@@ -146,10 +158,8 @@ public class GPSSerialPortHandler implements SerialPortEventListener,GPSControll
 
 	@Override
 	public synchronized void notifyRecievers(String data,String portName) {
-		System.out.println("entering notifyrecievers");
 		if(portReceiversMap.containsKey(portName)){
 			List<GPSReciever> recievers = portReceiversMap.get(portName);
-			System.out.println("no of recievers is "+recievers.size());
 			for(GPSReciever reciever :recievers){
 				reciever.onData(data,portName);
 			}

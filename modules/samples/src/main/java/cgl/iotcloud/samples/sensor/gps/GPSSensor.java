@@ -19,7 +19,6 @@ public class GPSSensor extends AbstractSensor implements GPSReciever{
 	private int baudRate;
 	private String port;
 	private String gpsData;
-	private int count;
 	private Boolean run = true;
 	private GPSSerialPortHandler serialPortHandler;
 	private static int DATA_END = 13;
@@ -51,7 +50,6 @@ public class GPSSensor extends AbstractSensor implements GPSReciever{
 				}
 				adaptor.stop();
 			}else{
-				
 				if(serialPortHandler.isPortOpen(port)){
 					serialPort = serialPortHandler.getPortByName(port);
 					serialPortHandler.addReciever(this,serialPort.getName());
@@ -64,6 +62,7 @@ public class GPSSensor extends AbstractSensor implements GPSReciever{
 	}
 
 	private void getUserInput() {
+		System.out.println("Adding a GPS sensor");
 		List<String> ports = serialPortHandler.getPorts();
 
 		System.out.println("Serial Ports Available :");
@@ -106,7 +105,6 @@ public class GPSSensor extends AbstractSensor implements GPSReciever{
 
 	@Override
 	public void onData(String data,String port) {
-		System.out.println("onData data is  "+data);
 
 		List<String> parsedData = GPSEventParser.parseData(data);
 
@@ -114,21 +112,15 @@ public class GPSSensor extends AbstractSensor implements GPSReciever{
 			System.out.println("Parse Error: No data after parsing");
 		} else {
 			String msgType = (String) parsedData.get(0);
-
 			if (msgType.equals("$GPRMC")) {
-				System.out.println("calling the getGPSDATA");
-				//count++;
-				//if (count % 10 == 0) {
 					GpsData gpsData = getGPSData(parsedData);
-					//sendMessage(gpsData);
-				//}
+					sendMessage(gpsData);
 			}
 		}
 	}
 
 
 	private GpsData getGPSData(List<String> parsedData){
-		System.out.println("Entering getGPSData");
 		try {
 			String lats = (String) parsedData.get(3);
 			lats = Double.toString(Integer.parseInt(lats
@@ -152,7 +144,7 @@ public class GPSSensor extends AbstractSensor implements GPSReciever{
 					/ 60.0);
 
 			double lon = Double.parseDouble(lngs);
-
+			
 			if (((String) parsedData.get(6)).equalsIgnoreCase("W")) {
 				lon = -lon;
 			} else if (!((String) parsedData.get(6))
@@ -160,11 +152,13 @@ public class GPSSensor extends AbstractSensor implements GPSReciever{
 				throw new NumberFormatException();
 			}
 
+			System.out.println("longitude  is "+lon+" ,latitude is :"+lat);
 			GpsData gpsData = new GpsData(
 					System.currentTimeMillis(), lat, lon);
 			return gpsData;
 
 		} catch (NumberFormatException e) {
+			System.out.println("GPS device may not be configured properly ...");
 			e.printStackTrace();
 			return null;
 		}
@@ -173,6 +167,4 @@ public class GPSSensor extends AbstractSensor implements GPSReciever{
 	public static void main(String[] args) {
 		GPSSensor sensor = new GPSSensor(Constants.SENSOR_TYPE_BLOCK, "gps-sensor");
 	}
-
-
 }

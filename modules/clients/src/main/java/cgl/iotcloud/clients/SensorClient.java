@@ -86,8 +86,8 @@ public class SensorClient {
         register(sensor.getId());
     }
 
-    public void setUpdateHandler(MessageHandler handler) {
-        sensorClient.setUpdateMessageHandler(handler);
+    public void setUpdateHandler(MessageHandler updateMessageHandler) {
+        sensorClient.setUpdateMessageHandler(updateMessageHandler);
     }
 
     public void listen(MessageHandler handler) {
