@@ -1,6 +1,5 @@
 package cgl.iotcloud.samples.sensor.gps;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;

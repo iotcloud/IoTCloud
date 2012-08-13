@@ -11,8 +11,6 @@ import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.control.DefaultControlMessage;
 import cgl.iotcloud.core.sensor.AbstractSensor;
-import cgl.iotcloud.samples.sensor.ChatSensor;
-import cgl.iotcloud.samples.sensor.FileTransferSensor;
 import cgl.iotcloud.sensors.SensorAdaptor;
 
 public class GPSSensor extends AbstractSensor implements GPSReciever{

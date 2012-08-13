@@ -20,6 +20,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+    <modules>
+        <module>general</module>
+    </modules>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>

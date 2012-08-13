@@ -68,7 +68,7 @@
 		</dependency>
         <dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>iotcloud-samples</artifactId>
+			<artifactId>iotcloud-samples-general</artifactId>
 			<version>${project.version}</version>
 		</dependency>
         <dependency>
