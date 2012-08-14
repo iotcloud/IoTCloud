@@ -11,7 +11,7 @@
 
 	<artifactId>iotcloud-samples</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>iotcloud-samples</name>
 	<url>http://maven.apache.org</url>
