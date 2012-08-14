@@ -72,17 +72,69 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2-kernel</artifactId>
+            <groupId>ros.rosjava_core</groupId>
+            <artifactId>rosjava</artifactId>
+            <version>0.0.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>com.springsource.org.apache.commons.httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>com.springsource.org.apache.commons.net</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>com.springsource.org.apache.commons.lang</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>com.springsource.org.apache.commons.codec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>com.springsource.org.apache.commons.io</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>com.springsource.org.apache.commons.logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
         <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2-codegen</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2-adb-codegen</artifactId>
+            <groupId>ros.rosjava_core</groupId>
+            <artifactId>rosjava_messages</artifactId>
+            <version>0.0.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>com.springsource.org.apache.commons.httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>com.springsource.org.apache.commons.net</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>com.springsource.org.apache.commons.lang</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>com.springsource.org.apache.commons.codec</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>com.springsource.org.apache.commons.io</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>com.springsource.org.apache.commons.logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>
+
 </project>
