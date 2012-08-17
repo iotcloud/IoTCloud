@@ -21,6 +21,7 @@ public class TurtleUI extends JFrame {
         //Display the window.
         frame.pack();
         frame.setVisible(true);
+        frame.setSize(400, 400);
     }
 
 }
