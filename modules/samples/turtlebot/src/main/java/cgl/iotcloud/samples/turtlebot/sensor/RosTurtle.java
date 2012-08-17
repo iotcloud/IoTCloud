@@ -8,9 +8,17 @@ import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
 
 public class RosTurtle extends AbstractNodeMain {
-    private Velocity linear = null;
+    private volatile Velocity linear = null;
 
-    private Velocity angular = null;
+    private volatile Velocity angular = null;
+
+    public void setLinear(Velocity linear) {
+        this.linear = linear;
+    }
+
+    public void setAngular(Velocity angular) {
+        this.angular = angular;
+    }
 
     @Override
     public GraphName getDefaultNodeName() {

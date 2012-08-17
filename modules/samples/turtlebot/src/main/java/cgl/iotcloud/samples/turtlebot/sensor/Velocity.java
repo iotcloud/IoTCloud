@@ -7,6 +7,9 @@ public class Velocity {
 
     private int z;
 
+    public Velocity() {
+    }
+
     public Velocity(int x, int y, int z) {
         this.x = x;
         this.y = y;
