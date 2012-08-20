@@ -13,22 +13,27 @@ public class TurtleUI {
     private Mover mover = new Mover() {
         @Override
         public void up() {
-            client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0.0));
+            client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
         }
 
         @Override
         public void down() {
-            client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, 0.0));
+            client.setVelocity(new Velocity(-.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
         }
 
         @Override
         public void left() {
-            client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0.0));
+            client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0, 0.0, -.5));
         }
 
         @Override
         public void right() {
-            client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0.0));
+            client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, .5));
+        }
+
+        @Override
+        public void stop() {
+            client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
         }
     };
 

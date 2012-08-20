@@ -155,6 +155,13 @@ public class RootFrame extends JFrame {
                 controller.right();
             }
         });
+
+        ControlSessionPanel.getInstance().getStopButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.stop();
+            }
+        });
     }
 }
 
@@ -332,8 +339,8 @@ class ControlTitlePanel extends JPanel implements RobotUIPanelBuilder{
 
 class ControlSessionPanel extends JPanel implements RobotUIPanelBuilder{
 	private static ControlSessionPanel conSessionPanel;
-	private JButton startButton = new JButton("START");
-	private static JButton stopButton = new JButton("STOP");
+	private JButton startButton = new JButton("Start");
+	private JButton stopButton = new JButton("Stop");
 
 
 
@@ -374,6 +381,14 @@ class ControlSessionPanel extends JPanel implements RobotUIPanelBuilder{
 		GroupLayout conTitlePanelLayout = (GroupLayout)this.getLayout();
 		conTitlePanelLayout.removeLayoutComponent(startButton);
 	}
+
+    public JButton getStartButton() {
+        return startButton;
+    }
+
+    public JButton getStopButton() {
+        return stopButton;
+    }
 }
 
 class SensorsListPanel extends JPanel implements RobotUIPanelBuilder,ActionListener{

@@ -8,4 +8,6 @@ public interface Mover {
     void left();
 
     void right();
+
+    void stop();
 }
