@@ -12,6 +12,8 @@ import org.ros.node.DefaultNodeMainExecutor;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
+import java.util.Set;
+
 public class TurtleSensor extends AbstractSensor {
     private RosTurtle turtle = null;
 
@@ -48,36 +50,40 @@ public class TurtleSensor extends AbstractSensor {
         if (message instanceof DefaultControlMessage) {
             DefaultControlMessage controlMessage = (DefaultControlMessage) message;
 
+            for (String keys : controlMessage.getControls().keySet()) {
+                System.out.println("Received control message: " + keys + " :" + controlMessage.getControls().get(keys));
+            }
+
             Velocity vl = new Velocity();
             Object o = controlMessage.getControl("l.x");
-            if (o instanceof Integer) {
-                vl.setX((Integer) o);
+            if (o instanceof Double) {
+                vl.setX((Double) o);
             }
 
             o = controlMessage.getControl("l.y");
-            if (o instanceof Integer) {
-                vl.setY((Integer) o);
+            if (o instanceof Double) {
+                vl.setY((Double) o);
             }
 
             o = controlMessage.getControl("l.z");
-            if (o instanceof Integer) {
-                vl.setZ((Integer) o);
+            if (o instanceof Double) {
+                vl.setZ((Double) o);
             }
 
             Velocity va = new Velocity();
             o = controlMessage.getControl("a.x");
-            if (o instanceof Integer) {
-                va.setX((Integer) o);
+            if (o instanceof Double) {
+                va.setX((Double) o);
             }
 
             o = controlMessage.getControl("a.y");
-            if (o instanceof Integer) {
-                va.setY((Integer) o);
+            if (o instanceof Double) {
+                va.setY((Double) o);
             }
 
             o = controlMessage.getControl("a.z");
-            if (o instanceof Integer) {
-                va.setZ((Integer) o);
+            if (o instanceof Double) {
+                va.setZ((Double) o);
             }
             turtle.setLinear(vl);
             turtle.setAngular(va);

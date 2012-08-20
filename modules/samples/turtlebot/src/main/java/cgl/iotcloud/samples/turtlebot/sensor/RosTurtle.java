@@ -59,4 +59,12 @@ public class RosTurtle extends AbstractNodeMain {
             }
         });
     }
+
+    public static void main(String[] args) {
+        RosTurtle turtle = new RosTurtle();
+
+        while (true) {
+            turtle.setLinear(new Velocity(.1, 0, 0));
+        }
+    }
 }

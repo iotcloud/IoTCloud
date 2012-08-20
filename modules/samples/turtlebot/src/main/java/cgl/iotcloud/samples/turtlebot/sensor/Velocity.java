@@ -1,42 +1,42 @@
 package cgl.iotcloud.samples.turtlebot.sensor;
 
 public class Velocity {
-    private int x;
+    private double x;
 
-    private int y;
+    private double y;
 
-    private int z;
+    private double z;
 
     public Velocity() {
     }
 
-    public Velocity(int x, int y, int z) {
+    public Velocity(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    public int getZ() {
+    public double getZ() {
         return z;
     }
 
-    public void setZ(int z) {
+    public void setZ(double z) {
         this.z = z;
     }
 }

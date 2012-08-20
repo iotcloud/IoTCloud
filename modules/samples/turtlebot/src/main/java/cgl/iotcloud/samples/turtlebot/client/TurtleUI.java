@@ -1,27 +1,51 @@
 package cgl.iotcloud.samples.turtlebot.client;
 
-import javax.swing.*;
-import java.awt.*;
 
-public class TurtleUI extends JFrame {
+import cgl.iotcloud.client.robot.Mover;
+import cgl.iotcloud.client.robot.RootFrame;
+import cgl.iotcloud.samples.turtlebot.sensor.Velocity;
 
-    public TurtleUI(String title) throws HeadlessException {
-        super(title);
+
+public class TurtleUI {
+
+    private TurtleClient client;
+
+    private Mover mover = new Mover() {
+        @Override
+        public void up() {
+            client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0.0));
+        }
+
+        @Override
+        public void down() {
+            client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, 0.0));
+        }
+
+        @Override
+        public void left() {
+            client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0.0));
+        }
+
+        @Override
+        public void right() {
+            client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0.0));
+        }
+    };
+
+    public void start() {
+        client = new TurtleClient();
+
+        client.start();
+
+        RootFrame rootFrame = RootFrame.getInstance();
+        rootFrame.addControl(mover);
+
+        rootFrame.setVisible(true);
     }
 
     public static void main(String[] args) {
+        TurtleUI ui = new TurtleUI();
 
-        TurtleUI frame = new TurtleUI("Turtlebot");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        //Add the ubiquitous "Hello World" label.
-        JLabel label = new JLabel("Hello World");
-        frame.getContentPane().add(label);
-
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-        frame.setSize(400, 400);
+        ui.start();
     }
-
 }

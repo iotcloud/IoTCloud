@@ -13,20 +13,79 @@ import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-public class RobotDesktopUI {
+/*public class RootFrame {
 	private static RootFrame rootFrame;
+
+    private static Mover controller;
 
 	public static void main(String args[]){
 		try{		
 			rootFrame = RootFrame.getInstance();
+
+            controller = new Mover() {
+                @Override
+                public void up() {
+                    System.out.println("up");
+                }
+
+                @Override
+                public void down() {
+                    System.out.println("down");
+                }
+
+                @Override
+                public void left() {
+                    System.out.println("left");
+                }
+
+                @Override
+                public void right() {
+                    System.out.println("right");
+                }
+            };
+
+            if (controller != null) {
+                ControlPanel.getBackButton().addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        controller.down();
+                    }
+                });
+
+                ControlPanel.getStarightButton().addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        controller.up();
+                    }
+                });
+
+                ControlPanel.getLeftButton().addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        controller.left();
+                    }
+                });
+
+                ControlPanel.getRightButton().addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        controller.right();
+                    }
+                });
+            }
+
 			rootFrame.setVisible(true);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
-}
 
-class RootFrame extends JFrame {
+    public static void setController(Mover controller) {
+        RootFrame.controller = controller;
+    }
+}*/
+
+public class RootFrame extends JFrame {
 	private static RootFrame rootFrame;
 
 	public static RootFrame getInstance() {
@@ -67,6 +126,36 @@ class RootFrame extends JFrame {
 			e.printStackTrace();
 		}
 	}
+
+    public void addControl(final Mover controller) {
+        ControlPanel.getBackButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.down();
+            }
+        });
+
+        ControlPanel.getStarightButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.up();
+            }
+        });
+
+        ControlPanel.getLeftButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.left();
+            }
+        });
+
+        ControlPanel.getRightButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.right();
+            }
+        });
+    }
 }
 
 
@@ -124,7 +213,7 @@ class ControlContainerPanel extends JPanel implements RobotUIPanelBuilder {
 class ControlPanel extends JPanel implements RobotUIPanelBuilder {
 	private static ControlPanel conPanel;
 
-	private static JButton starightButton = new JButton("STARAIGHT");
+	private static JButton starightButton = new JButton("UP");
 	private static JButton leftButton = new JButton("LEFT");
 	private static JButton backButton = new JButton("BACK");
 	private static JButton rightButton = new JButton("RIGHT");
@@ -170,6 +259,7 @@ class ControlPanel extends JPanel implements RobotUIPanelBuilder {
 								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(backButton))
 				);
+
 	}
 
 	@Override
@@ -180,6 +270,22 @@ class ControlPanel extends JPanel implements RobotUIPanelBuilder {
 		conPanelLayout.removeLayoutComponent(rightButton);
 		conPanelLayout.removeLayoutComponent(backButton);
 	}
+
+    public static JButton getStarightButton() {
+        return starightButton;
+    }
+
+    public static JButton getLeftButton() {
+        return leftButton;
+    }
+
+    public static JButton getBackButton() {
+        return backButton;
+    }
+
+    public static JButton getRightButton() {
+        return rightButton;
+    }
 }
 
 class ControlTitlePanel extends JPanel implements RobotUIPanelBuilder{
