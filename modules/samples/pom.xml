@@ -22,6 +22,7 @@
 
     <modules>
         <module>general</module>
+        <module>common</module>
         <!--<module>turtlebot</module>-->
     </modules>
 
