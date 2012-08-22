@@ -13,6 +13,14 @@ public class MapDataMessage implements DataMessage {
     }
 
     public void setId(String id) {
-
+    	
+    }
+    
+    public void put(String key,Object value){
+    	map.put(key, value);
+    }
+    
+    public Object get(String key){
+    	return map.get(key);
     }
 }

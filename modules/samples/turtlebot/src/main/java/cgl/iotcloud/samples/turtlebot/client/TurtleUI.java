@@ -1,7 +1,7 @@
 package cgl.iotcloud.samples.turtlebot.client;
 
 
-import cgl.iotcloud.client.robot.Mover;
+import cgl.iotcloud.client.robot.ActionController;
 import cgl.iotcloud.client.robot.RootFrame;
 import cgl.iotcloud.samples.turtlebot.sensor.Velocity;
 
@@ -10,7 +10,7 @@ public class TurtleUI {
 
     private TurtleClient client;
 
-    private Mover mover = new Mover() {
+    private ActionController actController = new ActionController() {
         @Override
         public void up() {
             client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
@@ -43,7 +43,7 @@ public class TurtleUI {
         client.start();
 
         RootFrame rootFrame = RootFrame.getInstance();
-        rootFrame.addControl(mover);
+        rootFrame.addActionController(actController);
 
         rootFrame.setVisible(true);
     }

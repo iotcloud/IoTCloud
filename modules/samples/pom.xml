@@ -23,7 +23,8 @@
     <modules>
         <module>general</module>
         <module>common</module>
-        <!--<module>turtlebot</module>-->
+        <!-- <module>turtlebot</module>-->
+        <module>lego_nxt</module>
     </modules>
 
 	<dependencies>
@@ -89,6 +90,5 @@
 			<groupId>org.apache.axis2</groupId>
 			<artifactId>axis2-adb-codegen</artifactId>
 		</dependency>
-
 	</dependencies>
 </project>

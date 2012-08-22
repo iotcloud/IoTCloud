@@ -127,7 +127,7 @@ public class RootFrame extends JFrame {
 		}
 	}
 
-    public void addControl(final Mover controller) {
+    public void addActionController(final ActionController controller) {
         ControlPanel.getBackButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
