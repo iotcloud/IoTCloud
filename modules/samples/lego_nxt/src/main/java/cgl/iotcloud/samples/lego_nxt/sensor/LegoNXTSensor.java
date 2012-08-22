@@ -16,12 +16,14 @@ import java.util.Set;
 import nxt_msgs.Contact;
 
 public class LegoNXTSensor extends AbstractSensor implements RosLegoNXTListener {
-    private RosLegoNXT legoNXT = null;
+    private RosLegoNXT legoNXT ;
+    private static LegoNXTSensor sensor ;
 
     public LegoNXTSensor(String type, String name) {
         super(type, name);
 
         legoNXT = new RosLegoNXT();
+        legoNXT.registerListener(this);
     }
 
     public void start(NodeConfiguration nodeConfiguration) {
@@ -31,7 +33,7 @@ public class LegoNXTSensor extends AbstractSensor implements RosLegoNXTListener 
 
         // register the sensor itself
         SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8080");
-        adaptor.registerSensor(this);
+        adaptor.registerSensor(sensor);
 
         adaptor.start();
     }
@@ -42,7 +44,7 @@ public class LegoNXTSensor extends AbstractSensor implements RosLegoNXTListener 
 
         NodeConfiguration nodeConfiguration = loader.build();
 
-        LegoNXTSensor sensor = new LegoNXTSensor(Constants.SENSOR_TYPE_BLOCK, "lego-nxt-sensor");
+        sensor = new LegoNXTSensor(Constants.SENSOR_TYPE_BLOCK, "lego-nxt-sensor");
         sensor.start(nodeConfiguration);
     }
 
@@ -93,11 +95,19 @@ public class LegoNXTSensor extends AbstractSensor implements RosLegoNXTListener 
     
     @Override
     public void onRosMessage(Object obj){
+    	
     	if(obj instanceof Contact){
     		MapDataMessage msg = new MapDataMessage();
     		msg.put("contact", ((Contact)obj).getContact());
     		
-    		sendMessage(msg);
+    		if(msg == null)
+    			System.out.println("msg is null ===");
+    		else
+    			System.out.println("msg is not null ===");
+    		
+    		if(sensor == null)
+    			System.out.println("sensor is null");
+    		sensor.sendMessage(msg);
     	}
     }
 }

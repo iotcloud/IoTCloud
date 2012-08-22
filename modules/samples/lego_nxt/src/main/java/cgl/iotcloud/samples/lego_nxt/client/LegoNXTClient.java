@@ -17,7 +17,7 @@ public class LegoNXTClient {
     public void start() {
         sensorClient = new SensorClient("http://localhost:8080/");
 
-        sensorClient.fixOnSensorWithName("lego_nxt-sensor");
+        sensorClient.fixOnSensorWithName("lego-nxt-sensor");
 
         sensorClient.setUpdateHandler(new MessageHandler() {
             public void onMessage(SensorMessage message) {
@@ -39,6 +39,7 @@ public class LegoNXTClient {
                 
                 if(message instanceof MapDataMessage){
                 	System.out.println("touch sensor contact "+((MapDataMessage)message).get("contact"));
+                	LegoNXTUI.getInstance().updateUI("contact :"+((MapDataMessage)message).get("contact"));
                 }
             }
         });

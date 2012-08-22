@@ -33,12 +33,17 @@ public class RosLegoNXT extends AbstractNodeMain {
         final Publisher<Twist> publisher =
                 connectedNode.newPublisher("cmd_vel", Twist._TYPE);
         
-        final Subscriber<Contact> contactSubscriber  = connectedNode.newSubscriber("touch_sensor",Contact._TYPE);
+        final Subscriber<Contact> contactSubscriber  = connectedNode.newSubscriber("m_touch_sensor",Contact._TYPE);
         
         contactSubscriber.addMessageListener(new MessageListener<Contact>(){
         	
         	public void onNewMessage(Contact msg){
-        		rosListener.onRosMessage(msg);
+        		if(msg  == null)
+        			System.out.println("msg is null");
+        		else
+        			System.out.println("msg is not null"+msg.getContact());
+        		if(rosListener != null)
+        			rosListener.onRosMessage(msg);
         	}
         });
         
@@ -79,4 +84,8 @@ public class RosLegoNXT extends AbstractNodeMain {
         	legoNXT.setLinear(new Velocity(.1, 0, 0));
         }
     }
+
+	public void registerListener(RosLegoNXTListener listener) {
+		rosListener = listener;
+	}
 } 

@@ -163,6 +163,10 @@ public class RootFrame extends JFrame {
             }
         });
     }
+    
+    public void update(String msg){
+    	SensorDataContainerPanel.getInstance().updateData(msg);
+    }
 }
 
 
@@ -519,7 +523,7 @@ class SensorTitlePanel extends JPanel implements RobotUIPanelBuilder{
 
 class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 	private static SensorDataContainerPanel senDataContainerPanel;
-	private JTextArea senData = new JTextArea();
+	private static JTextArea senData = new JTextArea();
 
 	public static SensorDataContainerPanel getInstance(){
 		if(senDataContainerPanel == null)
@@ -557,8 +561,8 @@ class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 
 	}
 
-	public void updateData(String data){
-
+	public static void updateData(String data){
+		senData.setText(data);
 	}
 }
 

@@ -8,7 +8,8 @@ import cgl.iotcloud.samples.lego_nxt.sensor.Velocity;
 
 public class LegoNXTUI {
 
-    private LegoNXTClient client;
+    private static LegoNXTClient client;
+    private static LegoNXTUI legoNXTUI;
 
     private ActionController actController = new ActionController() {
         @Override
@@ -49,8 +50,18 @@ public class LegoNXTUI {
     }
 
     public static void main(String[] args) {
-        LegoNXTUI ui = new LegoNXTUI();
+    	if(legoNXTUI == null)
+    		legoNXTUI = new LegoNXTUI();
 
-        ui.start();
+    	legoNXTUI.start();
+    }
+    
+    public static LegoNXTUI getInstance(){
+    	return legoNXTUI;
+    }
+    
+    public void updateUI(String msg){
+    	RootFrame rootFrame = RootFrame.getInstance();
+    	rootFrame.update(msg);
     }
 }
