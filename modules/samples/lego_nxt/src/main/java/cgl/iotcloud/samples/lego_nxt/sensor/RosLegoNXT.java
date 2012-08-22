@@ -3,15 +3,17 @@ package cgl.iotcloud.samples.lego_nxt.sensor;
 import geometry_msgs.Twist;
 import nxt_msgs.Contact;
 import org.ros.concurrent.CancellableLoop;
+import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
+import org.ros.node.topic.Subscriber;
 
 public class RosLegoNXT extends AbstractNodeMain {
     private volatile Velocity linear = null;
     private volatile Velocity angular = null;
-    private RosListener rosListener;
+    private RosLegoNXTListener rosListener;
 
     public void setLinear(Velocity linear) {
         this.linear = linear;
@@ -33,7 +35,7 @@ public class RosLegoNXT extends AbstractNodeMain {
         
         final Subscriber<Contact> contactSubscriber  = connectedNode.newSubscriber("touch_sensor",Contact._TYPE);
         
-        contactSubscriber.addMessageListener(new MessageListner<Contact>(){
+        contactSubscriber.addMessageListener(new MessageListener<Contact>(){
         	
         	public void onNewMessage(Contact msg){
         		rosListener.onRosMessage(msg);
@@ -71,7 +73,7 @@ public class RosLegoNXT extends AbstractNodeMain {
     }
 
     public static void main(String[] args) {
-        RosLegoNXTMover legoNXT = new RosLegoNXTMover();
+        RosLegoNXT legoNXT = new RosLegoNXT();
 
         while (true) {
         	legoNXT.setLinear(new Velocity(.1, 0, 0));

@@ -43,7 +43,7 @@ public class LegoNXTUI {
         client.start();
 
         RootFrame rootFrame = RootFrame.getInstance();
-        rootFrame.addControl(actController);
+        rootFrame.addActionController(actController);
 
         rootFrame.setVisible(true);
     }
