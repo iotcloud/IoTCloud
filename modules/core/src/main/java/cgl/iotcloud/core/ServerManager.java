@@ -35,6 +35,8 @@ public class ServerManager {
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
+            	System.out.println(" ==== Shut Down Thread Initiated ==== ");
+            	cloud.sendIOTCloudShutDownMssg();
                 server.stop();
             }
         });

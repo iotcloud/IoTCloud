@@ -14,6 +14,8 @@ public class SensorInformation {
     private Endpoint controlEndpoint;
     /** data endpoint */
     private Endpoint dataEndpoint;
+    /** public endpoint */
+    private Endpoint publicEndpoint;
     /** update endpoint */
     private Endpoint updateEndpoint;
 
@@ -124,4 +126,20 @@ public class SensorInformation {
     public void setUpdateEndpoint(Endpoint updateEndpoint) {
         this.updateEndpoint = updateEndpoint;
     }
+    
+    /**
+     * Get the Public End-Point
+     * @return
+     */
+    public Endpoint getPublicEndpoint() {
+		return publicEndpoint;
+	}
+
+    /**
+     * Set the Public End-Point
+     * @param publicEndpoint
+     */
+	public void setPublicEndpoint(Endpoint publicEndpoint) {
+		this.publicEndpoint = publicEndpoint;
+	}
 }

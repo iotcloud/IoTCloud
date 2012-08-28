@@ -88,4 +88,16 @@ public interface Sensor {
      * @param endpoint the endpoint to be used as a update endpoint
      */
     public void setUpdateEndpoint(Endpoint endpoint);
+    
+    /**
+     * This is the endpoint used by the IOT-Cloud to send generic messages (Example: Shut-Down Message)
+     * @return
+     */
+    public Endpoint getPublicEndpoint();
+    
+    /**
+     * This is the endpoint used by the IOT-Cloud to send generic messages (Example: Shut-Down Message)
+     * @param publicEndpoint
+     */
+	public void setPublicEndpoint(Endpoint publicEndpoint);
 }

@@ -148,6 +148,10 @@ public class ClientRegistrationService {
         epr = sensor.getDataEndpoint();
         endpoint = createEpr(epr);
         info.setDataEndpoint(endpoint);
+        
+        epr = sensor.getPublicEndpoint();
+        endpoint = createEpr(epr);
+        info.setPublicEndpoint(endpoint);
 
         epr = sensor.getUpdateEndpoint();
         endpoint = createEpr(epr);

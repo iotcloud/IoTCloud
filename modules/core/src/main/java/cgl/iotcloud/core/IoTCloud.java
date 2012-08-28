@@ -1,10 +1,16 @@
 package cgl.iotcloud.core;
 
 import cgl.iotcloud.core.broker.Connections;
+import cgl.iotcloud.core.broker.JMSSender;
+import cgl.iotcloud.core.broker.JMSSenderFactory;
 import cgl.iotcloud.core.client.SCClient;
 import cgl.iotcloud.core.config.SCConfiguration;
 import cgl.iotcloud.core.endpoint.JMSEndpoint;
 import cgl.iotcloud.core.endpoint.StreamingEndpoint;
+import cgl.iotcloud.core.message.SensorMessage;
+import cgl.iotcloud.core.message.data.TextDataMessage;
+import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
+import cgl.iotcloud.core.message.update.MessageToUpdateFactory;
 import cgl.iotcloud.core.sensor.AbstractSensorFilter;
 import cgl.iotcloud.core.sensor.FilterCriteria;
 import cgl.iotcloud.core.sensor.SCSensor;
@@ -28,12 +34,17 @@ import java.util.UUID;
  */
 public class IoTCloud {
     private static Logger log = LoggerFactory.getLogger(IoTCloud.class);
+    
+    private final static String IOTCloudShutDownMssg = "IOTCloud Shutting Down"; 
     /** Configuration for the sensor cloud */
     private SCConfiguration configuration = null;
     /** Sensor catalog containing the information about the sensors */
     private SensorCatalog sensorCatalog = null;
 
     private ClientCatalog clientCatalog = null;
+    
+    private Endpoint publicEndPoint;
+    private JMSSender publicSender;
 
     /** Updates are send through this */
     private UpdateManager updateManager = null;
@@ -58,6 +69,9 @@ public class IoTCloud {
         clientCatalog = new ClientCatalog();
         updateManager = new UpdateManager(configuration, sensorCatalog, this);
         updateManager.init();
+        
+        // Initialize Public-End-Point
+        initPublicEndpoint();
     }
 
     public SensorCatalog getSensorCatalog() {
@@ -81,6 +95,56 @@ public class IoTCloud {
     }
 
     /**
+     * Initializes a Public End-Point for generic messages to be dispatched to all the registered Sensors and Clients  
+     */
+    public void initPublicEndpoint()
+    {
+    	String uniqueId = UUID.randomUUID().toString();
+    	
+    	publicEndPoint = new JMSEndpoint();
+    	publicEndPoint.setAddress(uniqueId + "/public");
+    	
+    	publicEndPoint.setProperties(configuration.getBroker().getConnections("topic").getParameters());
+    	
+    	publicSender = initPublicSender(new JMSSenderFactory().create(publicEndPoint));
+    }
+    
+    /**
+     * Registers a Sender specific to the Public End-Point
+     * @param publicSender
+     */
+    public JMSSender initPublicSender(JMSSender publicSender)
+    {
+    	publicSender.setMessageFactory(new JMSDataMessageFactory());
+
+    	publicSender.init();
+    	publicSender.start();
+    	
+    	return publicSender;
+    }
+    
+    /**
+     * Sends a IOT-Middle-ware Shut Down message to all the Registered Sensors and Clients (representing limited service)
+     * Called prior to exiting the java-runtime  
+     */
+    public void sendIOTCloudShutDownMssg()
+    {
+    	TextDataMessage message = new TextDataMessage();
+        message.setText(IOTCloudShutDownMssg);
+        
+        sendPublicMessage(message);
+    }
+    
+    /**
+     * Sends a Message over Public End-Point
+     * @param message
+     */
+    public void sendPublicMessage(SensorMessage message)
+    {
+    	publicSender.send(message);
+    }
+    
+    /**
      * Register a sensor with the given name and type
      * @param name name of the sensor
      * @param type type of the sensor
@@ -93,6 +157,9 @@ public class IoTCloud {
         sensor.setId(uid);
         sensor.setType(type);
 
+        // Setting PublicEndPoint
+        sensor.setPublicEndpoint(publicEndPoint);
+        
         Endpoint dataEndpoint;
         if (Constants.SENSOR_TYPE_BLOCK.equalsIgnoreCase(type)) {
             dataEndpoint = new JMSEndpoint();
@@ -152,6 +219,7 @@ public class IoTCloud {
 
         Sensor sensor = sensorCatalog.getSensor(sensorId);
         SCClient client = new SCClient(clientId);
+        client.setPublicEndpoint(publicEndPoint);
         client.setControlEndpoint(sensor.getControlEndpoint());
         client.setUpdateEndpoint(sensor.getUpdateEndpoint());
         client.setType(sensor.getType());

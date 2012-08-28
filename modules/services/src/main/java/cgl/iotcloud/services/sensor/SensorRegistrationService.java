@@ -42,6 +42,12 @@ public class SensorRegistrationService {
         info.setId(sensor.getId());
         info.setName(sensor.getName());
 
+        if (sensor.getPublicEndpoint() == null) {
+            handleException("Failed to create a PublicEndpoint for the Sensor");
+        }
+        Endpoint publicEpr = createEndpoint(sensor.getPublicEndpoint());
+        info.setPublicEndpoint(publicEpr);
+        
         if (sensor.getDataEndpoint() == null) {
             handleException("Failed to create a DataEndpoint for the Sensor");
         }

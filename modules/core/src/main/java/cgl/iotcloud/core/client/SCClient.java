@@ -16,6 +16,8 @@ public class SCClient {
     private Endpoint controlEndpoint;
     /** Update endpoint it uses */
     private Endpoint updateEndpoint;
+    
+    private Endpoint publicEndpoint;
 
     public SCClient(String id) {
         this.id = id;
@@ -56,4 +58,12 @@ public class SCClient {
     public void setUpdateEndpoint(Endpoint updateEndpoint) {
         this.updateEndpoint = updateEndpoint;
     }
+    
+    public Endpoint getPublicEndpoint() {
+		return publicEndpoint;
+	}
+
+	public void setPublicEndpoint(Endpoint publicEndpoint) {
+		this.publicEndpoint = publicEndpoint;
+	}
 }

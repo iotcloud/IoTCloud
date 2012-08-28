@@ -42,6 +42,12 @@ public class ChatClientHttp {
                     System.out.println("Message Received: " + ((TextDataMessage) message).getText());
                 }
             }
+        }, new MessageHandler() {
+            public void onMessage(SensorMessage message) {
+                if (message instanceof TextDataMessage) {
+                    System.out.println("Public Message Received: " + ((TextDataMessage) message).getText());
+                }
+            }
         });
 
         String chat;

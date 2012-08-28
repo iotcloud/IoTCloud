@@ -90,6 +90,13 @@ public class RegistrationHttpClient implements RegistrationClient {
         Endpoint e = scSensor.getControlEndpoint(); 
         sensor.setControlEndpoint(e);
 
+        e = scSensor.getPublicEndpoint();
+        if (e == null) {
+            handleException("Required endpoint public endpoint cannot be found");
+            return;
+        }
+        sensor.setPublicEndpoint(e);
+        
         e = scSensor.getDataEndpoint();
         if (e == null) {
             handleException("Required endpoint data endpoint cannot be found");

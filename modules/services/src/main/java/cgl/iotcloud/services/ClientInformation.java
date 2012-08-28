@@ -14,6 +14,8 @@ public class ClientInformation {
     private Endpoint controlEndpoint;
     /** data endpoint */
     private Endpoint dataEndpoint;
+    /** public endpoint */
+    private Endpoint publicEndpoint;
     /** update endpoint */
     private Endpoint updateEndpoint;
 
@@ -64,4 +66,12 @@ public class ClientInformation {
     public void setUpdateEndpoint(Endpoint updateEndpoint) {
         this.updateEndpoint = updateEndpoint;
     }
+    
+    public Endpoint getPublicEndpoint() {
+		return publicEndpoint;
+	}
+
+	public void setPublicEndpoint(Endpoint publicEndpoint) {
+		this.publicEndpoint = publicEndpoint;
+	}
 }

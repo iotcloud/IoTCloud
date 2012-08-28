@@ -24,12 +24,16 @@ public class Client implements ManagedLifeCycle {
 
     /** Message listener for sensor data */
     private Listener messageListener = null;
+    /** Message listener for sensor data */
+    private Listener publicMessageListener = null;
     /** Message sender for control data */
     private JMSSender controlSender = null;
     /** Message Listener for update data */
     private JMSListener updateLister;
     /** Message handler specified by the user */
     private MessageHandler handler = null;
+    /** Message handler specified by the user */
+    private MessageHandler publicMessagehandler = null;
     /** Update handler specified by the user */
     private MessageHandler updateHandler = null;
     /** Sensor used by the client */
@@ -39,8 +43,9 @@ public class Client implements ManagedLifeCycle {
         this.sensor = sensor;
     }
 
-    public void setMessageHandler(MessageHandler handler) {
+    public void setMessageHandler(MessageHandler handler, MessageHandler publicMessagehandler) {
         this.handler = handler;
+        this.publicMessagehandler = publicMessagehandler;
     }
 
     public void setUpdateMessageHandler(MessageHandler handler) {
@@ -61,6 +66,9 @@ public class Client implements ManagedLifeCycle {
         controlSender.start();
 
         JMSListenerFactory listenerFactory = new JMSListenerFactory();
+        // Creating a Public Listener
+        publicMessageListener = listenerFactory.create(sensor.getPublicEndpoint(), publicMessagehandler);
+        
         if (sensor.getType().equals(Constants.SENSOR_TYPE_BLOCK)) {
             messageListener = listenerFactory.create(sensor.getDataEndpoint(), handler);
         } else {
@@ -86,6 +94,9 @@ public class Client implements ManagedLifeCycle {
             log.debug("Starting the Listener..");
         }
         messageListener.start();
+        
+        publicMessageListener.init();
+        publicMessageListener.start();
     }
 
     public void destroy() {
@@ -94,6 +105,9 @@ public class Client implements ManagedLifeCycle {
 
         messageListener.stop();
         messageListener.destroy();
+        
+        publicMessageListener.stop();
+        publicMessageListener.destroy();
 
         updateLister.stop();
         updateLister.destroy();

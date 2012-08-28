@@ -37,6 +37,11 @@ public abstract class AbstractSensor implements Sensor, ManagedLifeCycle {
     private Endpoint updateEndpoint;
     /** Update information sender */
     private Sender updateSender = null;
+    
+    /** Public End-point */
+    private Endpoint publicEndpoint;
+    /** Listener for Public Messages */
+    private Listener publicListener = null;
 
     public AbstractSensor(String type, String name) {
         this.type = type;
@@ -47,6 +52,7 @@ public abstract class AbstractSensor implements Sensor, ManagedLifeCycle {
     public void destroy() {
         sender.destroy();
         listener.destroy();
+        publicListener.destroy();
     }
 
     public void init() {
@@ -58,6 +64,9 @@ public abstract class AbstractSensor implements Sensor, ManagedLifeCycle {
         JMSListenerFactory listenerFactory = new JMSListenerFactory();
         listener = listenerFactory.createControlListener(
                 controlEndpoint, new ControlMessageReceiver());
+        
+        publicListener = listenerFactory.createControlListener(
+                publicEndpoint, new ControlMessageReceiver());
 
         if (type.equals(Constants.SENSOR_TYPE_BLOCK)) {
             JMSSenderFactory senderFactory = new JMSSenderFactory();
@@ -76,6 +85,7 @@ public abstract class AbstractSensor implements Sensor, ManagedLifeCycle {
             log.debug("Initializing the Listener for the Sensor with id: " + id);
         }
         listener.init();
+        publicListener.init();
 
         if (log.isDebugEnabled()) {
             log.debug("Starting the Sender for the Sensor with id: " + id);
@@ -86,6 +96,7 @@ public abstract class AbstractSensor implements Sensor, ManagedLifeCycle {
             log.debug("Starting the Listener for the Sensor with id: " + id);
         }
         listener.start();
+        publicListener.start();
 
         if (updateEndpoint != null) {
             if (log.isDebugEnabled()) {
@@ -150,6 +161,14 @@ public abstract class AbstractSensor implements Sensor, ManagedLifeCycle {
     public void setUpdateEndpoint(Endpoint endpoint) {
         this.updateEndpoint = endpoint;
     }
+    
+    public Endpoint getPublicEndpoint() {
+		return publicEndpoint;
+	}
+
+	public void setPublicEndpoint(Endpoint publicEndpoint) {
+		this.publicEndpoint = publicEndpoint;
+	}
 
     /**
      * User should implement this to handle control messages

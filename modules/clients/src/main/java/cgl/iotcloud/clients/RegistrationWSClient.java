@@ -144,6 +144,21 @@ public class RegistrationWSClient implements RegistrationClient {
         controlEpr.setProperties(propsMap);
         sensor.setControlEndpoint(controlEpr);
 
+        // Setting the Public End-Point
+       // System.out.println(" ============= ** "+i.getPublicEndpoint().getAddress());
+        e = i.getPublicEndpoint();
+        cgl.iotcloud.core.Endpoint publicEpr = new JMSEndpoint();
+        publicEpr.setAddress(e.getAddress());
+
+        props = e.getProperties();
+        propsMap = new HashMap<String, String>();
+        for (Property p : props) {
+            propsMap.put(p.getName(), p.getValue());
+        }
+        publicEpr.setProperties(propsMap);
+        sensor.setPublicEndpoint(publicEpr);
+        // ENDS
+        
         e = i.getDataEndpoint();
         cgl.iotcloud.core.Endpoint dataEpr;
         if (Constants.SENSOR_TYPE_BLOCK.equals(sensor.getType())) {
