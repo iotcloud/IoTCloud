@@ -1,8 +1,9 @@
-package cgl.iotcloud.samples.turtlebot.sensor;
+package cgl.iotcloud.samples.lego_nxt.sensor;
 
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.control.DefaultControlMessage;
+import cgl.iotcloud.core.message.data.MapDataMessage;
 import cgl.iotcloud.core.sensor.AbstractSensor;
 import cgl.iotcloud.sensors.SensorAdaptor;
 import com.google.common.base.Preconditions;
@@ -11,26 +12,28 @@ import org.ros.internal.loader.CommandLineLoader;
 import org.ros.node.DefaultNodeMainExecutor;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
-
 import java.util.Set;
+import nxt_msgs.Contact;
 
-public class TurtleSensor extends AbstractSensor {
-    private RosTurtle turtle = null;
+public class LegoNXTSensor extends AbstractSensor implements RosLegoNXTListener {
+    private RosLegoNXT legoNXT ;
+    private static LegoNXTSensor sensor ;
 
-    public TurtleSensor(String type, String name) {
+    public LegoNXTSensor(String type, String name) {
         super(type, name);
 
-        turtle = new RosTurtle();
+        legoNXT = new RosLegoNXT();
+        legoNXT.registerListener(this);
     }
 
     public void start(NodeConfiguration nodeConfiguration) {
-        Preconditions.checkState(turtle != null);
+        Preconditions.checkState(legoNXT != null);
         NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
-        nodeMainExecutor.execute(turtle, nodeConfiguration);
+        nodeMainExecutor.execute(legoNXT, nodeConfiguration);
 
         // register the sensor itself
         SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8080");
-        adaptor.registerSensor(this);
+        adaptor.registerSensor(sensor);
 
         adaptor.start();
     }
@@ -41,7 +44,7 @@ public class TurtleSensor extends AbstractSensor {
 
         NodeConfiguration nodeConfiguration = loader.build();
 
-        TurtleSensor sensor = new TurtleSensor(Constants.SENSOR_TYPE_BLOCK, "turtle-sensor");
+        sensor = new LegoNXTSensor(Constants.SENSOR_TYPE_BLOCK, "lego-nxt-sensor");
         sensor.start(nodeConfiguration);
     }
 
@@ -85,8 +88,26 @@ public class TurtleSensor extends AbstractSensor {
             if (o instanceof Double) {
                 va.setZ((Double) o);
             }
-            turtle.setLinear(vl);
-            turtle.setAngular(va);
+            legoNXT.setLinear(vl);
+            legoNXT.setAngular(va);
         }
+    }
+    
+    @Override
+    public void onRosMessage(Object obj){
+    	
+    	if(obj instanceof Contact){
+    		MapDataMessage msg = new MapDataMessage();
+    		msg.put("contact", ((Contact)obj).getContact());
+    		
+    		if(msg == null)
+    			System.out.println("msg is null ===");
+    		else
+    			System.out.println("msg is not null ===");
+    		
+    		if(sensor == null)
+    			System.out.println("sensor is null");
+    		sensor.sendMessage(msg);
+    	}
     }
 }

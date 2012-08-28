@@ -103,7 +103,7 @@ public class JMSSender implements Sender {
         try {
             // construct a JMS message from the sensor message
             Message message = messageFactory.create(sm, session);
-
+            
             producer.send(message);
         } catch (JMSException e) {
             handleException("Failed to create a text message using the session: " + session, e);

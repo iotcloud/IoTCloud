@@ -22,7 +22,9 @@
 
     <modules>
         <module>general</module>
-        <!--<module>turtlebot</module>-->
+        <module>common</module>
+        <module>turtlebot</module>
+        <module>lego_nxt</module>
     </modules>
 
 	<dependencies>
@@ -52,11 +54,11 @@
 			<artifactId>log4j</artifactId>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.rxtx</groupId>
 			<artifactId>rxtx</artifactId>
 			<version>2.1.7</version>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>iotcloud</groupId>
@@ -88,6 +90,5 @@
 			<groupId>org.apache.axis2</groupId>
 			<artifactId>axis2-adb-codegen</artifactId>
 		</dependency>
-
 	</dependencies>
 </project>

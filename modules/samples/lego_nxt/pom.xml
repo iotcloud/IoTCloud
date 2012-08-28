@@ -9,11 +9,11 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>iotcloud-samples-turtlebot</artifactId>
+    <artifactId>iotcloud-samples-legonxt</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>iotcloud-samples-turtlebot</name>
+    <name>iotcloud-sample-legonxt</name>
     <url>http://maven.apache.org</url>
 
     <properties>

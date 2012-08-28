@@ -139,7 +139,7 @@ echo "Starting SCG/Java ..."
 echo "Using SCG_HOME:    $SCG_HOME"
 echo "Using JAVA_HOME:       $JAVA_HOME"
 echo "Using SCG_XML:     $SCG_XML"
-echo "Using SCG_CLASSPATH: $SCG_CLASSPATH"
+#echo "Using SCG_CLASSPATH: $SCG_CLASSPATH"
 
 #-Djava.io.tmpdir=$SCG_HOME/work/temp \
 $JAVA_HOME/bin/java -server -Xms128M -Xmx128M \

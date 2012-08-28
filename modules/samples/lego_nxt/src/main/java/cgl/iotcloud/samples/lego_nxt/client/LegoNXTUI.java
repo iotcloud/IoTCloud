@@ -1,14 +1,15 @@
-package cgl.iotcloud.samples.turtlebot.client;
+package cgl.iotcloud.samples.lego_nxt.client;
 
 
 import cgl.iotcloud.client.robot.ActionController;
 import cgl.iotcloud.client.robot.RootFrame;
-import cgl.iotcloud.samples.turtlebot.sensor.Velocity;
+import cgl.iotcloud.samples.lego_nxt.sensor.Velocity;
 
 
-public class TurtleUI {
+public class LegoNXTUI {
 
-    private TurtleClient client;
+    private static LegoNXTClient client;
+    private static LegoNXTUI legoNXTUI;
 
     private ActionController actController = new ActionController() {
         @Override
@@ -38,7 +39,7 @@ public class TurtleUI {
     };
 
     public void start() {
-        client = new TurtleClient();
+        client = new LegoNXTClient();
 
         client.start();
 
@@ -49,8 +50,18 @@ public class TurtleUI {
     }
 
     public static void main(String[] args) {
-        TurtleUI ui = new TurtleUI();
+    	if(legoNXTUI == null)
+    		legoNXTUI = new LegoNXTUI();
 
-        ui.start();
+    	legoNXTUI.start();
+    }
+    
+    public static LegoNXTUI getInstance(){
+    	return legoNXTUI;
+    }
+    
+    public void updateUI(String msg){
+    	RootFrame rootFrame = RootFrame.getInstance();
+    	rootFrame.update(msg);
     }
 }
