@@ -42,7 +42,12 @@ public class LegoNXTClient {
                 	LegoNXTUI.getInstance().updateUI("contact :"+((MapDataMessage)message).get("contact"));
                 }
             }
-        });
+        }, new MessageHandler() {
+                                @Override
+                                public void onMessage(SensorMessage message) {
+
+                                }
+                            });
     }
 
     public void setVelocity(Velocity linear, Velocity angular) {
