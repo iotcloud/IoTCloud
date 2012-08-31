@@ -31,7 +31,7 @@ public class ClientServices {
 
         List<SCSensor> sensorList = iotCloud.getSensorCatalog().getSensors();
 
-        Response.ResponseBuilder r = status(200);
+        Response.ResponseBuilder r = status(Response.Status.OK);
 
         String sensors = SCSensorUtils.convertToString(sensorList);
         r = r.entity(sensors);
@@ -48,7 +48,7 @@ public class ClientServices {
 
         SCSensor sensorList = iotCloud.getSensorCatalog().getSensor(id);
 
-        Response.ResponseBuilder r = status(200);
+        Response.ResponseBuilder r = status(Response.Status.OK);
 
         String sensors = SCSensorUtils.convertToString(sensorList);
         r = r.entity(sensors);

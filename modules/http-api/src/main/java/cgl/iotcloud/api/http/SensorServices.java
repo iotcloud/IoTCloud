@@ -7,7 +7,6 @@ import cgl.iotcloud.core.sensor.SCSensorUtils;
 import cgl.iotcloud.core.sensor.Sensor;
 
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -35,14 +34,14 @@ public class SensorServices {
         if (s instanceof SCSensor) {
             SCSensor sc = (SCSensor) s;
 
-            Response.ResponseBuilder r = status(200);
+            Response.ResponseBuilder r = status(Response.Status.OK);
 
             String info = SCSensorUtils.convertToString(sc);
             r = r.entity(info);
 
             return r.build();
         } else {
-            return status(400).entity("Invalid parameters").build();
+            return status(Response.Status.BAD_REQUEST).entity("Invalid parameters").build();
         }
     }
 
@@ -55,6 +54,6 @@ public class SensorServices {
 
         iotCloud.unRegisterSensor(id);
 
-        return status(200).entity("Successfully un registered sensor").build();
+        return status(Response.Status.OK).entity("Successfully un registered sensor").build();
     }
 }
