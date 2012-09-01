@@ -11,11 +11,7 @@ import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
 import cgl.iotcloud.core.message.update.MessageToUpdateFactory;
-import cgl.iotcloud.core.sensor.AbstractSensorFilter;
-import cgl.iotcloud.core.sensor.FilterCriteria;
-import cgl.iotcloud.core.sensor.SCSensor;
-import cgl.iotcloud.core.sensor.Sensor;
-import cgl.iotcloud.core.sensor.SensorException;
+import cgl.iotcloud.core.sensor.*;
 import cgl.iotcloud.core.sensor.filter.SensorIdFilter;
 import cgl.iotcloud.core.sensor.filter.SensorNameFilter;
 import cgl.iotcloud.core.sensor.filter.SensorTypeFilter;
@@ -23,6 +19,7 @@ import cgl.iotcloud.core.stream.StreamingServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.tree.DefaultTreeCellEditor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +46,10 @@ public class IoTCloud {
     /** Updates are send through this */
     private UpdateManager updateManager = null;
 
+    private NodeCatalog nodeCatalog = null;
+
+    private EndpointAllocator endpointAllocator = null;
+
     public IoTCloud(SCConfiguration configuration) {
         this.configuration = configuration;
     }
@@ -67,8 +68,13 @@ public class IoTCloud {
 
         sensorCatalog = new SensorCatalog();
         clientCatalog = new ClientCatalog();
+
+        nodeCatalog = new NodeCatalog();
+
         updateManager = new UpdateManager(configuration, sensorCatalog, this);
         updateManager.init();
+
+        endpointAllocator = new EndpointAllocator(configuration, nodeCatalog);
         
         // Initialize Public-End-Point
         initPublicEndpoint();
@@ -111,7 +117,8 @@ public class IoTCloud {
     
     /**
      * Registers a Sender specific to the Public End-Point
-     * @param publicSender
+     *
+     * @param publicSender this sender is used for sending information about the iotcloud to the nodes.
      */
     public JMSSender initPublicSender(JMSSender publicSender)
     {
@@ -315,6 +322,116 @@ public class IoTCloud {
         criteria.addProperties(props);
 
         return sensorFilter.filter(criteria);
+    }
+
+    /**
+     * Register a node to the system.
+     *
+     * @param nodeName name of the node
+     * @return created node
+     */
+    public NodeInformation registerNode(NodeName nodeName) {
+        if (nodeCatalog.hasNode(nodeName)) {
+            return null;
+        }
+
+        NodeInformation nodeInformation = new NodeInformation(nodeName);
+        nodeCatalog.addNode(nodeInformation);
+
+        return nodeInformation;
+    }
+
+    /**
+     * Un-Register a node to the system.
+     *
+     * @param nodeName name of the node
+     * @return created node
+     */
+    public NodeInformation unRegisterNode(NodeName nodeName) {
+        if (nodeCatalog.hasNode(nodeName)) {
+            return null;
+        }
+
+        NodeInformation nodeInformation = new NodeInformation(nodeName);
+        nodeCatalog.removeNode(nodeInformation);
+
+        return nodeInformation;
+    }
+
+    /**
+     * Register a consumer to a node
+     *
+     * @param nodeName node to register the consumer
+     * @param name name of the endpoint
+     * @param type type of the endpoint
+     * @return endpoint created
+     */
+    public Endpoint registerConsumer(NodeName nodeName, String name,
+                                     String type, String path) throws IOTException {
+        NodeInformation nodeInformation = nodeCatalog.getNode(nodeName);
+        if (nodeInformation == null) {
+            throw new IOTException("Cannot find the specified node: " + nodeName);
+        }
+
+        Endpoint endpoint = endpointAllocator.allocate(nodeName, name, type, path);
+        nodeInformation.addConsumer(endpoint);
+
+        return endpoint;
+    }
+
+    public void unRegisterConsumer(NodeName nodeName, String name) throws IOTException {
+        NodeInformation nodeInformation = nodeCatalog.getNode(nodeName);
+        if (nodeInformation == null) {
+            throw new IOTException("Cannot find the specified node: " + nodeName);
+        }
+
+        Endpoint endpointToRemove = null;
+        for (Endpoint e : nodeInformation.getConsumers()) {
+            if (e.getName().equals(name)) {
+                endpointToRemove = e;
+                break;
+            }
+        }
+
+        nodeInformation.removeConsumer(endpointToRemove);
+    }
+
+    /**
+     * Register a consumer to a node
+     *
+     * @param nodeName node to register the consumer
+     * @param name name of the endpoint
+     * @param type type of the endpoint
+     * @return endpoint created
+     */
+    public Endpoint registerProducer(NodeName nodeName, String name, String type, String path)
+            throws IOTException {
+        NodeInformation nodeInformation = nodeCatalog.getNode(nodeName);
+        if (nodeInformation == null) {
+            throw new IOTException("Cannot find the specified node: " + nodeName);
+        }
+
+        Endpoint endpoint = endpointAllocator.allocate(nodeName, name, type, path);
+        nodeInformation.addProducer(endpoint);
+
+        return endpoint;
+    }
+
+    public void unRegisterProducer(NodeName nodeName, String name) throws IOTException {
+        NodeInformation nodeInformation = nodeCatalog.getNode(nodeName);
+        if (nodeInformation == null) {
+            throw new IOTException("Cannot find the specified node: " + nodeName);
+        }
+
+        Endpoint endpointToRemove = null;
+        for (Endpoint e : nodeInformation.getProducers()) {
+            if (e.getName().equals(name)) {
+                endpointToRemove = e;
+                break;
+            }
+        }
+
+        nodeInformation.removeProducer(endpointToRemove);
     }
 
     protected void handleException(String s) {
