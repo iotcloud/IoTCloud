@@ -1,6 +1,6 @@
 package cgl.iotcloud.services.node;
 
-public class EndpointRequestInfo {
+public class EndpointInfo {
     private String name;
 
     private String type = "BLOCK";

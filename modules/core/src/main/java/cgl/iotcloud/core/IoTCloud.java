@@ -10,7 +10,6 @@ import cgl.iotcloud.core.endpoint.StreamingEndpoint;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
-import cgl.iotcloud.core.message.update.MessageToUpdateFactory;
 import cgl.iotcloud.core.sensor.*;
 import cgl.iotcloud.core.sensor.filter.SensorIdFilter;
 import cgl.iotcloud.core.sensor.filter.SensorNameFilter;
@@ -19,7 +18,6 @@ import cgl.iotcloud.core.stream.StreamingServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.tree.DefaultTreeCellEditor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -330,8 +328,9 @@ public class IoTCloud {
      * @param nodeName name of the node
      * @return created node
      */
-    public NodeInformation registerNode(NodeName nodeName) {
+    public NodeInformation registerNode(NodeName nodeName) throws IOTException {
         if (nodeCatalog.hasNode(nodeName)) {
+            handleError("Cannot register node.. node already exists: " + nodeName);
             return null;
         }
 
@@ -347,12 +346,13 @@ public class IoTCloud {
      * @param nodeName name of the node
      * @return created node
      */
-    public NodeInformation unRegisterNode(NodeName nodeName) {
-        if (nodeCatalog.hasNode(nodeName)) {
+    public NodeInformation unRegisterNode(NodeName nodeName) throws IOTException {
+        NodeInformation nodeInformation = nodeCatalog.getNode(nodeName);
+        if (nodeInformation == null) {
+            handleError("Cannot find the specified node: " + nodeName);
             return null;
         }
 
-        NodeInformation nodeInformation = new NodeInformation(nodeName);
         nodeCatalog.removeNode(nodeInformation);
 
         return nodeInformation;
@@ -370,7 +370,8 @@ public class IoTCloud {
                                      String type, String path) throws IOTException {
         NodeInformation nodeInformation = nodeCatalog.getNode(nodeName);
         if (nodeInformation == null) {
-            throw new IOTException("Cannot find the specified node: " + nodeName);
+            handleError("Cannot find the specified node: " + nodeName);
+            return null;
         }
 
         Endpoint endpoint = endpointAllocator.allocate(nodeName, name, type, path);
@@ -379,10 +380,18 @@ public class IoTCloud {
         return endpoint;
     }
 
+    /**
+     * Un-Register a consumer from a node
+     *
+     * @param nodeName name of the node
+     * @param name name of the consumer
+     * @throws IOTException
+     */
     public void unRegisterConsumer(NodeName nodeName, String name) throws IOTException {
         NodeInformation nodeInformation = nodeCatalog.getNode(nodeName);
         if (nodeInformation == null) {
-            throw new IOTException("Cannot find the specified node: " + nodeName);
+            handleError("Cannot find the specified node: " + nodeName);
+            return;
         }
 
         Endpoint endpointToRemove = null;
@@ -392,8 +401,12 @@ public class IoTCloud {
                 break;
             }
         }
-
-        nodeInformation.removeConsumer(endpointToRemove);
+        if (endpointToRemove != null) {
+            nodeInformation.removeConsumer(endpointToRemove);
+        } else {
+            String msg = "Cannot find the specified consumer: " + name + " in node: " + nodeName;
+            handleError(msg);
+        }
     }
 
     /**
@@ -408,7 +421,8 @@ public class IoTCloud {
             throws IOTException {
         NodeInformation nodeInformation = nodeCatalog.getNode(nodeName);
         if (nodeInformation == null) {
-            throw new IOTException("Cannot find the specified node: " + nodeName);
+            handleError("Cannot find the specified node: " + nodeName);
+            return null;
         }
 
         Endpoint endpoint = endpointAllocator.allocate(nodeName, name, type, path);
@@ -417,10 +431,18 @@ public class IoTCloud {
         return endpoint;
     }
 
+    /**
+     * Un-Register a producer from a node
+     *
+     * @param nodeName name of the node
+     * @param name name of the producer
+     * @throws IOTException
+     */
     public void unRegisterProducer(NodeName nodeName, String name) throws IOTException {
         NodeInformation nodeInformation = nodeCatalog.getNode(nodeName);
         if (nodeInformation == null) {
-            throw new IOTException("Cannot find the specified node: " + nodeName);
+            handleError("Cannot find the specified node: " + nodeName);
+            return;
         }
 
         Endpoint endpointToRemove = null;
@@ -431,7 +453,17 @@ public class IoTCloud {
             }
         }
 
-        nodeInformation.removeProducer(endpointToRemove);
+        if (endpointToRemove != null) {
+            nodeInformation.removeProducer(endpointToRemove);
+        } else {
+            String msg = "Cannot find the specified producer: " + name + " in node: " + nodeName;
+            handleError(msg);
+        }
+    }
+
+    private void handleError(String msg) throws IOTException {
+        log.error(msg);
+        throw new IOTException(msg);
     }
 
     protected void handleException(String s) {

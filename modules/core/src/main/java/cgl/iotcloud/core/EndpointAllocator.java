@@ -35,6 +35,10 @@ public class EndpointAllocator {
             }
         }
 
+        if (type == null) {
+            type = Constants.MESSAGE_TYPE_BLOCK;
+        }
+
         if (type.equals(Constants.MESSAGE_TYPE_BLOCK)) {
             endpoint = new JMSEndpoint();
             endpoint.setAddress(nodeName.getGroup() + "/" + nodeName.getName() + "/" + path);

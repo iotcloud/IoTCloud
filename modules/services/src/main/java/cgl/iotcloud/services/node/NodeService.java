@@ -22,7 +22,11 @@ public class NodeService {
         }
 
         NodeName nodeName = new NodeName(nodeInfo.getName(), nodeInfo.getGroup());
-        ioTCloud.registerNode(nodeName);
+        try {
+            ioTCloud.registerNode(nodeName);
+        } catch (IOTException e) {
+            handleException("Failed to register node..", e);
+        }
 
         RegistrationResponse response = new RegistrationResponse();
         response.setStatus("Success");
@@ -40,7 +44,11 @@ public class NodeService {
 
         NodeName nodeName = new NodeName(nodeInfo.getName(), nodeInfo.getGroup());
 
-        ioTCloud.unRegisterNode(nodeName);
+        try {
+            ioTCloud.unRegisterNode(nodeName);
+        } catch (IOTException e) {
+            handleException("Failed to register node..", e);
+        }
 
         RegistrationResponse response = new RegistrationResponse();
         response.setStatus("Success");
@@ -49,7 +57,7 @@ public class NodeService {
     }
 
     public Endpoint registerProducer(NodeInfo nodeInfo,
-                                     EndpointRequestInfo endpoint) throws AxisFault {
+                                     EndpointInfo endpoint) throws AxisFault {
         IoTCloud ioTCloud = retrieveIoTCloud();
 
         if (nodeInfo.getName() == null) {
@@ -78,8 +86,33 @@ public class NodeService {
         return null;
     }
 
+    public Endpoint unRegisterProducer(NodeInfo nodeInfo,
+                                     EndpointInfo endpoint) throws AxisFault {
+        IoTCloud ioTCloud = retrieveIoTCloud();
+
+        if (nodeInfo.getName() == null) {
+            handleException("Invalid parameter for registering producer.. " +
+                    "a valid node name must be present");
+        }
+
+        if (endpoint.getName() == null) {
+            handleException("Invalid parameter for registering producer.. " +
+                    "a valid name must be present");
+        }
+
+        NodeName nodeName = new NodeName(nodeInfo.getName(), nodeInfo.getGroup());
+
+        try {
+            ioTCloud.unRegisterProducer(nodeName, endpoint.getName());
+        } catch (IOTException e) {
+            handleException("Failed to register the producer..", e);
+        }
+
+        return null;
+    }
+
     public Endpoint registerConsumer(NodeInfo nodeInfo,
-                                     EndpointRequestInfo endpoint) throws AxisFault {
+                                     EndpointInfo endpoint) throws AxisFault {
         IoTCloud ioTCloud = retrieveIoTCloud();
 
         if (nodeInfo.getName() == null) {
@@ -101,6 +134,31 @@ public class NodeService {
         try {
             ioTCloud.registerConsumer(nodeName, endpoint.getName(),
                     endpoint.getType(), endpoint.getPath());
+        } catch (IOTException e) {
+            handleException("Failed to register the producer..", e);
+        }
+
+        return null;
+    }
+
+    public Endpoint unRegisterConsumer(NodeInfo nodeInfo,
+                                     EndpointInfo endpoint) throws AxisFault {
+        IoTCloud ioTCloud = retrieveIoTCloud();
+
+        if (nodeInfo.getName() == null) {
+            handleException("Invalid parameter for registering consumer.. " +
+                    "a valid node name must be present");
+        }
+
+        if (endpoint.getName() == null) {
+            handleException("Invalid parameter for registering consumer.. " +
+                    "a valid name must be present");
+        }
+
+        NodeName nodeName = new NodeName(nodeInfo.getName(), nodeInfo.getGroup());
+
+        try {
+            ioTCloud.unRegisterConsumer(nodeName, endpoint.getName());
         } catch (IOTException e) {
             handleException("Failed to register the producer..", e);
         }
