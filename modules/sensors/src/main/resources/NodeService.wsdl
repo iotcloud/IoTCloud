@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ns="http://node.services.iotcloud.cgl" xmlns:ax212="http://services.iotcloud.cgl/xsd" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:ax210="http://node.services.iotcloud.cgl/xsd" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://node.services.iotcloud.cgl">
+    <wsdl:documentation>Register Nodes to the IOTCloud</wsdl:documentation>
+    <wsdl:types>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://services.iotcloud.cgl/xsd">
+            <xs:complexType name="Endpoint">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="address" nillable="true" type="xs:string"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="properties" nillable="true" type="ax212:Property"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="Property">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="name" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="value" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema xmlns:ax213="http://services.iotcloud.cgl/xsd" xmlns:ax211="http://node.services.iotcloud.cgl/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://node.services.iotcloud.cgl">
+            <xs:import namespace="http://node.services.iotcloud.cgl/xsd"/>
+            <xs:import namespace="http://services.iotcloud.cgl/xsd"/>
+            <xs:element name="registerNode">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="nodeInfo" nillable="true" type="ax210:NodeInfo"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="registerNodeResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax210:RegistrationResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="unRegisterNode">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="nodeInfo" nillable="true" type="ax210:NodeInfo"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="unRegisterNodeResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax210:RegistrationResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="registerConsumer">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="nodeInfo" nillable="true" type="ax210:NodeInfo"/>
+                        <xs:element minOccurs="0" name="endpoint" nillable="true" type="ax210:EndpointInfo"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="registerConsumerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax212:Endpoint"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="unRegisterConsumer">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="nodeInfo" nillable="true" type="ax210:NodeInfo"/>
+                        <xs:element minOccurs="0" name="endpoint" nillable="true" type="ax210:EndpointInfo"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="unRegisterConsumerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax212:Endpoint"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="registerProducer">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="nodeInfo" nillable="true" type="ax210:NodeInfo"/>
+                        <xs:element minOccurs="0" name="endpoint" nillable="true" type="ax210:EndpointInfo"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="registerProducerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax212:Endpoint"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="unRegisterProducer">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="nodeInfo" nillable="true" type="ax210:NodeInfo"/>
+                        <xs:element minOccurs="0" name="endpoint" nillable="true" type="ax210:EndpointInfo"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="unRegisterProducerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax212:Endpoint"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://node.services.iotcloud.cgl/xsd">
+            <xs:complexType name="NodeInfo">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="group" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="name" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="RegistrationResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="reason" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="status" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="EndpointInfo">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="name" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="path" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="type" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="unRegisterNodeRequest">
+        <wsdl:part name="parameters" element="ns:unRegisterNode"/>
+    </wsdl:message>
+    <wsdl:message name="unRegisterNodeResponse">
+        <wsdl:part name="parameters" element="ns:unRegisterNodeResponse"/>
+    </wsdl:message>
+    <wsdl:message name="registerProducerRequest">
+        <wsdl:part name="parameters" element="ns:registerProducer"/>
+    </wsdl:message>
+    <wsdl:message name="registerProducerResponse">
+        <wsdl:part name="parameters" element="ns:registerProducerResponse"/>
+    </wsdl:message>
+    <wsdl:message name="unRegisterConsumerRequest">
+        <wsdl:part name="parameters" element="ns:unRegisterConsumer"/>
+    </wsdl:message>
+    <wsdl:message name="unRegisterConsumerResponse">
+        <wsdl:part name="parameters" element="ns:unRegisterConsumerResponse"/>
+    </wsdl:message>
+    <wsdl:message name="registerConsumerRequest">
+        <wsdl:part name="parameters" element="ns:registerConsumer"/>
+    </wsdl:message>
+    <wsdl:message name="registerConsumerResponse">
+        <wsdl:part name="parameters" element="ns:registerConsumerResponse"/>
+    </wsdl:message>
+    <wsdl:message name="registerNodeRequest">
+        <wsdl:part name="parameters" element="ns:registerNode"/>
+    </wsdl:message>
+    <wsdl:message name="registerNodeResponse">
+        <wsdl:part name="parameters" element="ns:registerNodeResponse"/>
+    </wsdl:message>
+    <wsdl:message name="unRegisterProducerRequest">
+        <wsdl:part name="parameters" element="ns:unRegisterProducer"/>
+    </wsdl:message>
+    <wsdl:message name="unRegisterProducerResponse">
+        <wsdl:part name="parameters" element="ns:unRegisterProducerResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="NodeServicePortType">
+        <wsdl:operation name="unRegisterNode">
+            <wsdl:input message="ns:unRegisterNodeRequest" wsaw:Action="urn:unRegisterNode"/>
+            <wsdl:output message="ns:unRegisterNodeResponse" wsaw:Action="urn:unRegisterNodeResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="registerProducer">
+            <wsdl:input message="ns:registerProducerRequest" wsaw:Action="urn:registerProducer"/>
+            <wsdl:output message="ns:registerProducerResponse" wsaw:Action="urn:registerProducerResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="unRegisterConsumer">
+            <wsdl:input message="ns:unRegisterConsumerRequest" wsaw:Action="urn:unRegisterConsumer"/>
+            <wsdl:output message="ns:unRegisterConsumerResponse" wsaw:Action="urn:unRegisterConsumerResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="registerConsumer">
+            <wsdl:input message="ns:registerConsumerRequest" wsaw:Action="urn:registerConsumer"/>
+            <wsdl:output message="ns:registerConsumerResponse" wsaw:Action="urn:registerConsumerResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="registerNode">
+            <wsdl:input message="ns:registerNodeRequest" wsaw:Action="urn:registerNode"/>
+            <wsdl:output message="ns:registerNodeResponse" wsaw:Action="urn:registerNodeResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="unRegisterProducer">
+            <wsdl:input message="ns:unRegisterProducerRequest" wsaw:Action="urn:unRegisterProducer"/>
+            <wsdl:output message="ns:unRegisterProducerResponse" wsaw:Action="urn:unRegisterProducerResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="NodeServiceSoap11Binding" type="ns:NodeServicePortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="unRegisterNode">
+            <soap:operation soapAction="urn:unRegisterNode" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="registerProducer">
+            <soap:operation soapAction="urn:registerProducer" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="unRegisterConsumer">
+            <soap:operation soapAction="urn:unRegisterConsumer" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="registerConsumer">
+            <soap:operation soapAction="urn:registerConsumer" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="registerNode">
+            <soap:operation soapAction="urn:registerNode" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="unRegisterProducer">
+            <soap:operation soapAction="urn:unRegisterProducer" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="NodeServiceSoap12Binding" type="ns:NodeServicePortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="unRegisterNode">
+            <soap12:operation soapAction="urn:unRegisterNode" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="registerProducer">
+            <soap12:operation soapAction="urn:registerProducer" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="unRegisterConsumer">
+            <soap12:operation soapAction="urn:unRegisterConsumer" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="registerConsumer">
+            <soap12:operation soapAction="urn:registerConsumer" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="registerNode">
+            <soap12:operation soapAction="urn:registerNode" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="unRegisterProducer">
+            <soap12:operation soapAction="urn:unRegisterProducer" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="NodeServiceHttpBinding" type="ns:NodeServicePortType">
+        <http:binding verb="POST"/>
+        <wsdl:operation name="unRegisterNode">
+            <http:operation location="unRegisterNode"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="registerProducer">
+            <http:operation location="registerProducer"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="unRegisterConsumer">
+            <http:operation location="unRegisterConsumer"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="registerConsumer">
+            <http:operation location="registerConsumer"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="registerNode">
+            <http:operation location="registerNode"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="unRegisterProducer">
+            <http:operation location="unRegisterProducer"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="NodeService">
+        <wsdl:port name="NodeServiceHttpSoap11Endpoint" binding="ns:NodeServiceSoap11Binding">
+            <soap:address location="http://localhost:8080/soap/services/NodeService.NodeServiceHttpSoap11Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="NodeServiceHttpSoap12Endpoint" binding="ns:NodeServiceSoap12Binding">
+            <soap12:address location="http://localhost:8080/soap/services/NodeService.NodeServiceHttpSoap12Endpoint/"/>
+        </wsdl:port>
+        <wsdl:port name="NodeServiceHttpEndpoint" binding="ns:NodeServiceHttpBinding">
+            <http:address location="http://localhost:8080/soap/services/NodeService.NodeServiceHttpEndpoint/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

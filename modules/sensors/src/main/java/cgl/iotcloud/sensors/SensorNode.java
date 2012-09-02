@@ -13,5 +13,4 @@ public class SensorNode {
     public void stop() {
 
     }
-
 }

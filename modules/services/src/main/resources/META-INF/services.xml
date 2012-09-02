@@ -1,6 +1,6 @@
 <serviceGroup>
     <service name="ClientRegistrationService">
-        <Description>Register Clients to the Sensor Cloud</Description>
+        <Description>Register Clients to the IOTCloud</Description>
 
         <transports>
             <transport>http</transport>
@@ -45,7 +45,7 @@
     </service>
 
     <service name="SensorRegistrationService">
-        <Description>Register Clients to the Sensor Cloud</Description>
+        <Description>Register Sensors to the IOTCloud</Description>
 
         <transports>
             <transport>http</transport>
@@ -68,4 +68,56 @@
                              class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
         </operation>
     </service>
+
+    <service name="NodeService">
+        <Description>Register Nodes to the IOTCloud</Description>
+
+        <transports>
+            <transport>http</transport>
+        </transports>
+
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/robust-in-only"
+                             class="org.apache.axis2.rpc.receivers.RPCInOnlyMessageReceiver"/>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-only"
+                             class="org.apache.axis2.rpc.receivers.RPCInOnlyMessageReceiver"/>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </messageReceivers>
+
+        <parameter name="ServiceClass" locked="xsd:false">cgl.iotcloud.services.node.NodeService</parameter>
+
+        <operation name="registerNode">
+            <actionMapping>urn:registerNode</actionMapping>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
+        <operation name="unRegisterNode">
+            <actionMapping>urn:unRegisterNode</actionMapping>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
+        <operation name="registerConsumer">
+            <actionMapping>urn:registerConsumer</actionMapping>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
+        <operation name="unRegisterConsumer">
+            <actionMapping>urn:unRegisterConsumer</actionMapping>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
+        <operation name="registerProducer">
+            <actionMapping>urn:registerProducer</actionMapping>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
+        <operation name="unRegisterProducer">
+            <actionMapping>urn:unRegisterProducer</actionMapping>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
+
+    </service>
+
 </serviceGroup>
