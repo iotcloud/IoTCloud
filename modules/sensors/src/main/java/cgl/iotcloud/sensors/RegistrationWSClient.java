@@ -141,12 +141,12 @@ public class RegistrationWSClient implements RegistrationClient {
         sensor.setUpdateEndpoint(updateEpr);
     }
 
-    protected static void handleException(String s, Exception e) {
+    private void handleException(String s, Exception e) {
         log.error(s, e);
         throw new SCException(s, e);
     }
 
-    protected static void handleException(String s) {
+    private void handleException(String s) {
         log.error(s);
         throw new SCException(s);
     }
