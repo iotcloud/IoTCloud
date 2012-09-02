@@ -35,7 +35,7 @@ public class ServerManager {
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
-            	System.out.println(" ==== Shut Down Thread Initiated ==== ");
+            	log.info("Shutting down IOTCloud...");
             	cloud.sendIOTCloudShutDownMssg();
                 server.stop();
             }
@@ -45,8 +45,6 @@ public class ServerManager {
                 new Runnable() {
                     public void run() {
                         // start the HTTP server
-//                        SGCHTTPServer httpServer = new SGCHTTPServer(cloud);
-//                        httpServer.start();
                         server.start();
                     }
                 }).start();
