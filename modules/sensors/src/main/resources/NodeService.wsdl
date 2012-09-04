@@ -73,7 +73,7 @@
             <xs:element name="unRegisterConsumerResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="return" nillable="true" type="ax212:Endpoint"/>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax210:RegistrationResponse"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -103,7 +103,7 @@
             <xs:element name="unRegisterProducerResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="return" nillable="true" type="ax212:Endpoint"/>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax210:RegistrationResponse"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>

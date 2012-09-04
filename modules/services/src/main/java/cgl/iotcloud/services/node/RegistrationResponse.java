@@ -8,9 +8,8 @@ public class RegistrationResponse {
     public RegistrationResponse() {
     }
 
-    public RegistrationResponse(String status, String reason) {
+    public RegistrationResponse(String status) {
         this.status = status;
-        this.reason = reason;
     }
 
     public String getStatus() {

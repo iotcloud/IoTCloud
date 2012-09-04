@@ -86,7 +86,7 @@ public class NodeService {
         return null;
     }
 
-    public Endpoint unRegisterProducer(NodeInfo nodeInfo,
+    public RegistrationResponse unRegisterProducer(NodeInfo nodeInfo,
                                      EndpointInfo endpoint) throws AxisFault {
         IoTCloud ioTCloud = retrieveIoTCloud();
 
@@ -108,7 +108,7 @@ public class NodeService {
             handleException("Failed to register the producer..", e);
         }
 
-        return null;
+        return new RegistrationResponse("success");
     }
 
     public Endpoint registerConsumer(NodeInfo nodeInfo,
@@ -141,7 +141,7 @@ public class NodeService {
         return null;
     }
 
-    public Endpoint unRegisterConsumer(NodeInfo nodeInfo,
+    public RegistrationResponse unRegisterConsumer(NodeInfo nodeInfo,
                                      EndpointInfo endpoint) throws AxisFault {
         IoTCloud ioTCloud = retrieveIoTCloud();
 
@@ -163,7 +163,7 @@ public class NodeService {
             handleException("Failed to register the producer..", e);
         }
 
-        return null;
+        return new RegistrationResponse("success");
     }
 
     private IoTCloud retrieveIoTCloud() throws AxisFault {

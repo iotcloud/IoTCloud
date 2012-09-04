@@ -64,24 +64,24 @@ public class NodeWSClient {
         return null;
     }
 
-    public Endpoint unRegisterProducer(NodeInfo nodeInfo, EndpointInfo endpointInfo) throws IOTException {
+    public boolean unRegisterProducer(NodeInfo nodeInfo, EndpointInfo endpointInfo) throws IOTException {
         try {
-            nodeServiceStub.unRegisterProducer(nodeInfo, endpointInfo);
+            RegistrationResponse response = nodeServiceStub.unRegisterProducer(nodeInfo, endpointInfo);
         } catch (RemoteException e) {
             handleException("Failed to un-register the producer.." + endpointInfo, e);
         }
 
-        return null;
+        return true;
     }
 
-    public Endpoint unRegisterConsumer(NodeInfo nodeInfo, EndpointInfo endpointInfo) throws IOTException {
+    public boolean unRegisterConsumer(NodeInfo nodeInfo, EndpointInfo endpointInfo) throws IOTException {
         try {
             nodeServiceStub.unRegisterConsumer(nodeInfo, endpointInfo);
         } catch (RemoteException e) {
             handleException("Failed to un-register the producer.." + endpointInfo, e);
         }
 
-        return null;
+        return true;
     }
 
     private void handleException(String s, Exception e) throws IOTException {
