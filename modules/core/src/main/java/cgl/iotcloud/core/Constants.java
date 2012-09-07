@@ -47,9 +47,9 @@ public class Constants {
         public static final String REMOVED = "REMOVED";
         public static final String ALIVE = "ALIVE";
         public static final String CUSTOM = "CUSTOM";
-
         public static final String STATUS = "STATUS";
-
-
     }
+
+    public static final String MESSAGE_TYPE_BLOCK  = "block";
+    public static final String MESSAGE_TYPE_STREAM = "stream";
 }

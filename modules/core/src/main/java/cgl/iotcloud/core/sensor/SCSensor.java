@@ -21,6 +21,8 @@ public class SCSensor implements Sensor {
     private Endpoint updateListeningEndpoint;
 
     private Endpoint updateSendingEndpoint;
+    
+    private Endpoint publicEndpoint;
 
     public SCSensor(String name) {
         this.name = name;
@@ -73,4 +75,12 @@ public class SCSensor implements Sensor {
     public void setUpdateEndpoint(Endpoint endpoint) {
         this.updateListeningEndpoint = endpoint;
     }
+    
+    public Endpoint getPublicEndpoint() {
+		return publicEndpoint;
+	}
+
+	public void setPublicEndpoint(Endpoint publicEndpoint) {
+		this.publicEndpoint = publicEndpoint;
+	}
 }

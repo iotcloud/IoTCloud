@@ -1,378 +1,379 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ns="http://client.services.iotcloud.cgl" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:ax23="http://client.services.iotcloud.cgl/xsd" xmlns:ax21="http://services.iotcloud.cgl/xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://client.services.iotcloud.cgl">
-    <wsdl:documentation>Register Clients to the Sensor Cloud</wsdl:documentation>
-    <wsdl:types>
-        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://services.iotcloud.cgl/xsd">
-            <xs:complexType name="Endpoint">
-                <xs:sequence>
-                    <xs:element minOccurs="0" name="address" nillable="true" type="xs:string"/>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="properties" nillable="true" type="ax21:Property"/>
-                </xs:sequence>
-            </xs:complexType>
-            <xs:complexType name="Property">
-                <xs:sequence>
-                    <xs:element minOccurs="0" name="name" nillable="true" type="xs:string"/>
-                    <xs:element minOccurs="0" name="value" nillable="true" type="xs:string"/>
-                </xs:sequence>
-            </xs:complexType>
-            <xs:complexType name="ClientInformation">
-                <xs:sequence>
-                    <xs:element minOccurs="0" name="controlEndpoint" nillable="true" type="ax21:Endpoint"/>
-                    <xs:element minOccurs="0" name="dataEndpoint" nillable="true" type="ax21:Endpoint"/>
-                    <xs:element minOccurs="0" name="id" nillable="true" type="xs:string"/>
-                    <xs:element minOccurs="0" name="name" nillable="true" type="xs:string"/>
-                    <xs:element minOccurs="0" name="type" nillable="true" type="xs:string"/>
-                    <xs:element minOccurs="0" name="updateEndpoint" nillable="true" type="ax21:Endpoint"/>
-                </xs:sequence>
-            </xs:complexType>
-            <xs:complexType name="SensorInformation">
-                <xs:sequence>
-                    <xs:element minOccurs="0" name="controlEndpoint" nillable="true" type="ax21:Endpoint"/>
-                    <xs:element minOccurs="0" name="dataEndpoint" nillable="true" type="ax21:Endpoint"/>
-                    <xs:element minOccurs="0" name="id" nillable="true" type="xs:string"/>
-                    <xs:element minOccurs="0" name="name" nillable="true" type="xs:string"/>
-                    <xs:element minOccurs="0" name="type" nillable="true" type="xs:string"/>
-                    <xs:element minOccurs="0" name="updateEndpoint" nillable="true" type="ax21:Endpoint"/>
-                </xs:sequence>
-            </xs:complexType>
-        </xs:schema>
-        <xs:schema xmlns:ax25="http://client.services.iotcloud.cgl/xsd" xmlns:ax22="http://services.iotcloud.cgl/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://client.services.iotcloud.cgl">
-            <xs:import namespace="http://services.iotcloud.cgl/xsd"/>
-            <xs:import namespace="http://client.services.iotcloud.cgl/xsd"/>
-            <xs:element name="registerClientWithDataEpr">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="sensorId" nillable="true" type="xs:string"/>
-                        <xs:element minOccurs="0" name="dataEndpoint" nillable="true" type="ax21:Endpoint"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="registerClientWithDataEprResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:ClientInformation"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="registerClient">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="sensorId" nillable="true" type="xs:string"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="registerClientResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:ClientInformation"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getUpdateEndpoint">
-                <xs:complexType>
-                    <xs:sequence/>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getUpdateEndpointResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:Endpoint"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getSensors">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="filter" nillable="true" type="ax25:SensorFilter"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getSensorsResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax21:SensorInformation"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getSensorInformation">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="sensorId" nillable="true" type="xs:string"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getSensorInformationResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="return" nillable="true" type="ax21:SensorInformation"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getAllSensors">
-                <xs:complexType>
-                    <xs:sequence/>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="getAllSensorsResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax21:SensorInformation"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-        </xs:schema>
-        <xs:schema xmlns:ax24="http://services.iotcloud.cgl/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://client.services.iotcloud.cgl/xsd">
-            <xs:import namespace="http://services.iotcloud.cgl/xsd"/>
-            <xs:complexType name="SensorFilter">
-                <xs:sequence>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="properties" nillable="true" type="ax24:Property"/>
-                    <xs:element minOccurs="0" name="type" nillable="true" type="xs:string"/>
-                </xs:sequence>
-            </xs:complexType>
-        </xs:schema>
-    </wsdl:types>
-    <wsdl:message name="getUpdateEndpointRequest">
-        <wsdl:part name="parameters" element="ns:getUpdateEndpoint"/>
-    </wsdl:message>
-    <wsdl:message name="getUpdateEndpointResponse">
-        <wsdl:part name="parameters" element="ns:getUpdateEndpointResponse"/>
-    </wsdl:message>
-    <wsdl:message name="registerClientRequest">
-        <wsdl:part name="parameters" element="ns:registerClient"/>
-    </wsdl:message>
-    <wsdl:message name="registerClientResponse">
-        <wsdl:part name="parameters" element="ns:registerClientResponse"/>
-    </wsdl:message>
-    <wsdl:message name="registerClientWithDataEprRequest">
-        <wsdl:part name="parameters" element="ns:registerClientWithDataEpr"/>
-    </wsdl:message>
-    <wsdl:message name="registerClientWithDataEprResponse">
-        <wsdl:part name="parameters" element="ns:registerClientWithDataEprResponse"/>
-    </wsdl:message>
-    <wsdl:message name="getAllSensorsRequest">
-        <wsdl:part name="parameters" element="ns:getAllSensors"/>
-    </wsdl:message>
-    <wsdl:message name="getAllSensorsResponse">
-        <wsdl:part name="parameters" element="ns:getAllSensorsResponse"/>
-    </wsdl:message>
-    <wsdl:message name="getSensorsRequest">
-        <wsdl:part name="parameters" element="ns:getSensors"/>
-    </wsdl:message>
-    <wsdl:message name="getSensorsResponse">
-        <wsdl:part name="parameters" element="ns:getSensorsResponse"/>
-    </wsdl:message>
-    <wsdl:message name="getSensorInformationRequest">
-        <wsdl:part name="parameters" element="ns:getSensorInformation"/>
-    </wsdl:message>
-    <wsdl:message name="getSensorInformationResponse">
-        <wsdl:part name="parameters" element="ns:getSensorInformationResponse"/>
-    </wsdl:message>
-    <wsdl:portType name="ClientRegistrationServicePortType">
-        <wsdl:operation name="getUpdateEndpoint">
-            <wsdl:input message="ns:getUpdateEndpointRequest" wsaw:Action="urn:getUpdateEndpoint"/>
-            <wsdl:output message="ns:getUpdateEndpointResponse" wsaw:Action="urn:getUpdateEndpointResponse"/>
-        </wsdl:operation>
-        <wsdl:operation name="registerClient">
-            <wsdl:input message="ns:registerClientRequest" wsaw:Action="urn:registerClient"/>
-            <wsdl:output message="ns:registerClientResponse" wsaw:Action="urn:registerClientResponse"/>
-        </wsdl:operation>
-        <wsdl:operation name="registerClientWithDataEpr">
-            <wsdl:input message="ns:registerClientWithDataEprRequest" wsaw:Action="urn:registerClientWithDataEpr"/>
-            <wsdl:output message="ns:registerClientWithDataEprResponse" wsaw:Action="urn:registerClientWithDataEprResponse"/>
-        </wsdl:operation>
-        <wsdl:operation name="getAllSensors">
-            <wsdl:input message="ns:getAllSensorsRequest" wsaw:Action="urn:getAllSensors"/>
-            <wsdl:output message="ns:getAllSensorsResponse" wsaw:Action="urn:getAllSensorsResponse"/>
-        </wsdl:operation>
-        <wsdl:operation name="getSensors">
-            <wsdl:input message="ns:getSensorsRequest" wsaw:Action="urn:getSensors"/>
-            <wsdl:output message="ns:getSensorsResponse" wsaw:Action="urn:getSensorsResponse"/>
-        </wsdl:operation>
-        <wsdl:operation name="getSensorInformation">
-            <wsdl:input message="ns:getSensorInformationRequest" wsaw:Action="urn:getSensorInformation"/>
-            <wsdl:output message="ns:getSensorInformationResponse" wsaw:Action="urn:getSensorInformationResponse"/>
-        </wsdl:operation>
-    </wsdl:portType>
-    <wsdl:binding name="ClientRegistrationServiceSoap11Binding" type="ns:ClientRegistrationServicePortType">
-        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-        <wsdl:operation name="getUpdateEndpoint">
-            <soap:operation soapAction="urn:getUpdateEndpoint" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="registerClient">
-            <soap:operation soapAction="urn:registerClient" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="getAllSensors">
-            <soap:operation soapAction="urn:getAllSensors" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="registerClientWithDataEpr">
-            <soap:operation soapAction="urn:registerClientWithDataEpr" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="getSensors">
-            <soap:operation soapAction="urn:getSensors" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="getSensorInformation">
-            <soap:operation soapAction="urn:getSensorInformation" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-    </wsdl:binding>
-    <wsdl:binding name="ClientRegistrationServiceSoap12Binding" type="ns:ClientRegistrationServicePortType">
-        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-        <wsdl:operation name="getUpdateEndpoint">
-            <soap12:operation soapAction="urn:getUpdateEndpoint" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="registerClient">
-            <soap12:operation soapAction="urn:registerClient" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="getAllSensors">
-            <soap12:operation soapAction="urn:getAllSensors" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="registerClientWithDataEpr">
-            <soap12:operation soapAction="urn:registerClientWithDataEpr" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="getSensors">
-            <soap12:operation soapAction="urn:getSensors" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="getSensorInformation">
-            <soap12:operation soapAction="urn:getSensorInformation" style="document"/>
-            <wsdl:input>
-                <soap12:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap12:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
-    </wsdl:binding>
-    <wsdl:binding name="ClientRegistrationServiceHttpBinding" type="ns:ClientRegistrationServicePortType">
-        <http:binding verb="POST"/>
-        <wsdl:operation name="getUpdateEndpoint">
-            <http:operation location="getUpdateEndpoint"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="registerClient">
-            <http:operation location="registerClient"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="getAllSensors">
-            <http:operation location="getAllSensors"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="registerClientWithDataEpr">
-            <http:operation location="registerClientWithDataEpr"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="getSensors">
-            <http:operation location="getSensors"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-        <wsdl:operation name="getSensorInformation">
-            <http:operation location="getSensorInformation"/>
-            <wsdl:input>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:input>
-            <wsdl:output>
-                <mime:content type="text/xml" part="parameters"/>
-            </wsdl:output>
-        </wsdl:operation>
-    </wsdl:binding>
-    <wsdl:service name="ClientRegistrationService">
-        <wsdl:port name="ClientRegistrationServiceHttpSoap11Endpoint" binding="ns:ClientRegistrationServiceSoap11Binding">
-            <soap:address location="http://localhost:8080/soap/services/ClientRegistrationService.ClientRegistrationServiceHttpSoap11Endpoint/"/>
-        </wsdl:port>
-        <wsdl:port name="ClientRegistrationServiceHttpSoap12Endpoint" binding="ns:ClientRegistrationServiceSoap12Binding">
-            <soap12:address location="http://localhost:8080/soap/services/ClientRegistrationService.ClientRegistrationServiceHttpSoap12Endpoint/"/>
-        </wsdl:port>
-        <wsdl:port name="ClientRegistrationServiceHttpEndpoint" binding="ns:ClientRegistrationServiceHttpBinding">
-            <http:address location="http://localhost:8080/soap/services/ClientRegistrationService.ClientRegistrationServiceHttpEndpoint/"/>
-        </wsdl:port>
-    </wsdl:service>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:ns="http://client.services.iotcloud.cgl" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:ax21="http://client.services.iotcloud.cgl/xsd" xmlns:ax22="http://services.iotcloud.cgl/xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://client.services.iotcloud.cgl">
+<wsdl:documentation>Register Clients to the Sensor Cloud</wsdl:documentation>
+<wsdl:types>
+<xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://services.iotcloud.cgl/xsd">
+<xs:complexType name="Property">
+<xs:sequence>
+<xs:element minOccurs="0" name="name" nillable="true" type="xs:string"/>
+<xs:element minOccurs="0" name="value" nillable="true" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="SensorInformation">
+<xs:sequence>
+<xs:element minOccurs="0" name="controlEndpoint" nillable="true" type="ax22:Endpoint"/>
+<xs:element minOccurs="0" name="dataEndpoint" nillable="true" type="ax22:Endpoint"/>
+<xs:element minOccurs="0" name="id" nillable="true" type="xs:string"/>
+<xs:element minOccurs="0" name="name" nillable="true" type="xs:string"/>
+<xs:element minOccurs="0" name="publicEndpoint" nillable="true" type="ax22:Endpoint"/>
+<xs:element minOccurs="0" name="type" nillable="true" type="xs:string"/>
+<xs:element minOccurs="0" name="updateEndpoint" nillable="true" type="ax22:Endpoint"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="Endpoint">
+<xs:sequence>
+<xs:element minOccurs="0" name="address" nillable="true" type="xs:string"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="properties" nillable="true" type="ax22:Property"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="ClientInformation">
+<xs:sequence>
+<xs:element minOccurs="0" name="controlEndpoint" nillable="true" type="ax22:Endpoint"/>
+<xs:element minOccurs="0" name="dataEndpoint" nillable="true" type="ax22:Endpoint"/>
+<xs:element minOccurs="0" name="id" nillable="true" type="xs:string"/>
+<xs:element minOccurs="0" name="name" nillable="true" type="xs:string"/>
+<xs:element minOccurs="0" name="publicEndpoint" nillable="true" type="ax22:Endpoint"/>
+<xs:element minOccurs="0" name="type" nillable="true" type="xs:string"/>
+<xs:element minOccurs="0" name="updateEndpoint" nillable="true" type="ax22:Endpoint"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
+<xs:schema xmlns:ax25="http://services.iotcloud.cgl/xsd" xmlns:ax24="http://client.services.iotcloud.cgl/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://client.services.iotcloud.cgl">
+<xs:import namespace="http://client.services.iotcloud.cgl/xsd"/>
+<xs:import namespace="http://services.iotcloud.cgl/xsd"/>
+<xs:element name="getSensors">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="filter" nillable="true" type="ax24:SensorFilter"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="getSensorsResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax25:SensorInformation"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="getUpdateEndpoint">
+<xs:complexType>
+<xs:sequence/>
+</xs:complexType>
+</xs:element>
+<xs:element name="getUpdateEndpointResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="return" nillable="true" type="ax25:Endpoint"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="registerClient">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="sensorId" nillable="true" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="registerClientResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="return" nillable="true" type="ax25:ClientInformation"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="getSensorInformation">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="sensorId" nillable="true" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="getSensorInformationResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="return" nillable="true" type="ax25:SensorInformation"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="getAllSensors">
+<xs:complexType>
+<xs:sequence/>
+</xs:complexType>
+</xs:element>
+<xs:element name="getAllSensorsResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax25:SensorInformation"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="registerClientWithDataEpr">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="sensorId" nillable="true" type="xs:string"/>
+<xs:element minOccurs="0" name="dataEndpoint" nillable="true" type="ax25:Endpoint"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element name="registerClientWithDataEprResponse">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="return" nillable="true" type="ax25:ClientInformation"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:schema>
+<xs:schema xmlns:ax23="http://services.iotcloud.cgl/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://client.services.iotcloud.cgl/xsd">
+<xs:import namespace="http://services.iotcloud.cgl/xsd"/>
+<xs:complexType name="SensorFilter">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="properties" nillable="true" type="ax23:Property"/>
+<xs:element minOccurs="0" name="type" nillable="true" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
+</wsdl:types>
+<wsdl:message name="getUpdateEndpointRequest">
+<wsdl:part name="parameters" element="ns:getUpdateEndpoint"/>
+</wsdl:message>
+<wsdl:message name="getUpdateEndpointResponse">
+<wsdl:part name="parameters" element="ns:getUpdateEndpointResponse"/>
+</wsdl:message>
+<wsdl:message name="registerClientRequest">
+<wsdl:part name="parameters" element="ns:registerClient"/>
+</wsdl:message>
+<wsdl:message name="registerClientResponse">
+<wsdl:part name="parameters" element="ns:registerClientResponse"/>
+</wsdl:message>
+<wsdl:message name="registerClientWithDataEprRequest">
+<wsdl:part name="parameters" element="ns:registerClientWithDataEpr"/>
+</wsdl:message>
+<wsdl:message name="registerClientWithDataEprResponse">
+<wsdl:part name="parameters" element="ns:registerClientWithDataEprResponse"/>
+</wsdl:message>
+<wsdl:message name="getAllSensorsRequest">
+<wsdl:part name="parameters" element="ns:getAllSensors"/>
+</wsdl:message>
+<wsdl:message name="getAllSensorsResponse">
+<wsdl:part name="parameters" element="ns:getAllSensorsResponse"/>
+</wsdl:message>
+<wsdl:message name="getSensorsRequest">
+<wsdl:part name="parameters" element="ns:getSensors"/>
+</wsdl:message>
+<wsdl:message name="getSensorsResponse">
+<wsdl:part name="parameters" element="ns:getSensorsResponse"/>
+</wsdl:message>
+<wsdl:message name="getSensorInformationRequest">
+<wsdl:part name="parameters" element="ns:getSensorInformation"/>
+</wsdl:message>
+<wsdl:message name="getSensorInformationResponse">
+<wsdl:part name="parameters" element="ns:getSensorInformationResponse"/>
+</wsdl:message>
+<wsdl:portType name="ClientRegistrationServicePortType">
+<wsdl:operation name="getUpdateEndpoint">
+<wsdl:input message="ns:getUpdateEndpointRequest" wsaw:Action="urn:getUpdateEndpoint"/>
+<wsdl:output message="ns:getUpdateEndpointResponse" wsaw:Action="urn:getUpdateEndpointResponse"/>
+</wsdl:operation>
+<wsdl:operation name="registerClient">
+<wsdl:input message="ns:registerClientRequest" wsaw:Action="urn:registerClient"/>
+<wsdl:output message="ns:registerClientResponse" wsaw:Action="urn:registerClientResponse"/>
+</wsdl:operation>
+<wsdl:operation name="registerClientWithDataEpr">
+<wsdl:input message="ns:registerClientWithDataEprRequest" wsaw:Action="urn:registerClientWithDataEpr"/>
+<wsdl:output message="ns:registerClientWithDataEprResponse" wsaw:Action="urn:registerClientWithDataEprResponse"/>
+</wsdl:operation>
+<wsdl:operation name="getAllSensors">
+<wsdl:input message="ns:getAllSensorsRequest" wsaw:Action="urn:getAllSensors"/>
+<wsdl:output message="ns:getAllSensorsResponse" wsaw:Action="urn:getAllSensorsResponse"/>
+</wsdl:operation>
+<wsdl:operation name="getSensors">
+<wsdl:input message="ns:getSensorsRequest" wsaw:Action="urn:getSensors"/>
+<wsdl:output message="ns:getSensorsResponse" wsaw:Action="urn:getSensorsResponse"/>
+</wsdl:operation>
+<wsdl:operation name="getSensorInformation">
+<wsdl:input message="ns:getSensorInformationRequest" wsaw:Action="urn:getSensorInformation"/>
+<wsdl:output message="ns:getSensorInformationResponse" wsaw:Action="urn:getSensorInformationResponse"/>
+</wsdl:operation>
+</wsdl:portType>
+<wsdl:binding name="ClientRegistrationServiceSoap11Binding" type="ns:ClientRegistrationServicePortType">
+<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<wsdl:operation name="getUpdateEndpoint">
+<soap:operation soapAction="urn:getUpdateEndpoint" style="document"/>
+<wsdl:input>
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="registerClient">
+<soap:operation soapAction="urn:registerClient" style="document"/>
+<wsdl:input>
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="registerClientWithDataEpr">
+<soap:operation soapAction="urn:registerClientWithDataEpr" style="document"/>
+<wsdl:input>
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getAllSensors">
+<soap:operation soapAction="urn:getAllSensors" style="document"/>
+<wsdl:input>
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getSensors">
+<soap:operation soapAction="urn:getSensors" style="document"/>
+<wsdl:input>
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getSensorInformation">
+<soap:operation soapAction="urn:getSensorInformation" style="document"/>
+<wsdl:input>
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:binding name="ClientRegistrationServiceSoap12Binding" type="ns:ClientRegistrationServicePortType">
+<soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<wsdl:operation name="getUpdateEndpoint">
+<soap12:operation soapAction="urn:getUpdateEndpoint" style="document"/>
+<wsdl:input>
+<soap12:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap12:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="registerClient">
+<soap12:operation soapAction="urn:registerClient" style="document"/>
+<wsdl:input>
+<soap12:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap12:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="registerClientWithDataEpr">
+<soap12:operation soapAction="urn:registerClientWithDataEpr" style="document"/>
+<wsdl:input>
+<soap12:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap12:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getAllSensors">
+<soap12:operation soapAction="urn:getAllSensors" style="document"/>
+<wsdl:input>
+<soap12:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap12:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getSensors">
+<soap12:operation soapAction="urn:getSensors" style="document"/>
+<wsdl:input>
+<soap12:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap12:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getSensorInformation">
+<soap12:operation soapAction="urn:getSensorInformation" style="document"/>
+<wsdl:input>
+<soap12:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap12:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:binding name="ClientRegistrationServiceHttpBinding" type="ns:ClientRegistrationServicePortType">
+<http:binding verb="POST"/>
+<wsdl:operation name="getUpdateEndpoint">
+<http:operation location="getUpdateEndpoint"/>
+<wsdl:input>
+<mime:content type="text/xml" part="parameters"/>
+</wsdl:input>
+<wsdl:output>
+<mime:content type="text/xml" part="parameters"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="registerClient">
+<http:operation location="registerClient"/>
+<wsdl:input>
+<mime:content type="text/xml" part="parameters"/>
+</wsdl:input>
+<wsdl:output>
+<mime:content type="text/xml" part="parameters"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="registerClientWithDataEpr">
+<http:operation location="registerClientWithDataEpr"/>
+<wsdl:input>
+<mime:content type="text/xml" part="parameters"/>
+</wsdl:input>
+<wsdl:output>
+<mime:content type="text/xml" part="parameters"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getAllSensors">
+<http:operation location="getAllSensors"/>
+<wsdl:input>
+<mime:content type="text/xml" part="parameters"/>
+</wsdl:input>
+<wsdl:output>
+<mime:content type="text/xml" part="parameters"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getSensors">
+<http:operation location="getSensors"/>
+<wsdl:input>
+<mime:content type="text/xml" part="parameters"/>
+</wsdl:input>
+<wsdl:output>
+<mime:content type="text/xml" part="parameters"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getSensorInformation">
+<http:operation location="getSensorInformation"/>
+<wsdl:input>
+<mime:content type="text/xml" part="parameters"/>
+</wsdl:input>
+<wsdl:output>
+<mime:content type="text/xml" part="parameters"/>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:service name="ClientRegistrationService">
+<wsdl:port name="ClientRegistrationServiceHttpSoap11Endpoint" binding="ns:ClientRegistrationServiceSoap11Binding">
+<soap:address location="http://localhost:8080/soap/services/ClientRegistrationService.ClientRegistrationServiceHttpSoap11Endpoint/"/>
+</wsdl:port>
+<wsdl:port name="ClientRegistrationServiceHttpSoap12Endpoint" binding="ns:ClientRegistrationServiceSoap12Binding">
+<soap12:address location="http://localhost:8080/soap/services/ClientRegistrationService.ClientRegistrationServiceHttpSoap12Endpoint/"/>
+</wsdl:port>
+<wsdl:port name="ClientRegistrationServiceHttpEndpoint" binding="ns:ClientRegistrationServiceHttpBinding">
+<http:address location="http://localhost:8080/soap/services/ClientRegistrationService.ClientRegistrationServiceHttpEndpoint/"/>
+</wsdl:port>
+</wsdl:service>
 </wsdl:definitions>

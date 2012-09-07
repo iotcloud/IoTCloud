@@ -1,4 +1,4 @@
-package cgl.iotcloud.samples.turtlebot.client;
+package cgl.iotcloud.samples.lego_nxt.client;
 
 import cgl.iotcloud.clients.SensorClient;
 import cgl.iotcloud.core.Constants;
@@ -7,8 +7,9 @@ import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.control.DefaultControlMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
+import cgl.iotcloud.core.message.data.MapDataMessage;
 import cgl.iotcloud.core.message.update.UpdateMessage;
-import cgl.iotcloud.samples.turtlebot.sensor.Velocity;
+import cgl.iotcloud.samples.lego_nxt.sensor.Velocity;
 
 public class LegoNXTClient {
     private SensorClient sensorClient;
@@ -16,7 +17,7 @@ public class LegoNXTClient {
     public void start() {
         sensorClient = new SensorClient("http://localhost:8080/");
 
-        sensorClient.fixOnSensorWithName("lego_nxt-sensor");
+        sensorClient.fixOnSensorWithName("lego-nxt-sensor");
 
         sensorClient.setUpdateHandler(new MessageHandler() {
             public void onMessage(SensorMessage message) {
@@ -38,9 +39,15 @@ public class LegoNXTClient {
                 
                 if(message instanceof MapDataMessage){
                 	System.out.println("touch sensor contact "+((MapDataMessage)message).get("contact"));
+                	LegoNXTUI.getInstance().updateUI("contact :"+((MapDataMessage)message).get("contact"));
                 }
             }
-        });
+        }, new MessageHandler() {
+                                @Override
+                                public void onMessage(SensorMessage message) {
+
+                                }
+                            });
     }
 
     public void setVelocity(Velocity linear, Velocity angular) {

@@ -20,7 +20,13 @@ public class ChatClient {
 
     public void runClient() {
         Client client = new Client(new SCSensor("chat-sensor"));
-        client.setMessageHandler(new MessageReceiver());
+        client.setMessageHandler(new MessageReceiver(), new MessageHandler() {
+            public void onMessage(SensorMessage message) {
+                if (message instanceof TextDataMessage) {
+                    System.out.println("Public Message Received: " + ((TextDataMessage) message).getText());
+                }
+            }
+        });
         client.init();
 
         TextDataMessage message = new TextDataMessage();

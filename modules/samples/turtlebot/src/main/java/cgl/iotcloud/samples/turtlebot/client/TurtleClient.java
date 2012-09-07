@@ -36,7 +36,13 @@ public class TurtleClient {
                     System.out.println("Message Received: " + ((TextDataMessage) message).getText());
                 }
             }
-        });
+                            }, new MessageHandler() {
+                                @Override
+                                public void onMessage(SensorMessage message) {
+
+                                }
+                            }
+        );
     }
 
     public void setVelocity(Velocity linear, Velocity angular) {

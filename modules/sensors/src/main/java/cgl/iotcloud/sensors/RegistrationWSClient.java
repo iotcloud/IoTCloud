@@ -75,8 +75,24 @@ public class RegistrationWSClient implements RegistrationClient {
     private void populateSensor(Sensor sensor, SensorInformation i) {
         sensor.setId(i.getId());
         sensor.setType(i.getType());
+        
+        Endpoint e = i.getPublicEndpoint();
+        if (e == null) {
+            handleException("Required endpoint public endpoint cannot be found");
+            return;
+        }
+        cgl.iotcloud.core.Endpoint publicEpr = new JMSEndpoint();
+        publicEpr.setAddress(e.getAddress());
 
-        Endpoint e = i.getControlEndpoint();
+        Property props[] = e.getProperties();
+        Map<String, String> propsMap = new HashMap<String, String>();
+        for (Property p : props) {
+            propsMap.put(p.getName(), p.getValue());
+        }
+        publicEpr.setProperties(propsMap);
+        sensor.setPublicEndpoint(publicEpr);
+        
+        /*Endpoint*/ e = i.getControlEndpoint();
         if (e == null) {
             handleException("Required endpoint control endpoint cannot be found");
             return;
@@ -84,8 +100,8 @@ public class RegistrationWSClient implements RegistrationClient {
         cgl.iotcloud.core.Endpoint controlEpr = new JMSEndpoint();
         controlEpr.setAddress(e.getAddress());
 
-        Property props[] = e.getProperties();
-        Map<String, String> propsMap = new HashMap<String, String>();
+        /*Property*/ props/*[]*/ = e.getProperties();
+        /*Map<String, String>*/ propsMap = new HashMap<String, String>();
         for (Property p : props) {
             propsMap.put(p.getName(), p.getValue());
         }
@@ -125,12 +141,12 @@ public class RegistrationWSClient implements RegistrationClient {
         sensor.setUpdateEndpoint(updateEpr);
     }
 
-    protected static void handleException(String s, Exception e) {
+    private void handleException(String s, Exception e) {
         log.error(s, e);
         throw new SCException(s, e);
     }
 
-    protected static void handleException(String s) {
+    private void handleException(String s) {
         log.error(s);
         throw new SCException(s);
     }

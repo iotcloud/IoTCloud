@@ -28,6 +28,7 @@
             <xs:element name="properties" type="po:properties" minOccurs="0" maxOccurs="1"/>
             <xs:element name="controlEndpoint" type="po:endpoint" minOccurs="0" maxOccurs="1"/>
             <xs:element name="dataEndpoint" type="po:endpoint" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="publicEndpoint" type="po:endpoint" minOccurs="0" maxOccurs="1"/>
             <xs:element name="updateEndpoint" type="po:endpoint" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>

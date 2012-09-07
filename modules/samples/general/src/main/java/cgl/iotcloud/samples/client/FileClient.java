@@ -6,6 +6,7 @@ import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.control.DefaultControlMessage;
 import cgl.iotcloud.core.message.data.StreamDataMessage;
+import cgl.iotcloud.core.message.data.TextDataMessage;
 import cgl.iotcloud.core.message.update.UpdateMessage;
 
 import java.io.BufferedOutputStream;
@@ -59,6 +60,12 @@ public class FileClient {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                }
+            }
+        }, new MessageHandler() {
+            public void onMessage(SensorMessage message) {
+                if (message instanceof TextDataMessage) {
+                    System.out.println("Public Message Received: " + ((TextDataMessage) message).getText());
                 }
             }
         });

@@ -9,6 +9,7 @@ import cgl.iotcloud.core.endpoint.JMSEndpoint;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
+import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
 import cgl.iotcloud.core.message.update.MessageToUpdateFactory;
 import cgl.iotcloud.core.message.update.UpdateMessage;
 import cgl.iotcloud.core.sensor.SCSensor;
@@ -84,7 +85,7 @@ public class UpdateManager implements ManagedLifeCycle {
 
         heartBeatListener.init();
     }
-
+    
     /**
      * Destroy the update manager. This will stop and clean the senders and listeners.
      */
