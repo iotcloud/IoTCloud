@@ -25,7 +25,8 @@ public class BrokerFactory {
      * @param filePath the file path to the broker config xml file
      * @return a broker
      */
-    public Broker create(String filePath) {
+    
+   /* public Broker create(String filePath) {
         log.info("Creating Broker Configuration using file: " + filePath);
         Broker broker = new Broker();
 
@@ -51,8 +52,20 @@ public class BrokerFactory {
         }
 
         return broker;
-    }
+    }*/
 
+    public Broker createBroker(com.iotcloud.xsd.Broker xmlBroker){
+    	Broker broker = new Broker();
+    	broker.setName(xmlBroker.getName());
+    	
+    	ConnectionFactory fac[] = xmlBroker.getConnectionFactoryArray();
+    	
+    	for(ConnectionFactory f:fac){
+    		broker.addConnections(createConnections(f));
+    	}
+    	return broker;
+    }
+    
     private Connections createConnections(ConnectionFactory fac) {
         Connections connections = new Connections(fac.getName());
         Param params[] = fac.getParamArray();

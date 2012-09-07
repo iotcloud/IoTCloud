@@ -20,8 +20,16 @@ public class ServerManager {
     public static void main(String[] args) {
         log.info("Starting the SCCloud");
         /// create the configuration
+        String brokerName =null;
+        if(args.length>1)
+        	brokerName = args[1];
         SCCConfigurationFactory fac = new SCCConfigurationFactory();
-        SCConfiguration config = fac.create(Constants.BROKER_CONFIG_FILE);
+        
+        SCConfiguration config =null;
+        if(brokerName == null)
+        	config = fac.create(Constants.BROKER_CONFIG_FILE);
+        else
+        	config = fac.create(Constants.BROKER_CONFIG_FILE,brokerName);
         final IoTCloud cloud = new IoTCloud(config);
         // initialize the configurations
         try {

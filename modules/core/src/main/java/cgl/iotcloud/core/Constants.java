@@ -5,6 +5,7 @@ package cgl.iotcloud.core;
  */
 public class Constants {
     public static final String BROKER_CONFIG_FILE = "repository/conf/broker-config.xml";
+    public static final String DEFAULT_BROKER_NAME = "default";
 
     public static final String JETTY_CONFIG_FILE = "repository/conf/jetty.xml";
 

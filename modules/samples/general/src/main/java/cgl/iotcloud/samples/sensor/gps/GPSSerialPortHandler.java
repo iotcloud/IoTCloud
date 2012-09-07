@@ -155,7 +155,6 @@ public class GPSSerialPortHandler implements SerialPortEventListener,GPSControll
 	}
 
 
-	@Override
 	public synchronized void notifyRecievers(String data,String portName) {
 		if(portReceiversMap.containsKey(portName)){
 			List<GPSReciever> recievers = portReceiversMap.get(portName);

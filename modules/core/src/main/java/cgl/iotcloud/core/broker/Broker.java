@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class Broker {
     private Logger log = LoggerFactory.getLogger(Broker.class);
-
+    private String brokerName;
     private Map<String, Connections> connections = new HashMap<String, Connections>();
 
     /**
@@ -44,5 +44,13 @@ public class Broker {
      */
     public Connections getConnections(String name) {
         return connections.get(name);
+    }
+    
+    public void setName(String name){
+    	this.brokerName = name;
+    }
+    
+    public String getName(){
+    	return brokerName;
     }
 }

@@ -12,16 +12,21 @@
     <xs:element name="brokerConfig">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="broker" type="po:broker" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="brokerPool" type="po:brokerPool" minOccurs="1" maxOccurs="1"/>
                 <xs:element name="streamingServer" type="po:streamingServer" minOccurs="1" maxOccurs="1"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
-    
+     <xs:complexType name="brokerPool">
+        <xs:sequence>
+            <xs:element name="broker" type="po:broker" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>        
+    </xs:complexType>
     <xs:complexType name="broker">
         <xs:sequence>
             <xs:element name="connectionFactory" type="po:connectionFactory" minOccurs="1" maxOccurs="unbounded"/>
-        </xs:sequence>        
+        </xs:sequence> 
+        <xs:attribute name="name" type="xs:string" use="required"/>       
     </xs:complexType>
     <xs:complexType name="connectionFactory">
         <xs:sequence>
