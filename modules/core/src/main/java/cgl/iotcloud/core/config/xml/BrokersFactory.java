@@ -20,35 +20,35 @@ import cgl.iotcloud.core.broker.Broker;
  */
 public class BrokersFactory {
 	private static Logger log = LoggerFactory.getLogger(BrokersFactory.class);
-	
+
 	public List<Broker> create(String filePath){
 		File brokerFile = new File(filePath);
-        List<Broker> brokers= new ArrayList<Broker>();
-        
+		List<Broker> brokers= new ArrayList<Broker>();
+
 		BrokerConfigDocument document = null;
-        try {
-            document = BrokerConfigDocument.Factory.parse(brokerFile);
-           
-        } catch (XmlException e) {
-            handleException("Error parsing the broker configuration xml file: " + filePath, e);
-        } catch (IOException e) {
-            handleException("IO error reading the file: " + filePath, e);
-        }
-        
-        BrokerConfigDocument.BrokerConfig brokerConfig = document.getBrokerConfig();
-        com.iotcloud.xsd.BrokerPool brokerPool =brokerConfig.getBrokerPool();
-        
-        com.iotcloud.xsd.Broker[] xmlBrokers = brokerPool.getBrokerArray();
-        BrokerFactory bFac = new BrokerFactory();
-        for(com.iotcloud.xsd.Broker xmlBroker:xmlBrokers){
-        	Broker broker =bFac.createBroker(xmlBroker);
-        	brokers.add(broker);
-        }
-        return brokers;
+		try {
+			document = BrokerConfigDocument.Factory.parse(brokerFile);
+
+		} catch (XmlException e) {
+			handleException("Error parsing the broker configuration xml file: " + filePath, e);
+		} catch (IOException e) {
+			handleException("IO error reading the file: " + filePath, e);
+		}
+
+		BrokerConfigDocument.BrokerConfig brokerConfig = document.getBrokerConfig();
+		com.iotcloud.xsd.BrokerPool brokerPool =brokerConfig.getBrokerPool();
+
+		com.iotcloud.xsd.Broker[] xmlBrokers = brokerPool.getBrokerArray();
+		BrokerFactory bFac = new BrokerFactory();
+		for(com.iotcloud.xsd.Broker xmlBroker:xmlBrokers){
+			Broker broker =bFac.createBroker(xmlBroker);
+			brokers.add(broker);
+		}
+		return brokers;
 	}
-	
+
 	private void handleException(String s, Exception e) {
-        log.error(s, e);
-        throw new SCException(s, e);
-    }
+		log.error(s, e);
+		throw new SCException(s, e);
+	}
 }

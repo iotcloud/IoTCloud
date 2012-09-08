@@ -21,7 +21,7 @@
         <module>modules/distribution</module>
         <module>modules/clients</module>
         <module>modules/sensors</module>
-        <!--<module>modules/samples</module>-->
+        <module>modules/samples</module>
         <module>modules/streaming-server</module>
         <module>modules/http-api</module>
     </modules>
