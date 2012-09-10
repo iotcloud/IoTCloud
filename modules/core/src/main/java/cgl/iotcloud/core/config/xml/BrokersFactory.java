@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cgl.iotcloud.core.IOTRuntimeException;
 import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.iotcloud.xsd.BrokerConfigDocument;
 
-import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.broker.Broker;
 
 /**
@@ -49,6 +49,6 @@ public class BrokersFactory {
 
 	private void handleException(String s, Exception e) {
 		log.error(s, e);
-		throw new SCException(s, e);
+		throw new IOTRuntimeException(s, e);
 	}
 }
