@@ -1,6 +1,6 @@
 package cgl.iotcloud.sensors;
 
-import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.core.endpoint.JMSEndpoint;
 import cgl.iotcloud.core.sensor.Sensor;
 import cgl.iotcloud.gen.clients.SensorRegistrationServiceStub;
@@ -100,8 +100,8 @@ public class RegistrationWSClient implements RegistrationClient {
         cgl.iotcloud.core.Endpoint controlEpr = new JMSEndpoint();
         controlEpr.setAddress(e.getAddress());
 
-        /*Property*/ props/*[]*/ = e.getProperties();
-        /*Map<String, String>*/ propsMap = new HashMap<String, String>();
+        props = e.getProperties();
+        propsMap = new HashMap<String, String>();
         for (Property p : props) {
             propsMap.put(p.getName(), p.getValue());
         }
@@ -143,12 +143,12 @@ public class RegistrationWSClient implements RegistrationClient {
 
     private void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
 
     private void handleException(String s) {
         log.error(s);
-        throw new SCException(s);
+        throw new IOTRuntimeException(s);
     }
 
     @Override

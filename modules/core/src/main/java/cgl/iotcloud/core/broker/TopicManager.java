@@ -1,6 +1,6 @@
 package cgl.iotcloud.core.broker;
 
-import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.IOTRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +54,6 @@ public class TopicManager {
 
     protected void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
 }

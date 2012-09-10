@@ -1,6 +1,6 @@
 package cgl.iotcloud.core.broker;
 
-import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.core.State;
 import cgl.iotcloud.core.message.jms.JMSMessageFactory;
 import cgl.iotcloud.core.message.MessageHandler;
@@ -45,6 +45,11 @@ public class JMSListener implements cgl.iotcloud.core.Listener {
                        String destinationPath) {
         this.connections = connections;
         this.messageHandler = messageHandler;
+        this.destinationPath = destinationPath;
+    }
+
+    public JMSListener(Connections connections, String destinationPath) {
+        this.connections = connections;
         this.destinationPath = destinationPath;
     }
 
@@ -134,7 +139,7 @@ public class JMSListener implements cgl.iotcloud.core.Listener {
 
     protected void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
 
 }

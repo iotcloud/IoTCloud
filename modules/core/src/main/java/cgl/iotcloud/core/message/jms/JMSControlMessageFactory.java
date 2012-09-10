@@ -1,6 +1,6 @@
 package cgl.iotcloud.core.message.jms;
 
-import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.control.DefaultControlMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
@@ -76,6 +76,6 @@ public class JMSControlMessageFactory implements JMSMessageFactory {
 
     protected static void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
 }

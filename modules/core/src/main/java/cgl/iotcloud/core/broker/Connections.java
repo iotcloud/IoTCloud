@@ -1,7 +1,7 @@
 package cgl.iotcloud.core.broker;
 
 import cgl.iotcloud.core.Constants;
-import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.core.config.ConfigConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,9 +62,9 @@ public class Connections {
 
     /**
      * Initialize the connection factory
-     * @throws cgl.iotcloud.core.SCException if an error occurs
+     * @throws cgl.iotcloud.core.IOTRuntimeException if an error occurs
      */
-    public void init() throws SCException {
+    public void init() throws IOTRuntimeException {
         String key = ConfigConstants.PARAM_CACHE_LEVEL;
         String val = parameters.get(key);
 
@@ -77,7 +77,7 @@ public class Connections {
         } else if ("producer".equals(val)) {
             this.cacheLevel = Constants.CACHE_PRODUCER;
         } else if (val != null) {
-            throw new SCException("Invalid cache level : " + val + " for JMS CF : " + name);
+            throw new IOTRuntimeException("Invalid cache level : " + val + " for JMS CF : " + name);
         }
 
         try {
@@ -87,7 +87,7 @@ public class Connections {
             log.debug("JMS ConnectionFactory : {} initialized", name != null ? name : "");
 
         } catch (NamingException e) {
-            throw new SCException("Cannot acquire JNDI context, JMS Connection factory : " +
+            throw new IOTRuntimeException("Cannot acquire JNDI context, JMS Connection factory : " +
                 parameters.get(ConfigConstants.PARAM_CONFAC_JNDI_NAME) +
                 " for JMS CF : " + name + " using : " + parameters, e);
         }
@@ -455,7 +455,7 @@ public class Connections {
             } else if ("topic".equalsIgnoreCase(parameters.get(ConfigConstants.PARAM_CONFAC_TYPE))) {
                 return false;
             } else {
-                throw new SCException("Invalid " + ConfigConstants.PARAM_CONFAC_TYPE + " : " +
+                throw new IOTRuntimeException("Invalid " + ConfigConstants.PARAM_CONFAC_TYPE + " : " +
                     parameters.get(ConfigConstants.PARAM_CONFAC_TYPE) + " for JMS CF : " + name);
             }
         } else {
@@ -464,7 +464,7 @@ public class Connections {
             } else if ("topic".equalsIgnoreCase(parameters.get(ConfigConstants.PARAM_DEST_TYPE))) {
                 return false;
             } else {
-                throw new SCException("Invalid " + ConfigConstants.PARAM_DEST_TYPE + " : " +
+                throw new IOTRuntimeException("Invalid " + ConfigConstants.PARAM_DEST_TYPE + " : " +
                     parameters.get(ConfigConstants.PARAM_DEST_TYPE) + " for JMS CF : " + name);
             }
         }
@@ -489,11 +489,11 @@ public class Connections {
 
     protected static void handleException(String s) {
         log.error(s);
-        throw new SCException(s);
+        throw new IOTRuntimeException(s);
     }
 
     protected static void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
 }

@@ -1,6 +1,6 @@
 package cgl.iotcloud.core.broker;
 
-import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.core.Sender;
 import cgl.iotcloud.core.State;
 import cgl.iotcloud.core.message.jms.JMSMessageFactory;
@@ -54,7 +54,7 @@ public class JMSSender implements Sender {
             producer = connections.getMessageProducer(connection, session, destination);
 
             state = State.INITIALIZED;
-        } catch (SCException e) {
+        } catch (IOTRuntimeException e) {
             log.error("Error occurred while initializing the broker connections.. " +
                     "See weather the broker configuration is correct and broker is up..");
             throw e;
@@ -112,6 +112,6 @@ public class JMSSender implements Sender {
 
     protected void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
 }

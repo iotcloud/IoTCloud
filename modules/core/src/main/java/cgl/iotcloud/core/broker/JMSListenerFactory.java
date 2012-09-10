@@ -19,6 +19,13 @@ public class JMSListenerFactory {
         return new JMSListener(connections, handler, endpoint.getAddress());
     }
 
+    public JMSListener create(Endpoint endpoint) {
+        ConnectionsFactory fac = new ConnectionsFactory();
+        Connections connections = fac.create(endpoint.getName(), endpoint.getProperties());
+
+        return new JMSListener(connections, endpoint.getAddress());
+    }
+
     public JMSListener createControlListener(Endpoint endpoint, MessageHandler handler) {
         ConnectionsFactory fac = new ConnectionsFactory();
         Connections connections = fac.create(endpoint.getName(), endpoint.getProperties());

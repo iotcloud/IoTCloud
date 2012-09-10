@@ -1,6 +1,6 @@
 package cgl.iotcloud.core.stream;
 
-import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.core.Sender;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.data.StreamDataMessage;
@@ -93,11 +93,11 @@ public class StreamingSender implements Sender {
 
     private void handleError(String msg) {
         log.error(msg);
-        throw new SCException(msg);
+        throw new IOTRuntimeException(msg);
     }
 
     private void handleError(String msg, Exception e) {
         log.error(msg, e);
-        throw new SCException(msg, e);
+        throw new IOTRuntimeException(msg, e);
     }
 }

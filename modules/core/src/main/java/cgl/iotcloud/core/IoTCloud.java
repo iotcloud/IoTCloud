@@ -468,6 +468,6 @@ public class IoTCloud {
 
     protected void handleException(String s) {
         log.error(s);
-        throw new SCException(s);
+        throw new IOTRuntimeException(s);
     }
 }

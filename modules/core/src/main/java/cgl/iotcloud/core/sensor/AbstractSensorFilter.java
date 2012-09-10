@@ -1,7 +1,6 @@
 package cgl.iotcloud.core.sensor;
 
 import cgl.iotcloud.core.Filter;
-import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.IoTCloud;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,7 +1,7 @@
 package cgl.iotcloud.clients;
 
 import cgl.iotcloud.api.http.HttpAPIConstants;
-import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.core.sensor.FilterCriteria;
 import cgl.iotcloud.core.sensor.SCSensor;
 import org.apache.commons.httpclient.HttpStatus;
@@ -102,6 +102,6 @@ public class RegistrationHttpClient implements RegistrationClient {
 
     private void handleException(String msg, Exception e) {
         log.error(msg, e);
-        throw new SCException(msg, e);
+        throw new IOTRuntimeException(msg, e);
     }
 }

@@ -1,8 +1,8 @@
 package cgl.iotcloud.core.tomcat;
 
 import cgl.iotcloud.core.Constants;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.core.IoTCloud;
-import cgl.iotcloud.core.SCException;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.deployment.FileSystemConfigurator;
@@ -95,7 +95,7 @@ public class TomcatServer {
 
     protected void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
 
     /**
