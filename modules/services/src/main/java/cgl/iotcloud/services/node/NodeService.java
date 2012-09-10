@@ -3,6 +3,8 @@ package cgl.iotcloud.services.node;
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.IOTException;
 import cgl.iotcloud.core.IoTCloud;
+import cgl.iotcloud.core.NodeCatalog;
+import cgl.iotcloud.core.sensor.NodeInformation;
 import cgl.iotcloud.core.sensor.NodeName;
 import cgl.iotcloud.services.Endpoint;
 import org.apache.axis2.AxisFault;
@@ -164,6 +166,23 @@ public class NodeService {
         }
 
         return new RegistrationResponse("success");
+    }
+
+    public NodeInfo[] getRegisteredNodes() throws AxisFault {
+        IoTCloud ioTCloud = retrieveIoTCloud();
+
+        NodeCatalog nodeCatalog = ioTCloud.getNodeCatalog();
+
+        for (NodeInformation n : nodeCatalog.getNodes()) {
+
+        }
+        return null;
+    }
+
+    private NodeInfo createNodeInfo(NodeInformation nodeInformation) {
+        NodeInfo nodeInfo = new NodeInfo();
+
+        return null;
     }
 
     private IoTCloud retrieveIoTCloud() throws AxisFault {

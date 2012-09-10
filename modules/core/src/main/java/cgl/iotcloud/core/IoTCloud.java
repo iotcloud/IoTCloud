@@ -461,6 +461,10 @@ public class IoTCloud {
         }
     }
 
+    public NodeCatalog getNodeCatalog() {
+        return nodeCatalog;
+    }
+
     private void handleError(String msg) throws IOTException {
         log.error(msg);
         throw new IOTException(msg);
