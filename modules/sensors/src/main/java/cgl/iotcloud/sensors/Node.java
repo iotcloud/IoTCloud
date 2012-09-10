@@ -78,13 +78,26 @@ public class Node implements cgl.iotcloud.core.sensor.Node {
     }
 
     @Override
-    public void stop() {
+    public void stop() throws IOTException {
+        for (Sender sender : senders.values()) {
+            sender.stop();
+            sender.destroy();
+        }
 
+        for (Listener listener : listeners.values()) {
+            listener.stop();
+            listener.destroy();
+        }
+
+        senders.clear();
+        listeners.clear();
+
+        adaptor.unRegisterNode();
     }
 
     @Override
-    public void start() {
-
+    public void start() throws IOTException {
+        adaptor.registerNode();
     }
 
     @Override

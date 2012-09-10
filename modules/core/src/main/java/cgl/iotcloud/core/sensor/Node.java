@@ -10,9 +10,9 @@ import cgl.iotcloud.core.Sender;
 public interface Node {
     public NodeName getName();
 
-    public void start();
+    public void start() throws IOTException;
 
-    public void stop();
+    public void stop() throws IOTException;
 
     public Listener newListener(String name, String type, String path) throws IOTException;
 
