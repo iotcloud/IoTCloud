@@ -100,14 +100,8 @@ public class LegoNXTSensor extends AbstractSensor implements RosLegoNXTListener 
     		MapDataMessage msg = new MapDataMessage();
     		msg.put("contact", ((Contact)obj).getContact());
     		
-    		if(msg == null)
-    			System.out.println("msg is null ===");
-    		else
-    			System.out.println("msg is not null ===");
-    		
-    		if(sensor == null)
-    			System.out.println("sensor is null");
-    		sensor.sendMessage(msg);
+    		if(sensor != null)
+    			sensor.sendMessage(msg);
     	}
     }
 }

@@ -58,7 +58,8 @@ public class IoTCloud {
     public void init() {
         configuration.init();
 
-        Connections connections = configuration.getBroker().getConnections("topic");
+        //Connections connections = configuration.getBroker().getConnections("topic");
+        Connections connections = configuration.getBrokerPool().getBroker().getConnections("topic");
 
         if (connections == null) {
             handleException("Couldn't find the connection factor: " + "topic");
@@ -108,7 +109,8 @@ public class IoTCloud {
     	publicEndPoint = new JMSEndpoint();
     	publicEndPoint.setAddress(uniqueId + "/public");
     	
-    	publicEndPoint.setProperties(configuration.getBroker().getConnections("topic").getParameters());
+    	//publicEndPoint.setProperties(configuration.getBroker().getConnections("topic").getParameters());
+    	publicEndPoint.setProperties(configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
     	
     	publicSender = initPublicSender(new JMSSenderFactory().create(publicEndPoint));
     }
@@ -170,8 +172,10 @@ public class IoTCloud {
             dataEndpoint = new JMSEndpoint();
             dataEndpoint.setAddress(sensor.getId() + "/data");
             // TODO: we have to decide the connection factory to be used
+            //dataEndpoint.setProperties(
+            //        configuration.getBroker().getConnections("topic").getParameters());
             dataEndpoint.setProperties(
-                    configuration.getBroker().getConnections("topic").getParameters());
+                    configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
         } else if (Constants.SENSOR_TYPE_STREAMING.equalsIgnoreCase(type)) {
             dataEndpoint = new StreamingEndpoint();
 
@@ -184,8 +188,10 @@ public class IoTCloud {
             dataEndpoint = new JMSEndpoint();
             dataEndpoint.setAddress(sensor.getId() + "/data");
             // TODO: we have to decide the connection factory to be used
+            //dataEndpoint.setProperties(
+            //        configuration.getBroker().getConnections("topic").getParameters());
             dataEndpoint.setProperties(
-                    configuration.getBroker().getConnections("topic").getParameters());
+                    configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
         }
 
         sensor.setDataEndpoint(dataEndpoint);
@@ -195,16 +201,20 @@ public class IoTCloud {
         controlEndpoint = new JMSEndpoint();
         controlEndpoint.setAddress(sensor.getId() + "/control");
         // TODO: we have to decide the connection factory to be used
+        //controlEndpoint.setProperties(
+        //        configuration.getBroker().getConnections("topic").getParameters());
         controlEndpoint.setProperties(
-                configuration.getBroker().getConnections("topic").getParameters());
+                configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
         sensor.setControlEndpoint(controlEndpoint);
 
         // set the update sending endpoint as the global endpoint
         Endpoint updateSendingEndpoint;
         updateSendingEndpoint = new JMSEndpoint();
 
+        //updateSendingEndpoint.setProperties(
+        //        configuration.getBroker().getConnections("topic").getParameters());
         updateSendingEndpoint.setProperties(
-                configuration.getBroker().getConnections("topic").getParameters());
+                configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
         updateSendingEndpoint.setAddress(sensor.getId() + "/update");
         sensor.setUpdateEndpoint(updateSendingEndpoint);
 

@@ -22,16 +22,16 @@ public class SCCConfigurationFactory {
 
         configuration.setBrokerConfigFile(file);
 
-        BrokersFactory fac = new BrokersFactory();
+       /* BrokersFactory fac = new BrokersFactory();
         List<Broker> brokers =fac.create(file);
 
         Broker broker = null;
         for(Broker br:brokers)
         	if(br.getName().equalsIgnoreCase(brokerName))
-        		broker = br;
+        		broker = br;*/
         
-        configuration.setBroker(broker);
-
+        //configuration.setBroker(broker);
+        
         StreamingServerFactory sSF = new StreamingServerFactory();
         StreamingServer streamingHttpServer = sSF.create(file);
 

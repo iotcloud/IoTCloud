@@ -1,5 +1,6 @@
 package cgl.iotcloud.core;
 
+import cgl.iotcloud.core.broker.BrokerPool;
 import cgl.iotcloud.core.config.SCCConfigurationFactory;
 import cgl.iotcloud.core.config.SCConfiguration;
 import cgl.iotcloud.core.jetty.SGCHTTPServer;
@@ -19,17 +20,10 @@ public class ServerManager {
 
     public static void main(String[] args) {
         log.info("Starting the SCCloud");
-        /// create the configuration
-        String brokerName =null;
-        if(args.length>1)
-        	brokerName = args[1];
+
         SCCConfigurationFactory fac = new SCCConfigurationFactory();
+        SCConfiguration config = fac.create();
         
-        SCConfiguration config =null;
-        if(brokerName == null)
-        	config = fac.create(Constants.BROKER_CONFIG_FILE);
-        else
-        	config = fac.create(Constants.BROKER_CONFIG_FILE,brokerName);
         final IoTCloud cloud = new IoTCloud(config);
         // initialize the configurations
         try {

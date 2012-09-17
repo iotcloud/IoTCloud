@@ -43,8 +43,10 @@ public class EndpointAllocator {
             endpoint = new JMSEndpoint();
             endpoint.setAddress(nodeName.getGroup() + "/" + nodeName.getName() + "/" + path);
             // TODO: we have to decide the connection factory to be used
+            //endpoint.setProperties(
+            //        configuration.getBroker().getConnections("topic").getParameters());
             endpoint.setProperties(
-                    configuration.getBroker().getConnections("topic").getParameters());
+                    configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
         } else {
             endpoint = new StreamingEndpoint();
             endpoint.setProperties(configuration.getStreamingServer().getParameters());

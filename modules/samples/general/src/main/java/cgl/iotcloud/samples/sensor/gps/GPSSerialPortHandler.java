@@ -14,6 +14,15 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 
+/**
+ * GPSSerialPortHandler
+ * 
+ * GPSSerialPortHandler interfaces with GPS device using rxtx library.
+ * 
+ * GPS Sensors of IotCloud registers with GPSSerialPortHandler to 
+ * receive GPS data.
+ */
+
 public class GPSSerialPortHandler implements SerialPortEventListener,GPSController{
 
 	private static GPSSerialPortHandler serialPortHandler;

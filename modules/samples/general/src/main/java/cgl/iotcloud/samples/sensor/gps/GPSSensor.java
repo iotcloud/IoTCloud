@@ -13,6 +13,11 @@ import cgl.iotcloud.core.message.control.DefaultControlMessage;
 import cgl.iotcloud.core.sensor.AbstractSensor;
 import cgl.iotcloud.sensors.SensorAdaptor;
 
+/**
+ * GPS Sensor
+ *
+ * Retrieves GPS data from connected GPS device.
+ */
 public class GPSSensor extends AbstractSensor implements GPSReciever{
 	private int baudRate;
 	private String port;

@@ -65,11 +65,13 @@ public class UpdateManager implements ManagedLifeCycle {
     public void init() {
         receivingEndpoint = new JMSEndpoint();
         receivingEndpoint.setAddress("update/receive");
-        receivingEndpoint.setProperties(configuration.getBroker().getConnections("topic").getParameters());
-
+        //receivingEndpoint.setProperties(configuration.getBroker().getConnections("topic").getParameters());
+        receivingEndpoint.setProperties(configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
+        
         sendingEndpoint = new JMSEndpoint();
         sendingEndpoint.setAddress("update/send");
-        sendingEndpoint.setProperties(configuration.getBroker().getConnections("topic").getParameters());
+        //sendingEndpoint.setProperties(configuration.getBroker().getConnections("topic").getParameters());
+        sendingEndpoint.setProperties(configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
 
         sender = new JMSSenderFactory().create(sendingEndpoint);
 

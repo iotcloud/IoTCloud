@@ -1,49 +1,53 @@
-<xs:schema
-    xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:po="http://iotcloud.com/xsd"
-    targetNamespace="http://iotcloud.com/xsd"
-    elementFormDefault="qualified">
-    <xs:simpleType name='nonEmptyString'>
-        <xs:restriction base='xs:string'>
-            <xs:minLength value='1'/>
-        </xs:restriction>
-    </xs:simpleType>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:po="http://iotcloud.com/xsd" targetNamespace="http://iotcloud.com/xsd"
+	elementFormDefault="qualified">
+	<xs:simpleType name='nonEmptyString'>
+		<xs:restriction base='xs:string'>
+			<xs:minLength value='1' />
+		</xs:restriction>
+	</xs:simpleType>
 
-    <xs:element name="brokerConfig">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="brokerPool" type="po:brokerPool" minOccurs="1" maxOccurs="1"/>
-                <xs:element name="streamingServer" type="po:streamingServer" minOccurs="1" maxOccurs="1"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-     <xs:complexType name="brokerPool">
-        <xs:sequence>
-            <xs:element name="broker" type="po:broker" minOccurs="1" maxOccurs="unbounded"/>
-        </xs:sequence>        
-    </xs:complexType>
-    <xs:complexType name="broker">
-        <xs:sequence>
-            <xs:element name="connectionFactory" type="po:connectionFactory" minOccurs="1" maxOccurs="unbounded"/>
-        </xs:sequence> 
-        <xs:attribute name="name" type="xs:string" use="required"/>       
-    </xs:complexType>
-    <xs:complexType name="connectionFactory">
-        <xs:sequence>
-            <xs:element name="param" type="po:param" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="name" type="xs:string" use="required"/>
-    </xs:complexType>
-    <xs:complexType name="streamingServer">
-        <xs:sequence>
-            <xs:element name="param" type="po:param" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="param">
-        <xs:simpleContent>
-            <xs:extension base='po:nonEmptyString'>
-                <xs:attribute name="name" type="xs:string" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
+	<xs:element name="brokerConfig">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="brokerPool" type="po:brokerPool"
+					minOccurs="1" maxOccurs="1" />
+				<xs:element name="streamingServer" type="po:streamingServer"
+					minOccurs="1" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="brokerPool">
+		<xs:sequence>
+			<xs:element name="broker" type="po:broker" minOccurs="1"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="broker">
+		<xs:sequence>
+			<xs:element name="connectionFactory" type="po:connectionFactory"
+				minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="connectionFactory">
+		<xs:sequence>
+			<xs:element name="param" type="po:param" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="streamingServer">
+		<xs:sequence>
+			<xs:element name="param" type="po:param" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="param">
+		<xs:simpleContent>
+			<xs:extension base='po:nonEmptyString'>
+				<xs:attribute name="name" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 </xs:schema>
