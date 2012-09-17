@@ -2,7 +2,7 @@ package cgl.iotcloud.sensors;
 
 import cgl.iotcloud.api.http.HttpAPIConstants;
 import cgl.iotcloud.core.Endpoint;
-import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.core.sensor.SCSensor;
 import cgl.iotcloud.core.sensor.SCSensorUtils;
 import cgl.iotcloud.core.sensor.Sensor;
@@ -114,11 +114,11 @@ public class RegistrationHttpClient implements RegistrationClient {
 
     protected static void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
 
     protected static void handleException(String s) {
         log.error(s);
-        throw new SCException(s);
+        throw new IOTRuntimeException(s);
     }
 }

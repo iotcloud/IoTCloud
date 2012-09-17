@@ -1,7 +1,7 @@
 package cgl.iotcloud.core.sensor;
 
 import cgl.iotcloud.core.Constants;
-import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.core.endpoint.JMSEndpoint;
 import cgl.iotcloud.core.endpoint.StreamingEndpoint;
 import com.iotcloud.sensorInfo.xsd.*;
@@ -202,11 +202,11 @@ public class SCSensorUtils {
 
     private static void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
 
     private static void handleException(String s) {
         log.error(s);
-        throw new SCException(s);
+        throw new IOTRuntimeException(s);
     }
 }

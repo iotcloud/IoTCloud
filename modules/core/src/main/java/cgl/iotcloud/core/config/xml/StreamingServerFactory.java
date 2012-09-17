@@ -1,6 +1,6 @@
 package cgl.iotcloud.core.config.xml;
 
-import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.core.broker.Broker;
 import cgl.iotcloud.core.stream.StreamingServer;
 import com.iotcloud.xsd.BrokerConfigDocument;
@@ -57,6 +57,6 @@ public class StreamingServerFactory {
 
     private void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
 }

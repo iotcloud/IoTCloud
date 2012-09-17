@@ -9,7 +9,6 @@ import cgl.iotcloud.core.endpoint.JMSEndpoint;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
-import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
 import cgl.iotcloud.core.message.update.MessageToUpdateFactory;
 import cgl.iotcloud.core.message.update.UpdateMessage;
 import cgl.iotcloud.core.sensor.SCSensor;
@@ -199,11 +198,11 @@ public class UpdateManager implements ManagedLifeCycle {
 
     private void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
 
     private void handleException(String s) {
         log.error(s);
-        throw new SCException(s);
+        throw new IOTRuntimeException(s);
     }
 }

@@ -1,7 +1,7 @@
 package cgl.iotcloud.core.stream;
 
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.core.Listener;
-import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.State;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.data.StreamDataMessage;
@@ -111,11 +111,11 @@ public class StreamingListener implements Listener {
 
     protected void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
 
     protected void handleException(String s) {
         log.error(s);
-        throw new SCException(s);
+        throw new IOTRuntimeException(s);
     }
 }

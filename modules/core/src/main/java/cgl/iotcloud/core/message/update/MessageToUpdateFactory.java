@@ -1,6 +1,6 @@
 package cgl.iotcloud.core.message.update;
 
-import cgl.iotcloud.core.SCException;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.jms.JMSMessageFactory;
 import com.iotcloud.message.xsd.Param;
@@ -46,7 +46,7 @@ public class MessageToUpdateFactory implements JMSMessageFactory {
 
     private void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
 
     @Override

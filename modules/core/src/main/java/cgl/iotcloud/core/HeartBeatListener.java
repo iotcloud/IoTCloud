@@ -235,7 +235,7 @@ public class HeartBeatListener implements ManagedLifeCycle {
 
     protected static void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
     
 }

@@ -1,8 +1,8 @@
 package cgl.iotcloud.sensors;
 
 import cgl.iotcloud.core.Constants;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.core.ManagedLifeCycle;
-import cgl.iotcloud.core.SCException;
 import cgl.iotcloud.core.broker.JMSSender;
 import cgl.iotcloud.core.broker.JMSSenderFactory;
 import cgl.iotcloud.core.message.update.MessageToUpdateFactory;
@@ -114,11 +114,11 @@ public class SensorAdaptor {
 
     protected static void handleException(String s, Exception e) {
         log.error(s, e);
-        throw new SCException(s, e);
+        throw new IOTRuntimeException(s, e);
     }
 
     protected static void handleException(String s) {
         log.error(s);
-        throw new SCException(s);
+        throw new IOTRuntimeException(s);
     }
 }
