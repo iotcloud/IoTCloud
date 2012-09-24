@@ -3,91 +3,36 @@ package cgl.iotcloud.client.robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.Exception;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-/*public class RootFrame {
-	private static RootFrame rootFrame;
-
-    private static Mover controller;
-
-	public static void main(String args[]){
-		try{		
-			rootFrame = RootFrame.getInstance();
-
-            controller = new Mover() {
-                @Override
-                public void up() {
-                    System.out.println("up");
-                }
-
-                @Override
-                public void down() {
-                    System.out.println("down");
-                }
-
-                @Override
-                public void left() {
-                    System.out.println("left");
-                }
-
-                @Override
-                public void right() {
-                    System.out.println("right");
-                }
-            };
-
-            if (controller != null) {
-                ControlPanel.getBackButton().addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        controller.down();
-                    }
-                });
-
-                ControlPanel.getStarightButton().addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        controller.up();
-                    }
-                });
-
-                ControlPanel.getLeftButton().addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        controller.left();
-                    }
-                });
-
-                ControlPanel.getRightButton().addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        controller.right();
-                    }
-                });
-            }
-
-			rootFrame.setVisible(true);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-
-    public static void setController(Mover controller) {
-        RootFrame.controller = controller;
-    }
-}*/
-
+/**
+ * @RootFrame : Swing UI to control robot and collect sensor data
+ *	
+ */
 public class RootFrame extends JFrame {
 	private static RootFrame rootFrame;
 
+	//To Test UI.
+	/*public static void main(String args[]){
+		RootFrame frame = RootFrame.getInstance();
+		frame.show();
+	}*/
+	
 	public static RootFrame getInstance() {
 		if(rootFrame == null)
 			rootFrame = new RootFrame();
@@ -127,6 +72,10 @@ public class RootFrame extends JFrame {
 		}
 	}
 
+    /**
+     * adds ActionController to add controller
+     * that controls the robot's movement
+     */
     public void addActionController(final ActionController controller) {
         ControlPanel.getBackButton().addActionListener(new ActionListener() {
             @Override
@@ -164,7 +113,50 @@ public class RootFrame extends JFrame {
         });
     }
     
-    public void update(String msg){
+    /**
+     * adds SensorDataController to initiate and stop 
+     * collecting data from sensors.
+     */
+    public void addSensorDataController(final SensorDataController controller){
+    	ControlSessionPanel.getInstance().getStartButton().addActionListener(new ActionListener(){
+    		@Override
+    		public void actionPerformed(ActionEvent e) {
+    			if(SensorsListPanel.getInstance().getSensorSelected() == null){
+    				JOptionPane.showMessageDialog(RootFrame.getInstance(), "Select a sensor.", "WARNING", 1, null);
+    			}else{
+    				controller.start(SensorsListPanel.getInstance().getSensorSelected());
+    			}
+    		}
+    	});
+
+    	ControlSessionPanel.getInstance().getStopButton().addActionListener(new ActionListener(){
+    		@Override
+    		public void actionPerformed(ActionEvent e) {
+    			controller.stop(SensorsListPanel.getInstance().getSensorSelected());
+    		}
+    	});
+    }
+
+    /**
+     * adds sensor to UI
+     * @param sensorName
+     */
+    public void addSensor(String sensorName){
+    	SensorsListPanel.getInstance().addSensor(sensorName);
+    }
+
+    /**
+     * removes sensor from UI.
+     * @param sensorName
+     */
+    public void removeSensor(String sensorName){
+    	SensorsListPanel.getInstance().removeSensor(sensorName);
+    }
+    /**
+     * updates sensorData Panel with data from sensor.
+     * @param msg
+     */
+    public void update(String sensorName,String msg){
     	SensorDataContainerPanel.getInstance().updateData(msg);
     }
 }
@@ -395,9 +387,13 @@ class ControlSessionPanel extends JPanel implements RobotUIPanelBuilder{
     }
 }
 
-class SensorsListPanel extends JPanel implements RobotUIPanelBuilder,ActionListener{
+class SensorsListPanel extends JPanel implements RobotUIPanelBuilder{
 	private static SensorsListPanel sensorsListPanel;	
-	private JButton sensor1 = new JButton("sensor1");
+	private Map<String,JButton> sensorNameToButtonMap  = new HashMap<String,JButton>() ;
+	private String sensorSelected = null;
+	private ParallelGroup parallelGrp;
+	private SequentialGroup sequentialGrp;
+	GroupLayout senPanelLayout = new GroupLayout(this);
 
 	public static SensorsListPanel getInstance(){
 		if(sensorsListPanel == null)
@@ -405,38 +401,75 @@ class SensorsListPanel extends JPanel implements RobotUIPanelBuilder,ActionListe
 		return sensorsListPanel;
 	}
 
+	public void removeSensor(String sensorName) {
+		JButton sensorButton = null;
+		if(sensorNameToButtonMap != null && sensorNameToButtonMap.containsKey(sensorName))
+			sensorButton = sensorNameToButtonMap.remove(sensorName);
+		removeSensorFromPanel(sensorButton);
+	}
+
+	private void removeSensorFromPanel(JButton sensorButton ) {
+		parallelGrp = senPanelLayout.createParallelGroup();
+		sequentialGrp = senPanelLayout.createSequentialGroup();
+		
+		Collection<JButton> sensorButtons = sensorNameToButtonMap.values();
+		for(JButton _sensorButton:sensorButtons){
+			parallelGrp.addComponent(_sensorButton,20, javax.swing.GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE);
+			sequentialGrp.addComponent(_sensorButton);
+			sequentialGrp.addGap(20);
+			
+			senPanelLayout.setHorizontalGroup(senPanelLayout.createSequentialGroup().addGap(40).addGroup(parallelGrp).addGap(40));
+			senPanelLayout.setVerticalGroup(sequentialGrp);
+		}
+	}
+
+	public void addSensor(String sensorName) {
+		JButton sensorButton = new JButton(sensorName);
+		if(sensorNameToButtonMap != null)
+			sensorNameToButtonMap.put(sensorName,sensorButton);
+		sensorButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String sensorName = ((JButton)e.getSource()).getText();
+				sensorSelected = sensorName;
+			}
+		});
+		addSensorToPanel(sensorButton);
+	}
+
+	private void addSensorToPanel(JButton sensorButton) {
+		parallelGrp.addComponent(sensorButton,20, javax.swing.GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE);
+		sequentialGrp.addComponent(sensorButton);
+		sequentialGrp.addGap(20);
+		
+		senPanelLayout.setHorizontalGroup(senPanelLayout.createSequentialGroup().addGap(40).addGroup(parallelGrp).addGap(40));
+		senPanelLayout.setVerticalGroup(sequentialGrp);
+	}
+
+	public String getSensorSelected() {
+		return sensorSelected;
+	}
+
 	private SensorsListPanel(){
 		this.setBackground(new java.awt.Color(255, 255, 255));
 		this.addComponents();
 	}
+	
 	@Override
 	public void addComponents() {
-
-		GroupLayout senPanelLayout = new GroupLayout(this);
 		this.setLayout(senPanelLayout);
-		senPanelLayout.setHorizontalGroup(senPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addGroup(senPanelLayout.createSequentialGroup()
-						.addGap(20,20,20)
-						.addGroup(senPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-								.addComponent(sensor1,javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
-								.addContainerGap(40, Short.MAX_VALUE)
-						));
-		senPanelLayout.setVerticalGroup(senPanelLayout.createSequentialGroup()
-				.addGap(20)
-				.addComponent(sensor1)
-				.addGap(20));
+		
+		parallelGrp = senPanelLayout.createParallelGroup();
+		sequentialGrp = senPanelLayout.createSequentialGroup();
+		
+		senPanelLayout.setHorizontalGroup(senPanelLayout.createSequentialGroup().addGap(40).addGroup(parallelGrp).addGap(40));
+		senPanelLayout.setVerticalGroup(sequentialGrp);
 	}
 
 	@Override
 	public void removeComponents() {
-
+		
 	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-
-	}
-
 }
 
 class SensorContainerPanel extends JPanel implements RobotUIPanelBuilder{
