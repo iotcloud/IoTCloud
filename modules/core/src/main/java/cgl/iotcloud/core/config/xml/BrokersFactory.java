@@ -20,12 +20,7 @@ import cgl.iotcloud.core.broker.Broker;
  */
 public class BrokersFactory {
 	private static Logger log = LoggerFactory.getLogger(BrokersFactory.class);
-/*<<<<<<< HEAD
-	
-	
-=======
 
->>>>>>> d5d5663c9c6c25873eb4965b66df9330622dc48f*/
 	public List<Broker> create(String filePath){
 		File brokerFile = new File(filePath);
 		List<Broker> brokers= new ArrayList<Broker>();

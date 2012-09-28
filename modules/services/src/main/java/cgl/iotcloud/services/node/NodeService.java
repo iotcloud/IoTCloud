@@ -173,16 +173,38 @@ public class NodeService {
 
         NodeCatalog nodeCatalog = ioTCloud.getNodeCatalog();
 
-        for (NodeInformation n : nodeCatalog.getNodes()) {
+        NodeInfo []nodeInfos = new NodeInfo[nodeCatalog.getNodes().size()];
 
+        int i = 0;
+        for (NodeInformation n : nodeCatalog.getNodes()) {
+            nodeInfos[i++] = createNodeInfo(n);
         }
-        return null;
+
+        return nodeInfos;
+    }
+
+    public NodeDetail getNodeDetails(NodeInfo nodeInfo) {
+        IoTCloud ioTCloud = retrieveIoTCloud();
+
+        NodeCatalog nodeCatalog = ioTCloud.getNodeCatalog();
+
+        NodeInfo []nodeInfos = new NodeInfo[nodeCatalog.getNodes().size()];
+
+        int i = 0;
+        for (NodeInformation n : nodeCatalog.getNodes()) {
+            nodeInfos[i++] = createNodeInfo(n);
+        }
+
+        return nodeInfos;
     }
 
     private NodeInfo createNodeInfo(NodeInformation nodeInformation) {
         NodeInfo nodeInfo = new NodeInfo();
 
-        return null;
+        nodeInfo.setGroup(nodeInformation.getName().getGroup());
+        nodeInfo.setName(nodeInformation.getName().getName());
+
+        return nodeInfo;
     }
 
     private IoTCloud retrieveIoTCloud() throws AxisFault {
