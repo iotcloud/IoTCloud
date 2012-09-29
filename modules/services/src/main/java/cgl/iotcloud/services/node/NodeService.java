@@ -183,7 +183,7 @@ public class NodeService {
         return nodeInfos;
     }
 
-    public NodeDetail getNodeDetails(NodeInfo nodeInfo) {
+    public NodeInfo[] getNodeDetails(NodeInfo nodeInfo) throws AxisFault {
         IoTCloud ioTCloud = retrieveIoTCloud();
 
         NodeCatalog nodeCatalog = ioTCloud.getNodeCatalog();
