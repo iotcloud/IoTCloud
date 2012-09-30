@@ -19,14 +19,15 @@
         <xs:schema xmlns:ax213="http://services.iotcloud.cgl/xsd" xmlns:ax211="http://node.services.iotcloud.cgl/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://node.services.iotcloud.cgl">
             <xs:import namespace="http://node.services.iotcloud.cgl/xsd"/>
             <xs:import namespace="http://services.iotcloud.cgl/xsd"/>
-            <xs:element name="registerNode">
+            <xs:element name="unRegisterProducer">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="nodeInfo" nillable="true" type="ax210:NodeInfo"/>
+                        <xs:element minOccurs="0" name="endpoint" nillable="true" type="ax210:EndpointInfo"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="registerNodeResponse">
+            <xs:element name="unRegisterProducerResponse">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="return" nillable="true" type="ax210:RegistrationResponse"/>
@@ -44,21 +45,6 @@
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="return" nillable="true" type="ax210:RegistrationResponse"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="registerConsumer">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="nodeInfo" nillable="true" type="ax210:NodeInfo"/>
-                        <xs:element minOccurs="0" name="endpoint" nillable="true" type="ax210:EndpointInfo"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="registerConsumerResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element minOccurs="0" name="return" nillable="true" type="ax212:Endpoint"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -92,7 +78,21 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="unRegisterProducer">
+            <xs:element name="registerNode">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="nodeInfo" nillable="true" type="ax210:NodeInfo"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="registerNodeResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax210:RegistrationResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="registerConsumer">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element minOccurs="0" name="nodeInfo" nillable="true" type="ax210:NodeInfo"/>
@@ -100,19 +100,53 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="unRegisterProducerResponse">
+            <xs:element name="registerConsumerResponse">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element minOccurs="0" name="return" nillable="true" type="ax210:RegistrationResponse"/>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax212:Endpoint"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getRegisteredNodes">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getRegisteredNodesResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="ax210:NodeInfo"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getNode">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="nodeInfo" nillable="true" type="ax210:NodeInfo"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getNodeResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="return" nillable="true" type="ax210:NodeDetail"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
         </xs:schema>
-        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://node.services.iotcloud.cgl/xsd">
+        <xs:schema xmlns:ax214="http://services.iotcloud.cgl/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://node.services.iotcloud.cgl/xsd">
+            <xs:import namespace="http://services.iotcloud.cgl/xsd"/>
             <xs:complexType name="NodeInfo">
                 <xs:sequence>
                     <xs:element minOccurs="0" name="group" nillable="true" type="xs:string"/>
                     <xs:element minOccurs="0" name="name" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="EndpointInfo">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="name" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="path" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="type" nillable="true" type="xs:string"/>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="RegistrationResponse">
@@ -121,11 +155,11 @@
                     <xs:element minOccurs="0" name="status" nillable="true" type="xs:string"/>
                 </xs:sequence>
             </xs:complexType>
-            <xs:complexType name="EndpointInfo">
+            <xs:complexType name="NodeDetail">
                 <xs:sequence>
-                    <xs:element minOccurs="0" name="name" nillable="true" type="xs:string"/>
-                    <xs:element minOccurs="0" name="path" nillable="true" type="xs:string"/>
-                    <xs:element minOccurs="0" name="type" nillable="true" type="xs:string"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="consumers" nillable="true" type="ax214:Endpoint"/>
+                    <xs:element minOccurs="0" name="name" nillable="true" type="ax210:NodeInfo"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="producers" nillable="true" type="ax214:Endpoint"/>
                 </xs:sequence>
             </xs:complexType>
         </xs:schema>
@@ -141,6 +175,18 @@
     </wsdl:message>
     <wsdl:message name="registerProducerResponse">
         <wsdl:part name="parameters" element="ns:registerProducerResponse"/>
+    </wsdl:message>
+    <wsdl:message name="getRegisteredNodesRequest">
+        <wsdl:part name="parameters" element="ns:getRegisteredNodes"/>
+    </wsdl:message>
+    <wsdl:message name="getRegisteredNodesResponse">
+        <wsdl:part name="parameters" element="ns:getRegisteredNodesResponse"/>
+    </wsdl:message>
+    <wsdl:message name="getNodeRequest">
+        <wsdl:part name="parameters" element="ns:getNode"/>
+    </wsdl:message>
+    <wsdl:message name="getNodeResponse">
+        <wsdl:part name="parameters" element="ns:getNodeResponse"/>
     </wsdl:message>
     <wsdl:message name="unRegisterConsumerRequest">
         <wsdl:part name="parameters" element="ns:unRegisterConsumer"/>
@@ -174,6 +220,14 @@
         <wsdl:operation name="registerProducer">
             <wsdl:input message="ns:registerProducerRequest" wsaw:Action="urn:registerProducer"/>
             <wsdl:output message="ns:registerProducerResponse" wsaw:Action="urn:registerProducerResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getRegisteredNodes">
+            <wsdl:input message="ns:getRegisteredNodesRequest" wsaw:Action="urn:getRegisteredNodes"/>
+            <wsdl:output message="ns:getRegisteredNodesResponse" wsaw:Action="urn:getRegisteredNodesResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getNode">
+            <wsdl:input message="ns:getNodeRequest" wsaw:Action="urn:getNode"/>
+            <wsdl:output message="ns:getNodeResponse" wsaw:Action="urn:getNodeResponse"/>
         </wsdl:operation>
         <wsdl:operation name="unRegisterConsumer">
             <wsdl:input message="ns:unRegisterConsumerRequest" wsaw:Action="urn:unRegisterConsumer"/>
@@ -212,6 +266,15 @@
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="getRegisteredNodes">
+            <soap:operation soapAction="urn:getRegisteredNodes" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="unRegisterConsumer">
             <soap:operation soapAction="urn:unRegisterConsumer" style="document"/>
             <wsdl:input>
@@ -221,8 +284,8 @@
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
-        <wsdl:operation name="registerConsumer">
-            <soap:operation soapAction="urn:registerConsumer" style="document"/>
+        <wsdl:operation name="getNode">
+            <soap:operation soapAction="urn:getNode" style="document"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>
@@ -232,6 +295,15 @@
         </wsdl:operation>
         <wsdl:operation name="registerNode">
             <soap:operation soapAction="urn:registerNode" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="registerConsumer">
+            <soap:operation soapAction="urn:registerConsumer" style="document"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>
@@ -269,6 +341,15 @@
                 <soap12:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="getRegisteredNodes">
+            <soap12:operation soapAction="urn:getRegisteredNodes" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="unRegisterConsumer">
             <soap12:operation soapAction="urn:unRegisterConsumer" style="document"/>
             <wsdl:input>
@@ -278,8 +359,8 @@
                 <soap12:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
-        <wsdl:operation name="registerConsumer">
-            <soap12:operation soapAction="urn:registerConsumer" style="document"/>
+        <wsdl:operation name="getNode">
+            <soap12:operation soapAction="urn:getNode" style="document"/>
             <wsdl:input>
                 <soap12:body use="literal"/>
             </wsdl:input>
@@ -289,6 +370,15 @@
         </wsdl:operation>
         <wsdl:operation name="registerNode">
             <soap12:operation soapAction="urn:registerNode" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="registerConsumer">
+            <soap12:operation soapAction="urn:registerConsumer" style="document"/>
             <wsdl:input>
                 <soap12:body use="literal"/>
             </wsdl:input>
@@ -326,6 +416,15 @@
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="getRegisteredNodes">
+            <http:operation location="getRegisteredNodes"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="unRegisterConsumer">
             <http:operation location="unRegisterConsumer"/>
             <wsdl:input>
@@ -335,8 +434,8 @@
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:output>
         </wsdl:operation>
-        <wsdl:operation name="registerConsumer">
-            <http:operation location="registerConsumer"/>
+        <wsdl:operation name="getNode">
+            <http:operation location="getNode"/>
             <wsdl:input>
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>
@@ -346,6 +445,15 @@
         </wsdl:operation>
         <wsdl:operation name="registerNode">
             <http:operation location="registerNode"/>
+            <wsdl:input>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:input>
+            <wsdl:output>
+                <mime:content type="text/xml" part="parameters"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="registerConsumer">
+            <http:operation location="registerConsumer"/>
             <wsdl:input>
                 <mime:content type="text/xml" part="parameters"/>
             </wsdl:input>

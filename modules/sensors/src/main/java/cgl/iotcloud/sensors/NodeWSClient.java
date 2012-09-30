@@ -1,16 +1,25 @@
 package cgl.iotcloud.sensors;
 
 import cgl.iotcloud.core.IOTException;
+import cgl.iotcloud.core.endpoint.JMSEndpoint;
+import cgl.iotcloud.core.sensor.NodeInformation;
+import cgl.iotcloud.core.sensor.NodeName;
 import cgl.iotcloud.gen.node.NodeServiceStub;
 import cgl.iotcloud.gen.services.node.xsd.EndpointInfo;
+import cgl.iotcloud.gen.services.node.xsd.NodeDetail;
 import cgl.iotcloud.gen.services.node.xsd.NodeInfo;
 import cgl.iotcloud.gen.services.node.xsd.RegistrationResponse;
 import cgl.iotcloud.gen.services.xsd.Endpoint;
+import cgl.iotcloud.gen.services.xsd.Property;
 import org.apache.axis2.AxisFault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class NodeWSClient {
     private Logger log = LoggerFactory.getLogger(NodeWSClient.class);
@@ -82,6 +91,77 @@ public class NodeWSClient {
         }
 
         return true;
+    }
+
+    public List<NodeName> getNodeList() throws IOTException {
+        try {
+            NodeInfo nodeInfo[] = nodeServiceStub.getRegisteredNodes();
+            List<NodeName> nodes = new ArrayList<NodeName>();
+            for (NodeInfo n : nodeInfo) {
+                nodes.add(createNodeName(n));
+            }
+            return nodes;
+        } catch (RemoteException e) {
+            handleException("Failed to get the node list..", e);
+        }
+        return null;
+    }
+
+    public NodeInformation getNode(NodeName name) throws IOTException {
+        try {
+            NodeDetail detail = nodeServiceStub.getNode(createNodeInfo(name));
+
+            return createNodeInformation(detail);
+        } catch (RemoteException e) {
+            handleException("Failed to get node.. " + name, e);
+        }
+
+        return null;
+    }
+
+    private NodeInformation createNodeInformation(NodeDetail detail) {
+        NodeInfo info = detail.getName();
+
+        NodeInformation nodeInformation = new NodeInformation(createNodeName(info));
+
+        Endpoint consumers[] = detail.getConsumers();
+        Endpoint producers[] = detail.getProducers();
+
+        for (Endpoint e : consumers) {
+            nodeInformation.addConsumer(createEndpoint(e));
+        }
+
+        for (Endpoint e : producers) {
+            nodeInformation.addProducer(createEndpoint(e));
+        }
+
+        return nodeInformation;
+    }
+
+    private cgl.iotcloud.core.Endpoint createEndpoint(Endpoint e) {
+        cgl.iotcloud.core.Endpoint endpoint = new JMSEndpoint();
+        endpoint.setAddress(e.getAddress());
+
+        Property []props = e.getProperties();
+        Map<String, String> propsMap = new HashMap<String, String>();
+        for (Property p : props) {
+            propsMap.put(p.getName(), p.getValue());
+        }
+        endpoint.setProperties(propsMap);
+        return endpoint;
+    }
+
+    private NodeInfo createNodeInfo(NodeName nodeName) {
+        NodeInfo nodeInfo = new NodeInfo();
+
+        nodeInfo.setGroup(nodeName.getGroup());
+        nodeInfo.setName(nodeName.getName());
+
+        return nodeInfo;
+    }
+
+    private NodeName createNodeName(NodeInfo nodeInfo) {
+        return new NodeName(nodeInfo.getName(), nodeInfo.getGroup());
     }
 
     private void handleException(String s, Exception e) throws IOTException {

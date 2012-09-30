@@ -1,6 +1,5 @@
 package cgl.iotcloud.sensors;
 
-
 import cgl.iotcloud.core.*;
 import cgl.iotcloud.core.broker.JMSListenerFactory;
 import cgl.iotcloud.core.broker.JMSSenderFactory;
