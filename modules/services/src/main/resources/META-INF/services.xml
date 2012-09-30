@@ -117,7 +117,16 @@
             <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
                              class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
         </operation>
-
+        <operation name="getRegisteredNodes">
+            <actionMapping>urn:getRegisteredNodes</actionMapping>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
+        <operation name="getNode">
+            <actionMapping>urn:getNode</actionMapping>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+                             class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>
+        </operation>
     </service>
 
 </serviceGroup>
