@@ -56,6 +56,7 @@ public abstract class AbstractSensor implements Sensor, ManagedLifeCycle {
     }
 
     public void init() {
+    	System.out.println("==Enter init of Abstract sensor==");
         if (updateEndpoint != null) {
             JMSSenderFactory jmsSenderFactory = new JMSSenderFactory();
             updateSender = jmsSenderFactory.create(updateEndpoint);
@@ -135,6 +136,8 @@ public abstract class AbstractSensor implements Sensor, ManagedLifeCycle {
     }
 
     public void sendMessage(SensorMessage message) {
+    	if(sender == null)
+    		System.out.println("== Sender is null ==");
         sender.send(message);
     }
 

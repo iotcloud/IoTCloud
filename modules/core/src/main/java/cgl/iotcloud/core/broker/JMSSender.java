@@ -102,6 +102,8 @@ public class JMSSender implements Sender {
     public void send(SensorMessage sm) {
         try {
             // construct a JMS message from the sensor message
+        	if(session == null)
+        		System.out.println("== Session is Null ==");
             Message message = messageFactory.create(sm, session);
             
             producer.send(message);

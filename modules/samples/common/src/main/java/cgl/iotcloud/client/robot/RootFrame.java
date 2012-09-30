@@ -15,6 +15,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
@@ -28,10 +30,10 @@ public class RootFrame extends JFrame {
 	private static RootFrame rootFrame;
 
 	//To Test UI.
-	/*public static void main(String args[]){
+	public static void main(String args[]){
 		RootFrame frame = RootFrame.getInstance();
 		frame.show();
-	}*/
+	}
 	
 	public static RootFrame getInstance() {
 		if(rootFrame == null)
@@ -156,7 +158,7 @@ public class RootFrame extends JFrame {
      * updates sensorData Panel with data from sensor.
      * @param msg
      */
-    public void update(String sensorName,String msg){
+    public void update(String msg){
     	SensorDataContainerPanel.getInstance().updateData(msg);
     }
 }
@@ -557,6 +559,7 @@ class SensorTitlePanel extends JPanel implements RobotUIPanelBuilder{
 class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 	private static SensorDataContainerPanel senDataContainerPanel;
 	private static JTextArea senData = new JTextArea();
+	private JScrollPane scrollPane;
 
 	public static SensorDataContainerPanel getInstance(){
 		if(senDataContainerPanel == null)
@@ -575,17 +578,25 @@ class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 		GroupLayout senDataMainPanelLayout = new GroupLayout(this);
 
 		senData.setEditable(false);
+		senData.setVisible(true);
+
+
+		scrollPane = new JScrollPane (senData, 
+				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
 		this.setLayout(senDataMainPanelLayout);
 		senDataMainPanelLayout.setHorizontalGroup(
 				senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				.addComponent(SensorDataTitlePanel.getInstance(),GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-				.addComponent(senData,javax.swing.GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+				//.addComponent(senData,javax.swing.GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+				.addComponent(scrollPane,javax.swing.GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 				);
 		senDataMainPanelLayout.setVerticalGroup(
 				senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				.addGroup(senDataMainPanelLayout.createSequentialGroup()
 						.addComponent(SensorDataTitlePanel.getInstance(), GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addComponent(senData,GroupLayout.PREFERRED_SIZE, 419, GroupLayout.PREFERRED_SIZE))
+						//.addComponent(senData,GroupLayout.PREFERRED_SIZE, 419, GroupLayout.PREFERRED_SIZE)
+						.addComponent(scrollPane,GroupLayout.PREFERRED_SIZE, 419, GroupLayout.PREFERRED_SIZE))
 				);
 	}
 
@@ -595,7 +606,8 @@ class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 	}
 
 	public static void updateData(String data){
-		senData.setText(data);
+		String currentData =senData.getText();
+		senData.setText(currentData+"\n"+data);
 	}
 }
 
@@ -730,4 +742,7 @@ class RootPanel extends JPanel implements RobotUIPanelBuilder{
 		rootPanelLayout.removeLayoutComponent(SenConPanel.getInstance());
 		rootPanelLayout.removeLayoutComponent(SensorContainerPanel.getInstance());
 	}
+	
+	
+	
 }

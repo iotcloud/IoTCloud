@@ -38,43 +38,11 @@ public class RosLegoNXT extends AbstractNodeMain {
         contactSubscriber.addMessageListener(new MessageListener<Contact>(){
         	
         	public void onNewMessage(Contact msg){
-        		if(msg  == null)
-        			System.out.println("msg is null");
-        		else
-        			System.out.println("msg is not null"+msg.getContact());
         		if(rosListener != null)
-        			rosListener.onRosMessage(msg);
+        			rosListener.onRosSensorMessage(msg);
         	}
         });
         
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
-        }
-
-        // This CancellableLoop will be canceled automatically when the node shuts down.
-        connectedNode.executeCancellableLoop(new CancellableLoop() {
-            @Override
-            protected void loop() throws InterruptedException {
-                Twist str = publisher.newMessage();
-
-                if (linear != null) {
-                    str.getLinear().setX(linear.getX());
-                    str.getLinear().setY(linear.getY());
-                    str.getLinear().setZ(linear.getZ());
-                }
-
-                if (angular != null) {
-                    str.getAngular().setX(angular.getX());
-                    str.getAngular().setY(angular.getY());
-                    str.getAngular().setZ(angular.getZ());
-                }
-
-                publisher.publish(str);
-                Thread.sleep(500);
-            }
-        });
     }
 
     public static void main(String[] args) {

@@ -211,7 +211,7 @@ public class NodeService {
         nodeDetail.setConsumers(consumers);
         nodeDetail.setProducers(producers);
 
-        nodeDetail.setNodeInfo(nodeInfo);
+        nodeDetail.setName(nodeInfo);
 
         return nodeDetail;
     }
