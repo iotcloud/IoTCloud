@@ -22,15 +22,16 @@ public class TurtleSensor extends AbstractSensor {
     }
 
     public void start(NodeConfiguration nodeConfiguration) {
-        Preconditions.checkState(turtle != null);
-        NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
-        nodeMainExecutor.execute(turtle, nodeConfiguration);
-        turtle.setSensor(this);
         // register the sensor itself
         SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8080");
         adaptor.registerSensor(this);
 
         adaptor.start();
+
+        Preconditions.checkState(turtle != null);
+        NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
+        nodeMainExecutor.execute(turtle, nodeConfiguration);
+        turtle.setSensor(this);
     }
 
     public static void main(String[] argv) throws Exception {

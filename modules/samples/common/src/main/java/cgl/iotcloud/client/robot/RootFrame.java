@@ -1,5 +1,6 @@
 package cgl.iotcloud.client.robot;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.Exception;
@@ -15,7 +16,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.LayoutStyle;
@@ -160,6 +160,14 @@ public class RootFrame extends JFrame {
      */
     public void update(String msg){
     	SensorDataContainerPanel.getInstance().updateData(msg);
+    }
+
+    public JPanel getDataPanel() {
+        return SensorDataContainerPanel.getInstance();
+    }
+
+    public void setImage(Image image) {
+        SensorDataContainerPanel.getInstance().setImage(image);
     }
 }
 
@@ -560,6 +568,7 @@ class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 	private static SensorDataContainerPanel senDataContainerPanel;
 	private static JTextArea senData = new JTextArea();
 	private JScrollPane scrollPane;
+    private Image image;
 
 	public static SensorDataContainerPanel getInstance(){
 		if(senDataContainerPanel == null)
@@ -567,7 +576,11 @@ class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 		return senDataContainerPanel;
 	}
 
-	private SensorDataContainerPanel (){
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    private SensorDataContainerPanel (){
 		this.setBackground(new java.awt.Color(255, 255, 255));
 		this.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 		this.addComponents();
@@ -581,7 +594,7 @@ class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 		senData.setVisible(true);
 
 
-		scrollPane = new JScrollPane (senData, 
+		scrollPane = new JScrollPane (senData,
 				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		this.setLayout(senDataMainPanelLayout);
@@ -605,7 +618,13 @@ class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 
 	}
 
-	public static void updateData(String data){
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(image, 0, 0, image.getWidth(null) / 2, image.getHeight(null) / 2, null);
+    }
+
+    public static void updateData(String data){
 		String currentData =senData.getText();
 		senData.setText(currentData+"\n"+data);
 	}

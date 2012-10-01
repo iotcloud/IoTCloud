@@ -1,5 +1,6 @@
 package cgl.iotcloud.samples.turtlebot.client;
 
+import cgl.iotcloud.client.robot.RootFrame;
 import cgl.iotcloud.clients.SensorClient;
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.message.ControlMessage;
@@ -78,12 +79,8 @@ public class TurtleClient {
                     im.setRGB(x, y, rgb);
                 }
             }
-//            System.out.println(message);
-//            try {
-//                ImageIO.write(im, "png", new File("out" + count.getAndIncrement() + ".png"));
-//            }  catch (IOException e) {
-//                e.printStackTrace();
-//            }
+            RootFrame.getInstance().setImage(im);
+            RootFrame.getInstance().getDataPanel().repaint();
         }
     }
 
