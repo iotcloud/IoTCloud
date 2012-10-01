@@ -12,8 +12,6 @@ import org.ros.node.DefaultNodeMainExecutor;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
-import java.util.Set;
-
 public class TurtleSensor extends AbstractSensor {
     private RosTurtle turtle = null;
 
@@ -27,7 +25,7 @@ public class TurtleSensor extends AbstractSensor {
         Preconditions.checkState(turtle != null);
         NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
         nodeMainExecutor.execute(turtle, nodeConfiguration);
-
+        turtle.setSensor(this);
         // register the sensor itself
         SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8080");
         adaptor.registerSensor(this);
@@ -42,6 +40,7 @@ public class TurtleSensor extends AbstractSensor {
         NodeConfiguration nodeConfiguration = loader.build();
 
         TurtleSensor sensor = new TurtleSensor(Constants.SENSOR_TYPE_BLOCK, "turtle-sensor");
+
         sensor.start(nodeConfiguration);
     }
 

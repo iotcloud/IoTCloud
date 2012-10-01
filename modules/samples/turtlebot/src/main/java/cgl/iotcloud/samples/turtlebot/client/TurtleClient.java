@@ -8,7 +8,14 @@ import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.control.DefaultControlMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
 import cgl.iotcloud.core.message.update.UpdateMessage;
+import cgl.iotcloud.samples.turtlebot.sensor.Frame;
 import cgl.iotcloud.samples.turtlebot.sensor.Velocity;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TurtleClient {
     private SensorClient sensorClient;
@@ -35,14 +42,49 @@ public class TurtleClient {
                 if (message instanceof TextDataMessage) {
                     System.out.println("Message Received: " + ((TextDataMessage) message).getText());
                 }
-            }
-                            }, new MessageHandler() {
-                                @Override
-                                public void onMessage(SensorMessage message) {
+                System.out.println(message);
 
-                                }
-                            }
+                handleMessage(message);
+            }
+            }, new MessageHandler() {
+                @Override
+                public void onMessage(SensorMessage message) {
+                    if (message instanceof Frame) {
+                        System.out.println(message);
+                    }
+                    System.out.println(message);
+                }
+            }
         );
+    }
+
+    private AtomicInteger count = new AtomicInteger(0);
+
+    private void handleMessage(SensorMessage m) {
+        if (m instanceof Frame) {
+            Frame message = (Frame) m;
+            BufferedImage im = new BufferedImage(message.getWidth(), message.getHeight(), BufferedImage.TYPE_INT_RGB);
+            for (int x = 0; x < message.getWidth(); x++) {
+                for (int y = 0; y < message.getHeight(); y++) {
+                    byte red =
+                            message.getBuffer()[(int) (y * message.getStep() + 3 * x)];
+                    byte green =
+                            message.getBuffer()[((int) (y * message.getStep() + 3 * x + 1))];
+                    byte blue =
+                            message.getBuffer()[((int) (y * message.getStep() + 3 * x + 2))];
+                    int rgb = (red & 0xFF);
+                    rgb = (rgb << 8) + (green & 0xFF);
+                    rgb = (rgb << 8) + (blue & 0xFF);
+                    im.setRGB(x, y, rgb);
+                }
+            }
+//            System.out.println(message);
+//            try {
+//                ImageIO.write(im, "png", new File("out" + count.getAndIncrement() + ".png"));
+//            }  catch (IOException e) {
+//                e.printStackTrace();
+//            }
+        }
     }
 
     public void setVelocity(Velocity linear, Velocity angular) {

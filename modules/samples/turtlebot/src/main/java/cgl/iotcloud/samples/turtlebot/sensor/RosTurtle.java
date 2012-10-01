@@ -1,16 +1,30 @@
 package cgl.iotcloud.samples.turtlebot.sensor;
 
 import geometry_msgs.Twist;
+import org.jboss.netty.buffer.ChannelBuffer;
 import org.ros.concurrent.CancellableLoop;
+import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Publisher;
+import org.ros.node.topic.Subscriber;
+import sensor_msgs.Image;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RosTurtle extends AbstractNodeMain {
     private volatile Velocity linear = null;
 
     private volatile Velocity angular = null;
+
+    private AtomicInteger count = new AtomicInteger(0);
+
+    private TurtleSensor sensor;
 
     public void setLinear(Velocity linear) {
         this.linear = linear;
@@ -18,6 +32,10 @@ public class RosTurtle extends AbstractNodeMain {
 
     public void setAngular(Velocity angular) {
         this.angular = angular;
+    }
+
+    public void setSensor(TurtleSensor sensor) {
+        this.sensor = sensor;
     }
 
     @Override
@@ -29,6 +47,25 @@ public class RosTurtle extends AbstractNodeMain {
     public void onStart(final ConnectedNode connectedNode) {
         final Publisher<Twist> publisher =
                 connectedNode.newPublisher("cmd_vel", Twist._TYPE);
+
+        final Subscriber<Image> subscriber =
+                connectedNode.newSubscriber("/camera/rgb/image_color", Image._TYPE);
+
+        subscriber.addMessageListener(new MessageListener<Image>() {
+            @Override
+            public void onNewMessage(Image message) {
+                Frame f = new Frame();
+                f.setWidth(message.getWidth());
+                f.setHeight(message.getHeight());
+                f.setStep(message.getStep());
+                ChannelBuffer buffer = message.getData();
+                if (buffer.hasArray()) {
+                    f.setBuffer(buffer.array());
+                }
+
+                sensor.sendMessage(f);
+            }
+        });
 
         try {
             Thread.sleep(1000);
@@ -58,13 +95,5 @@ public class RosTurtle extends AbstractNodeMain {
                 Thread.sleep(500);
             }
         });
-    }
-
-    public static void main(String[] args) {
-        RosTurtle turtle = new RosTurtle();
-
-        while (true) {
-            turtle.setLinear(new Velocity(.1, 0, 0));
-        }
     }
 }
