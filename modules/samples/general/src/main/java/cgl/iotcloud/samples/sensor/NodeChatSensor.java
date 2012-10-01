@@ -36,7 +36,9 @@ public class NodeChatSensor {
         controlListener.setMessageHandler(new MessageHandler() {
             @Override
             public void onMessage(SensorMessage message) {
-                System.out.println("Control message received" + message);
+                if (message instanceof TextDataMessage) {
+                    System.out.println("Control message received: " + ((TextDataMessage) message).getText());
+                }
             }
         });
 

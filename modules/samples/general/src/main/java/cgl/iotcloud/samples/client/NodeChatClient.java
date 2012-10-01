@@ -19,7 +19,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class NodeChatClient {
+public class  NodeChatClient {
     private NodeClient nodeClient = null;
 
     private Sender controlSender;
@@ -53,7 +53,9 @@ public class NodeChatClient {
             dataListener.setMessageHandler(new MessageHandler() {
                 @Override
                 public void onMessage(SensorMessage message) {
-                    System.out.println("Char received:" + message);
+                    if (message instanceof TextDataMessage) {
+                        System.out.println("Char received: " + ((TextDataMessage) message).getText());
+                    }
                 }
             });
 

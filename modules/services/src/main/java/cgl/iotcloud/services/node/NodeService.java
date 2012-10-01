@@ -83,8 +83,9 @@ public class NodeService {
         NodeName nodeName = new NodeName(nodeInfo.getName(), nodeInfo.getGroup());
 
         try {
-            ioTCloud.registerProducer(nodeName, endpoint.getName(),
+            cgl.iotcloud.core.Endpoint epr = ioTCloud.registerProducer(nodeName, endpoint.getName(),
                     endpoint.getType(), endpoint.getPath());
+            return createEndpoint(epr);
         } catch (IOTException e) {
             handleException("Failed to register the producer..", e);
         }
@@ -138,8 +139,9 @@ public class NodeService {
         NodeName nodeName = new NodeName(nodeInfo.getName(), nodeInfo.getGroup());
 
         try {
-            ioTCloud.registerConsumer(nodeName, endpoint.getName(),
+            cgl.iotcloud.core.Endpoint epr = ioTCloud.registerConsumer(nodeName, endpoint.getName(),
                     endpoint.getType(), endpoint.getPath());
+            return createEndpoint(epr);
         } catch (IOTException e) {
             handleException("Failed to register the producer..", e);
         }
@@ -220,6 +222,7 @@ public class NodeService {
         Endpoint endpoint = new Endpoint();
 
         endpoint.setAddress(epr.getAddress());
+        endpoint.setName(epr.getName());
 
         Set<Map.Entry<String, String>> props = epr.getProperties().entrySet();
         Property properties[] = new Property[props.size()];
@@ -264,7 +267,7 @@ public class NodeService {
     }
 
     private void handleException(String msg, Exception e) throws AxisFault {
-        log.error(msg);
-        throw new AxisFault(msg);
+        log.error(msg, e);
+        throw new AxisFault(msg, e);
     }
 }

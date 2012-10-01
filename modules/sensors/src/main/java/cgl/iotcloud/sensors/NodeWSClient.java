@@ -9,8 +9,8 @@ import cgl.iotcloud.gen.services.node.xsd.EndpointInfo;
 import cgl.iotcloud.gen.services.node.xsd.NodeDetail;
 import cgl.iotcloud.gen.services.node.xsd.NodeInfo;
 import cgl.iotcloud.gen.services.node.xsd.RegistrationResponse;
-import cgl.iotcloud.gen.services.xsd.Endpoint;
-import cgl.iotcloud.gen.services.xsd.Property;
+import cgl.iotcloud.gen.services.node.xsd.Endpoint;
+import cgl.iotcloud.gen.services.node.xsd.Property;
 import org.apache.axis2.AxisFault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class NodeWSClient {
 
     public NodeWSClient(String url) throws IOTException {
         try {
-            nodeServiceStub = new NodeServiceStub(url);
+            nodeServiceStub = new NodeServiceStub(url + "/soap/services/NodeService");
         } catch (AxisFault axisFault) {
             handleException("Failed to create the client stub for service: " +
                     "SensorRegistrationService", axisFault);
@@ -39,7 +39,7 @@ public class NodeWSClient {
         try {
             return nodeServiceStub.registerNode(nodeInfo);
         } catch (RemoteException e) {
-            handleException("Failed to register the node.." + nodeInfo, e);
+            handleException("Failed to register the node.." + nodeInfo.getName(), e);
         }
         return null;
     }
@@ -55,7 +55,7 @@ public class NodeWSClient {
 
     public Endpoint registerConsumer(NodeInfo nodeInfo, EndpointInfo endpointInfo) throws IOTException {
         try {
-            nodeServiceStub.registerConsumer(nodeInfo, endpointInfo);
+            return nodeServiceStub.registerConsumer(nodeInfo, endpointInfo);
         } catch (RemoteException e) {
             handleException("Failed to un-register the consumer.." + endpointInfo, e);
         }
@@ -65,7 +65,7 @@ public class NodeWSClient {
 
     public Endpoint registerProducer(NodeInfo nodeInfo, EndpointInfo endpointInfo) throws IOTException {
         try {
-            nodeServiceStub.registerProducer(nodeInfo, endpointInfo);
+            return nodeServiceStub.registerProducer(nodeInfo, endpointInfo);
         } catch (RemoteException e) {
             handleException("Failed to un-register the producer.." + endpointInfo, e);
         }
@@ -141,6 +141,7 @@ public class NodeWSClient {
     private cgl.iotcloud.core.Endpoint createEndpoint(Endpoint e) {
         cgl.iotcloud.core.Endpoint endpoint = new JMSEndpoint();
         endpoint.setAddress(e.getAddress());
+        endpoint.setName(e.getName());
 
         Property []props = e.getProperties();
         Map<String, String> propsMap = new HashMap<String, String>();

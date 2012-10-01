@@ -7,7 +7,7 @@ import cgl.iotcloud.core.endpoint.StreamingEndpoint;
 import cgl.iotcloud.core.sensor.Node;
 import cgl.iotcloud.gen.services.node.xsd.EndpointInfo;
 import cgl.iotcloud.gen.services.node.xsd.NodeInfo;
-import cgl.iotcloud.gen.services.xsd.Property;
+import cgl.iotcloud.gen.services.node.xsd.Property;
 import cgl.iotcloud.core.Endpoint;
 
 import java.util.HashMap;
@@ -44,7 +44,7 @@ public class NodeAdaptor {
         NodeInfo nodeInfo = createNodeInfo(node);
         EndpointInfo endpointInfo = createEndpointInfo(name, type, path);
         if (!rest) {
-            cgl.iotcloud.gen.services.xsd.Endpoint epr =
+            cgl.iotcloud.gen.services.node.xsd.Endpoint epr =
                     nodeWSClient.registerConsumer(nodeInfo, endpointInfo);
             return createEndpoint(epr, type, name);
         }
@@ -58,7 +58,7 @@ public class NodeAdaptor {
         EndpointInfo endpointInfo = createEndpointInfo(name, type, path);
 
         if (!rest) {
-            cgl.iotcloud.gen.services.xsd.Endpoint epr =
+            cgl.iotcloud.gen.services.node.xsd.Endpoint epr =
                     nodeWSClient.registerProducer(nodeInfo, endpointInfo);
             return createEndpoint(epr, type, name);
         }
@@ -104,7 +104,7 @@ public class NodeAdaptor {
         return info;
     }
 
-    private Endpoint createEndpoint(cgl.iotcloud.gen.services.xsd.Endpoint epr, String type, String name) {
+    private Endpoint createEndpoint(cgl.iotcloud.gen.services.node.xsd.Endpoint epr, String type, String name) {
         cgl.iotcloud.core.Endpoint endpoint = null;
         if (type.equals(Constants.MESSAGE_TYPE_BLOCK)) {
             endpoint = new JMSEndpoint();
