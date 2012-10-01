@@ -127,13 +127,22 @@ public class JMSListener implements cgl.iotcloud.core.Listener {
         return state.getState();
     }
 
+    @Override
+    public void setMessageHandler(MessageHandler handler) {
+        this.messageHandler = handler;
+    }
+
     private class Receiver implements MessageListener {
         public void onMessage(Message message) {
             // construct a sensor message
             SensorMessage sm = messageFactory.create(message);
 
             // call the message handler
-            messageHandler.onMessage(sm);
+            if (messageHandler != null) {
+                messageHandler.onMessage(sm);
+            } else {
+                log.debug("Message handler not set.. Discarding message");
+            }
         }
     }
 

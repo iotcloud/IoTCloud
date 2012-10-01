@@ -31,6 +31,26 @@ public class NodeInformation {
         return producers;
     }
 
+    public Endpoint getConsumer(String name) {
+        for (Endpoint e : consumers) {
+            if (e.getName() != null && e.getName().equals(name)) {
+                return e;
+            }
+        }
+
+        return null;
+    }
+
+    public Endpoint getProducer(String name) {
+        for (Endpoint e : producers) {
+            if (e.getName() != null && e.getName().equals(name)) {
+                return e;
+            }
+        }
+
+        return null;
+    }
+
     public List<Endpoint> getConsumers() {
         return consumers;
     }

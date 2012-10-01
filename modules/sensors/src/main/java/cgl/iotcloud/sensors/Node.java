@@ -19,7 +19,7 @@ public class Node implements cgl.iotcloud.core.sensor.Node {
 
     private NodeAdaptor adaptor = null;
 
-    protected Node(NodeName name, String url) throws IOTException {
+    public Node(NodeName name, String url) throws IOTException {
         this.name = name;
         this.adaptor = new NodeAdaptor(this, url);
     }
