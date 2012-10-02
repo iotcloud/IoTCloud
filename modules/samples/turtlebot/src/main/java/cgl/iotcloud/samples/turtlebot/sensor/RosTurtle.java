@@ -76,8 +76,6 @@ public class RosTurtle extends AbstractNodeMain {
             protected void loop() throws InterruptedException {
                 Twist str = publisher.newMessage();
 
-                System.out.println("loooping...");
-
                 if (linear != null) {
                     str.getLinear().setX(linear.getX());
                     str.getLinear().setY(linear.getY());
