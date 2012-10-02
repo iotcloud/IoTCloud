@@ -12,7 +12,6 @@ import cgl.iotcloud.core.message.data.TextDataMessage;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
 import cgl.iotcloud.core.sensor.NodeInformation;
 import cgl.iotcloud.core.sensor.NodeName;
-import cgl.iotcloud.sensors.Node;
 import cgl.iotcloud.sensors.NodeClient;
 
 import java.io.BufferedReader;
