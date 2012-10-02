@@ -18,6 +18,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * A sample chat client based on the new Node api.
+ */
 public class  NodeChatClient {
     private NodeClient nodeClient = null;
 
@@ -69,6 +72,9 @@ public class  NodeChatClient {
         }
     }
 
+    /**
+     * Read the chat from the console
+     */
     public void read() {
         String chat;
         InputStreamReader cin = new InputStreamReader(System.in);
