@@ -12,11 +12,7 @@ import cgl.iotcloud.core.message.update.UpdateMessage;
 import cgl.iotcloud.samples.turtlebot.sensor.Frame;
 import cgl.iotcloud.samples.turtlebot.sensor.Velocity;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class TurtleClient {
     private SensorClient sensorClient;
@@ -59,8 +55,6 @@ public class TurtleClient {
         );
     }
 
-    private AtomicInteger count = new AtomicInteger(0);
-
     private void handleMessage(SensorMessage m) {
         if (m instanceof Frame) {
             Frame message = (Frame) m;
@@ -80,7 +74,7 @@ public class TurtleClient {
                 }
             }
             RootFrame.getInstance().setImage(im);
-            RootFrame.getInstance().getDataPanel().repaint();
+            RootFrame.getInstance().getDataContainer().repaint();
         }
     }
 

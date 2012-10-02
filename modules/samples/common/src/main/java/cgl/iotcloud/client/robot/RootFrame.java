@@ -3,6 +3,7 @@ package cgl.iotcloud.client.robot;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.lang.Exception;
 import java.util.Collection;
 import java.util.HashMap;
@@ -162,12 +163,12 @@ public class RootFrame extends JFrame {
     	SensorDataContainerPanel.getInstance().updateData(msg);
     }
 
-    public JPanel getDataPanel() {
-        return SensorDataContainerPanel.getInstance();
+    public void setImage(BufferedImage im) {
+        SensorDataContainerPanel.getInstance().setImage(im);
     }
 
-    public void setImage(Image image) {
-        SensorDataContainerPanel.getInstance().setImage(image);
+    public JPanel getDataContainer() {
+        return SensorDataContainerPanel.getInstance();
     }
 }
 
@@ -568,7 +569,6 @@ class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 	private static SensorDataContainerPanel senDataContainerPanel;
 	private static JTextArea senData = new JTextArea();
 	private JScrollPane scrollPane;
-    private Image image;
 
 	public static SensorDataContainerPanel getInstance(){
 		if(senDataContainerPanel == null)
@@ -576,17 +576,19 @@ class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 		return senDataContainerPanel;
 	}
 
-    public void setImage(Image image) {
-        this.image = image;
-    }
-
-    private SensorDataContainerPanel (){
+	private SensorDataContainerPanel (){
 		this.setBackground(new java.awt.Color(255, 255, 255));
 		this.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 		this.addComponents();
 	}
 
-	@Override
+    BufferedImage image;
+
+    public void setImage(BufferedImage image) {
+        this.image = image;
+    }
+
+    @Override
 	public void addComponents() {
 		GroupLayout senDataMainPanelLayout = new GroupLayout(this);
 
@@ -619,9 +621,9 @@ class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 	}
 
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.drawImage(image, 0, 0, image.getWidth(null) / 2, image.getHeight(null) / 2, null);
+    public void paint(Graphics g) {
+        g.drawImage(image, 0, 0, null);
+        repaint();
     }
 
     public static void updateData(String data){

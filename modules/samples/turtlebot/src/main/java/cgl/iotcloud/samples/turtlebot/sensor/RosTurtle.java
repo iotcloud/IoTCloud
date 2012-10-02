@@ -11,10 +11,6 @@ import org.ros.node.topic.Publisher;
 import org.ros.node.topic.Subscriber;
 import sensor_msgs.Image;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RosTurtle extends AbstractNodeMain {
@@ -46,7 +42,7 @@ public class RosTurtle extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         final Publisher<Twist> publisher =
-                connectedNode.newPublisher("cmd_vel", Twist._TYPE);
+                connectedNode.newPublisher("/cmd_vel", Twist._TYPE);
 
         final Subscriber<Image> subscriber =
                 connectedNode.newSubscriber("/camera/rgb/image_color", Image._TYPE);
@@ -59,6 +55,7 @@ public class RosTurtle extends AbstractNodeMain {
                 f.setHeight(message.getHeight());
                 f.setStep(message.getStep());
                 ChannelBuffer buffer = message.getData();
+
                 if (buffer.hasArray()) {
                     f.setBuffer(buffer.array());
                 }
@@ -78,6 +75,8 @@ public class RosTurtle extends AbstractNodeMain {
             @Override
             protected void loop() throws InterruptedException {
                 Twist str = publisher.newMessage();
+
+                System.out.println("loooping...");
 
                 if (linear != null) {
                     str.getLinear().setX(linear.getX());

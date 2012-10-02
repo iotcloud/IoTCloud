@@ -39,13 +39,20 @@ public class TurtleUI {
     };
 
     public void start() {
-        client = new TurtleClient();
-        try {
-            client.start();
-        } catch (IOTRuntimeException e) {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                client = new TurtleClient();
+                try {
+                    client.start();
+                } catch (IOTRuntimeException e) {
+                    e.printStackTrace();
 
-        }
+                }
+            }
+        });
 
+        t.start();
         RootFrame rootFrame = RootFrame.getInstance();
         rootFrame.addActionController(actController);
 
