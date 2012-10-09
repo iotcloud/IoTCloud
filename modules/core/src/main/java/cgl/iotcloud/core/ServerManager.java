@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
+import javax.jcr.RepositoryException;
+
 /**
  * Starts a SGX server. This is the mail class for starting a SGX Server. This class creates
  * the necessary configurations and start the server.
@@ -39,6 +41,18 @@ public class ServerManager {
             public void run() {
             	log.info("Shutting down IOTCloud...");
             	cloud.sendIOTCloudShutDownMssg();
+            	
+            	if(cloud.isContentRepositoryAvail)
+            	{
+	            	try {
+						cloud.clearContentRepository();
+						cloud.shutDownContentRepoSession();
+					} catch (RepositoryException e) {
+						// TODO Auto-generated catch block
+						log.error(" ********** Failed to CLEAN the Content Repository ********** ");
+					}
+            	}
+            	
                 server.stop();
             }
         });

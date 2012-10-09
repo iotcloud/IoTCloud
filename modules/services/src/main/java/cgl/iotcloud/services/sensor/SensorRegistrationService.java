@@ -29,7 +29,6 @@ public class SensorRegistrationService {
      */
     public SensorInformation registerSensor(SensorRegistrationInformation information) throws AxisFault {
         IoTCloud cloud =  retrieveIoTCloud();
-
         Sensor sensor;
         if (information.getType() != null) {
             sensor = cloud.registerSensor(information.getName(), information.getType());

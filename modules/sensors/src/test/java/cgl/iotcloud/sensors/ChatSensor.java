@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 
 public class ChatSensor {
     public static void main(String[] args) {
-        SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8081");
+        SensorAdaptor adaptor = new SensorAdaptor("http://localhost:8080");
 
         TextSensor sensor = new TextSensor(Constants.SENSOR_TYPE_BLOCK, "chat-sensor");
         adaptor.registerSensor(sensor);
