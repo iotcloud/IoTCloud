@@ -3,6 +3,7 @@ package cgl.iotcloud.samples.turtlebot.client;
 
 import cgl.iotcloud.client.robot.ActionController;
 import cgl.iotcloud.client.robot.RootFrame;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.samples.turtlebot.sensor.Velocity;
 
 
@@ -38,10 +39,20 @@ public class TurtleUI {
     };
 
     public void start() {
-        client = new TurtleClient();
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                client = new TurtleClient();
+                try {
+                    client.start();
+                } catch (IOTRuntimeException e) {
+                    e.printStackTrace();
 
-        client.start();
+                }
+            }
+        });
 
+        t.start();
         RootFrame rootFrame = RootFrame.getInstance();
         rootFrame.addActionController(actController);
 

@@ -4,6 +4,10 @@ package cgl.iotcloud.services;
  * Represent an endpoint as a bean
  */
 public class Endpoint {
+    private String type;
+
+    private String name;
+
     /** address */
     private String address;
 
@@ -24,5 +28,21 @@ public class Endpoint {
 
     public void setProperties(Property[] properties) {
         this.properties = properties;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

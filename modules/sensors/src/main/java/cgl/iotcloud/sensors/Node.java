@@ -1,6 +1,5 @@
 package cgl.iotcloud.sensors;
 
-
 import cgl.iotcloud.core.*;
 import cgl.iotcloud.core.broker.JMSListenerFactory;
 import cgl.iotcloud.core.broker.JMSSenderFactory;
@@ -20,7 +19,7 @@ public class Node implements cgl.iotcloud.core.sensor.Node {
 
     private NodeAdaptor adaptor = null;
 
-    protected Node(NodeName name, String url) throws IOTException {
+    public Node(NodeName name, String url) throws IOTException {
         this.name = name;
         this.adaptor = new NodeAdaptor(this, url);
     }

@@ -24,13 +24,13 @@ public class EndpointAllocator {
 
         NodeInformation nodeInfo = catalog.getNode(nodeName);
         for (Endpoint e : nodeInfo.getConsumers()) {
-            if (e.getName().equals(name)) {
+            if (e.getName() != null && e.getName().equals(name)) {
                 return null;
             }
         }
 
         for (Endpoint e : nodeInfo.getProducers()) {
-            if (e.getName().equals(name)) {
+            if (e.getName() != null && e.getName().equals(name)) {
                 return null;
             }
         }
@@ -41,6 +41,7 @@ public class EndpointAllocator {
 
         if (type.equals(Constants.MESSAGE_TYPE_BLOCK)) {
             endpoint = new JMSEndpoint();
+            endpoint.setName(name);
             endpoint.setAddress(nodeName.getGroup() + "/" + nodeName.getName() + "/" + path);
             // TODO: we have to decide the connection factory to be used
             //endpoint.setProperties(
@@ -49,6 +50,7 @@ public class EndpointAllocator {
                     configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
         } else {
             endpoint = new StreamingEndpoint();
+            endpoint.setName(name);
             endpoint.setProperties(configuration.getStreamingServer().getParameters());
             endpoint.getProperties().put("PATH", "sensor/" +
                     nodeInfo.getName().getName() + "/" + path);

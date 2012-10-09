@@ -3,6 +3,8 @@ package cgl.iotcloud.samples.lego_nxt.client;
 
 import cgl.iotcloud.client.robot.ActionController;
 import cgl.iotcloud.client.robot.RootFrame;
+import cgl.iotcloud.client.robot.SensorDataController;
+import cgl.iotcloud.samples.lego_nxt.common.LegoNXTSensorTypes;
 import cgl.iotcloud.samples.lego_nxt.sensor.Velocity;
 
 
@@ -10,6 +12,8 @@ public class LegoNXTUI {
 
     private static LegoNXTClient client;
     private static LegoNXTUI legoNXTUI;
+    
+    private boolean touchSensorEnabled;
 
     private ActionController actController = new ActionController() {
         @Override
@@ -37,6 +41,25 @@ public class LegoNXTUI {
             client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
         }
     };
+    
+    private SensorDataController  senDataController = new SensorDataController() {
+		
+		@Override
+		public void stop(String sensorName) {
+			if(sensorName.equalsIgnoreCase(LegoNXTSensorTypes.TOUCH_SENSOR))
+				touchSensorEnabled = false;
+		}
+		
+		@Override
+		public void start(String sensorName) {
+			if(sensorName.equalsIgnoreCase(LegoNXTSensorTypes.TOUCH_SENSOR))
+				touchSensorEnabled = true;
+		}
+	}; 
+	
+	boolean isTouchSensorEnabled(){
+		return touchSensorEnabled;
+	}
 
     public void start() {
         client = new LegoNXTClient();
@@ -44,7 +67,9 @@ public class LegoNXTUI {
         client.start();
 
         RootFrame rootFrame = RootFrame.getInstance();
+        rootFrame.addSensor(LegoNXTSensorTypes.TOUCH_SENSOR);
         rootFrame.addActionController(actController);
+        rootFrame.addSensorDataController(senDataController);
 
         rootFrame.setVisible(true);
     }
