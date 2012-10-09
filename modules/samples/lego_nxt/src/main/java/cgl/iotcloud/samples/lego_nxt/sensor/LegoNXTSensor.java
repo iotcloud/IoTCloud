@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import nxt_msgs.Contact;
+import nxt_msgs.Gyro;
+import nxt_msgs.Range;
 
 public class LegoNXTSensor extends AbstractSensor implements RosLegoNXTListener {
 	private RosLegoNXT legoNXT ;
@@ -106,13 +108,60 @@ public class LegoNXTSensor extends AbstractSensor implements RosLegoNXTListener 
 
 	@Override
 	public void onRosSensorMessage(Object msg) {
-		System.out.println("== Enter onRosMessage ==");
+		//System.out.println("== Enter onRosMessage ==");
 
 		if(msg instanceof Contact){
-			System.out.println("==Enter handle contact message ==");
+			//System.out.println("==Enter handle contact message ==");
 
 			TextDataMessage txtDataMsg = new TextDataMessage();
 			txtDataMsg.setText(LegoNXTSensorTypes.TOUCH_SENSOR+":"+((Contact)msg).getContact());
+
+			if(sensor != null && isSensorStarted)
+				sensor.sendMessage(txtDataMsg);
+		}
+		
+		if(msg instanceof Range){
+			//System.out.println("==Enter handle range message ==");
+
+			TextDataMessage txtDataMsg = new TextDataMessage();
+			
+			Range rangeMsg = (Range)msg;
+			double range = rangeMsg.getRange();
+			double rangeMin = rangeMsg.getRangeMin();
+			double rangeMax = rangeMsg.getRangeMax();
+			
+			String sensorMsg =  "range : "+range+" ,range max : "+rangeMax+" ,range min : "+rangeMin;
+			txtDataMsg.setText(LegoNXTSensorTypes.ULTRASONIC_SENSOR+":"+sensorMsg);
+
+			if(sensor != null && isSensorStarted)
+				sensor.sendMessage(txtDataMsg);
+		}
+		
+		if(msg instanceof Gyro){
+			//System.out.println("==Enter handle gyro message ==");
+
+			TextDataMessage txtDataMsg = new TextDataMessage();
+			
+			double calibX = ((Gyro) msg).getCalibrationOffset().getX();
+			double calibY = ((Gyro) msg).getCalibrationOffset().getY();
+			double calibZ = ((Gyro) msg).getCalibrationOffset().getZ();
+			
+			String calibration = "[ claibration_offset : (x : "+calibX+" ,y : "+calibY+" ,z : "+calibZ+")";
+			double angVelocityX = ((Gyro) msg).getAngularVelocity().getX();
+			double angVelocityY = ((Gyro) msg).getAngularVelocity().getY();
+			double angVelocityZ = ((Gyro) msg).getAngularVelocity().getZ();
+			
+			String angular_velocity = ", angular_velocity :(x : "+angVelocityX+" ,y : "+angVelocityY+" ,z : "+angVelocityZ+")";
+			
+			double[] covarianceVals = ((Gyro) msg).getAngularVelocityCovariance();
+			String covariance = " ,covariance : (";
+			for(double covarianceVal:covarianceVals){
+				covariance += ", "+covarianceVal;
+			}
+			covariance+=" ) ]";
+			
+			String sensorMsg =  calibration+angular_velocity+covariance;
+			txtDataMsg.setText(LegoNXTSensorTypes.GYRO_SENSOR+":"+sensorMsg);
 
 			if(sensor != null && isSensorStarted)
 				sensor.sendMessage(txtDataMsg);

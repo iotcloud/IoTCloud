@@ -35,13 +35,23 @@ public class LegoNXTClient {
 		sensorClient.listen(new MessageHandler() {
 		
 			public void onMessage(SensorMessage message) {
-				System.out.println("== on Message of client==");
 				if (message instanceof TextDataMessage) {
-					System.out.println("== Message Received: == " + ((TextDataMessage) message).getText());
 					String sensorMsgString = ((TextDataMessage) message).getText();
 					
 					if(sensorMsgString.indexOf(LegoNXTSensorTypes.TOUCH_SENSOR)!=-1){
 						if(LegoNXTUI.getInstance().isTouchSensorEnabled()){
+							LegoNXTUI.getInstance().updateUI(sensorMsgString);
+						}
+					}
+					
+					if(sensorMsgString.indexOf(LegoNXTSensorTypes.ULTRASONIC_SENSOR)!=-1){
+						if(LegoNXTUI.getInstance().isUltrasonicSensorEnabled()){
+							LegoNXTUI.getInstance().updateUI(sensorMsgString);
+						}
+					}
+					
+					if(sensorMsgString.indexOf(LegoNXTSensorTypes.GYRO_SENSOR)!=-1){
+						if(LegoNXTUI.getInstance().isGyroSensorEnabled()){
 							LegoNXTUI.getInstance().updateUI(sensorMsgString);
 						}
 					}

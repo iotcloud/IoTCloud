@@ -14,6 +14,8 @@ public class LegoNXTUI {
     private static LegoNXTUI legoNXTUI;
     
     private boolean touchSensorEnabled;
+    private boolean ultrasonicSensorEnabled;
+    private boolean gyroSensorEnabled;
 
     private ActionController actController = new ActionController() {
         @Override
@@ -48,17 +50,33 @@ public class LegoNXTUI {
 		public void stop(String sensorName) {
 			if(sensorName.equalsIgnoreCase(LegoNXTSensorTypes.TOUCH_SENSOR))
 				touchSensorEnabled = false;
+			if(sensorName.equalsIgnoreCase(LegoNXTSensorTypes.ULTRASONIC_SENSOR))
+				ultrasonicSensorEnabled = false;
+			if(sensorName.equalsIgnoreCase(LegoNXTSensorTypes.GYRO_SENSOR))
+				gyroSensorEnabled = false;
 		}
 		
 		@Override
 		public void start(String sensorName) {
 			if(sensorName.equalsIgnoreCase(LegoNXTSensorTypes.TOUCH_SENSOR))
 				touchSensorEnabled = true;
+			if(sensorName.equalsIgnoreCase(LegoNXTSensorTypes.ULTRASONIC_SENSOR))
+				ultrasonicSensorEnabled = true;
+			if(sensorName.equalsIgnoreCase(LegoNXTSensorTypes.GYRO_SENSOR))
+				gyroSensorEnabled = true;
 		}
 	}; 
 	
 	boolean isTouchSensorEnabled(){
 		return touchSensorEnabled;
+	}
+	
+	boolean isGyroSensorEnabled(){
+		return gyroSensorEnabled;
+	}
+	
+	boolean isUltrasonicSensorEnabled(){
+		return ultrasonicSensorEnabled;
 	}
 
     public void start() {
@@ -68,6 +86,8 @@ public class LegoNXTUI {
 
         RootFrame rootFrame = RootFrame.getInstance();
         rootFrame.addSensor(LegoNXTSensorTypes.TOUCH_SENSOR);
+        rootFrame.addSensor(LegoNXTSensorTypes.ULTRASONIC_SENSOR);
+        rootFrame.addSensor(LegoNXTSensorTypes.GYRO_SENSOR);
         rootFrame.addActionController(actController);
         rootFrame.addSensorDataController(senDataController);
 

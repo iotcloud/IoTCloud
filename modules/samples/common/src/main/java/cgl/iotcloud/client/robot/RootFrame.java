@@ -4,11 +4,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.lang.Exception;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
@@ -23,12 +26,15 @@ import javax.swing.LayoutStyle;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import cgl.iotcloud.core.sensor.Sensor;
+
 /**
  * @RootFrame : Swing UI to control robot and collect sensor data
  *	
  */
 public class RootFrame extends JFrame {
 	private static RootFrame rootFrame;
+	private static String robotName=" ";
 
 	//To Test UI.
 	public static void main(String args[]){
@@ -42,6 +48,13 @@ public class RootFrame extends JFrame {
 		return rootFrame;
 	}
 
+	public static void setRobotName(String _robotName){
+		robotName = _robotName;
+	}
+	
+	public static String getRobotName(){
+		return robotName;
+	}
 	/**
 	 * Creates new form SwingClient
 	 * @throws UnsupportedLookAndFeelException 
@@ -52,6 +65,8 @@ public class RootFrame extends JFrame {
 	private RootFrame(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		initComponents();
+		SensorDataContainerPanel.getInstance().setImage(null);
+		
 	}
 
 	private void initComponents() {
@@ -160,10 +175,11 @@ public class RootFrame extends JFrame {
      * @param msg
      */
     public void update(String msg){
+    	System.out.println("== update msg received == "+msg);
     	SensorDataContainerPanel.getInstance().updateData(msg);
     }
 
-    public void setImage(BufferedImage im) {
+    public void setImage(BufferedImage im) throws Exception {
         SensorDataContainerPanel.getInstance().setImage(im);
     }
 
@@ -565,9 +581,46 @@ class SensorTitlePanel extends JPanel implements RobotUIPanelBuilder{
 	}
 }
 
+// Special handling for turtlebot.
+class TurtleBotDataPanel extends JPanel implements RobotUIPanelBuilder{
+	
+	private static TurtleBotDataPanel turtleBotDataPanel;
+	private BufferedImage image = null;
+	
+	public static TurtleBotDataPanel getInstance(){
+		if(turtleBotDataPanel == null)
+			turtleBotDataPanel = new TurtleBotDataPanel();
+		return turtleBotDataPanel;
+	}
+	
+	@Override
+	public void addComponents() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeComponents() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void paint(Graphics g) {
+		g.drawImage(image, 0, 0, null);
+		repaint();
+	}
+	
+	public void setImage(BufferedImage _image){
+		image = _image;
+	}
+}
+
+
+
 class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 	private static SensorDataContainerPanel senDataContainerPanel;
-	private static JTextArea senData = new JTextArea();
+	private static JTextArea senDataTextArea = new JTextArea();
+	private static JPanel senDataPanel = new JPanel();
 	private JScrollPane scrollPane;
 
 	public static SensorDataContainerPanel getInstance(){
@@ -584,51 +637,64 @@ class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 
     BufferedImage image;
 
-    public void setImage(BufferedImage image) {
-        this.image = image;
+    public void setImage(BufferedImage image){
+    	TurtleBotDataPanel.getInstance().setImage(image);
     }
 
     @Override
 	public void addComponents() {
 		GroupLayout senDataMainPanelLayout = new GroupLayout(this);
 
-		senData.setEditable(false);
-		senData.setVisible(true);
+		senDataTextArea.setEditable(false);
+		senDataTextArea.setVisible(true);
 
+		
+		// by default Text Panel, turtlebot image panel.
+		if(RootFrame.getRobotName().equalsIgnoreCase("turtlebot")){
+			scrollPane = new JScrollPane (senDataPanel,
+					JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		scrollPane = new JScrollPane (senData,
-				   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+			this.setLayout(senDataMainPanelLayout);
+			senDataMainPanelLayout.setHorizontalGroup(
+					senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(SensorDataTitlePanel.getInstance(),GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addComponent(TurtleBotDataPanel.getInstance(),javax.swing.GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					);
+			senDataMainPanelLayout.setVerticalGroup(
+					senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addGroup(senDataMainPanelLayout.createSequentialGroup()
+							.addComponent(SensorDataTitlePanel.getInstance(), GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(TurtleBotDataPanel.getInstance(),GroupLayout.PREFERRED_SIZE, 419, Short.MAX_VALUE))
+					);
+		}else{
+			scrollPane = new JScrollPane (senDataTextArea,
+					JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-		this.setLayout(senDataMainPanelLayout);
-		senDataMainPanelLayout.setHorizontalGroup(
-				senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(SensorDataTitlePanel.getInstance(),GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-				//.addComponent(senData,javax.swing.GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-				.addComponent(scrollPane,javax.swing.GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-				);
-		senDataMainPanelLayout.setVerticalGroup(
-				senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addGroup(senDataMainPanelLayout.createSequentialGroup()
-						.addComponent(SensorDataTitlePanel.getInstance(), GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-						//.addComponent(senData,GroupLayout.PREFERRED_SIZE, 419, GroupLayout.PREFERRED_SIZE)
-						.addComponent(scrollPane,GroupLayout.PREFERRED_SIZE, 419, GroupLayout.PREFERRED_SIZE))
-				);
+			this.setLayout(senDataMainPanelLayout);
+			senDataMainPanelLayout.setHorizontalGroup(
+					senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(SensorDataTitlePanel.getInstance(),GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addComponent(scrollPane,javax.swing.GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+					);
+			senDataMainPanelLayout.setVerticalGroup(
+					senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addGroup(senDataMainPanelLayout.createSequentialGroup()
+							.addComponent(SensorDataTitlePanel.getInstance(), GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+							.addComponent(scrollPane,GroupLayout.PREFERRED_SIZE, 419, Short.MAX_VALUE))
+					);
+		}
 	}
 
 	@Override
 	public void removeComponents() {
 
 	}
-
-    @Override
-    public void paint(Graphics g) {
-        g.drawImage(image, 0, 0, null);
-        repaint();
-    }
-
+	
     public static void updateData(String data){
-		String currentData =senData.getText();
-		senData.setText(currentData+"\n"+data);
+		String currentData =senDataTextArea.getText();
+		senDataTextArea.setText(currentData+"\n"+data);
 	}
 }
 

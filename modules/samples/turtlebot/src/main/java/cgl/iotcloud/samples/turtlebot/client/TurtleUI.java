@@ -54,6 +54,9 @@ public class TurtleUI {
 
         t.start();
         RootFrame rootFrame = RootFrame.getInstance();
+        
+        //to invoke turtlebot UI.
+        RootFrame.setRobotName("turtlebot");
         rootFrame.addActionController(actController);
 
         rootFrame.setVisible(true);
