@@ -1,5 +1,7 @@
 package cgl.iotcloud.core.client;
 
+import java.util.UUID;
+
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.Listener;
 import cgl.iotcloud.core.ManagedLifeCycle;
@@ -38,9 +40,11 @@ public class Client implements ManagedLifeCycle {
     private MessageHandler updateHandler = null;
     /** Sensor used by the client */
     private SCSensor sensor = null;
+    private String clientId ;
 
     public Client(SCSensor sensor) {
         this.sensor = sensor;
+        this.clientId = UUID.randomUUID().toString();
     }
 
     public void setMessageHandler(MessageHandler handler, MessageHandler publicMessagehandler) {
@@ -54,8 +58,8 @@ public class Client implements ManagedLifeCycle {
 
     public void init() {
         JMSSenderFactory senderFactory = new JMSSenderFactory();
-        controlSender = senderFactory.createControlSender(sensor.getControlEndpoint());
-
+        //controlSender = senderFactory.createControlSender(sensor.getControlEndpoint());
+        controlSender = senderFactory.createControlSender(clientId,sensor.getControlEndpoint());
         if (log.isDebugEnabled()) {
             log.debug("Initializing the Sender..");
         }
@@ -67,10 +71,12 @@ public class Client implements ManagedLifeCycle {
 
         JMSListenerFactory listenerFactory = new JMSListenerFactory();
         // Creating a Public Listener
-        publicMessageListener = listenerFactory.create(sensor.getPublicEndpoint(), publicMessagehandler);
+        //publicMessageListener = listenerFactory.create(sensor.getPublicEndpoint(), publicMessagehandler);
+        publicMessageListener = listenerFactory.create(clientId,sensor.getPublicEndpoint(), publicMessagehandler);
         
         if (sensor.getType().equals(Constants.SENSOR_TYPE_BLOCK)) {
-            messageListener = listenerFactory.create(sensor.getDataEndpoint(), handler);
+            //messageListener = listenerFactory.create(sensor.getDataEndpoint(), handler);
+            messageListener = listenerFactory.create(clientId,sensor.getDataEndpoint(), handler);
         } else {
             messageListener = new StreamingListenerFactory().create(sensor.getDataEndpoint());
             if (messageListener instanceof StreamingListener) {
@@ -79,7 +85,8 @@ public class Client implements ManagedLifeCycle {
         }
 
         if (sensor.getUpdateEndpoint() != null && updateHandler != null) {
-            updateLister = listenerFactory.create(sensor.getUpdateEndpoint(), updateHandler);
+            //updateLister = listenerFactory.create(sensor.getUpdateEndpoint(), updateHandler);
+            updateLister = listenerFactory.create(clientId,sensor.getUpdateEndpoint(), updateHandler);
             updateLister.setMessageFactory(new MessageToUpdateFactory());
 
             updateLister.init();

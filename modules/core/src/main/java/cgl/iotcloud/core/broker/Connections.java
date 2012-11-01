@@ -85,7 +85,6 @@ public class Connections {
             conFactory = lookup(context, javax.jms.ConnectionFactory.class,
                     parameters.get(ConfigConstants.PARAM_CONFAC_JNDI_NAME));
             log.debug("JMS ConnectionFactory : {} initialized", name != null ? name : "");
-
         } catch (NamingException e) {
             throw new IOTRuntimeException("Cannot acquire JNDI context, JMS Connection factory : " +
                 parameters.get(ConfigConstants.PARAM_CONFAC_JNDI_NAME) +

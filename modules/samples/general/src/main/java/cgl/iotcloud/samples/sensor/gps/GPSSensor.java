@@ -27,6 +27,7 @@ public class GPSSensor extends AbstractSensor implements GPSReciever{
 	private static int DATA_END = 13;
 	private SerialPort serialPort = null;
 
+
 	//TODO : Add WatchDog, Virtual GPS sensor.
 	public GPSSensor(String type,String name) { 
 		super(type, name);

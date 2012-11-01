@@ -59,19 +59,28 @@ public abstract class AbstractSensor implements Sensor, ManagedLifeCycle {
     	System.out.println("==Enter init of Abstract sensor==");
         if (updateEndpoint != null) {
             JMSSenderFactory jmsSenderFactory = new JMSSenderFactory();
-            updateSender = jmsSenderFactory.create(updateEndpoint);
+            //updateSender = jmsSenderFactory.create(updateEndpoint);
+            updateSender = jmsSenderFactory.create(id,updateEndpoint);
         }
 
         JMSListenerFactory listenerFactory = new JMSListenerFactory();
-        listener = listenerFactory.createControlListener(
+        //listener = listenerFactory.createControlListener(
+        //        controlEndpoint, new ControlMessageReceiver());
+        
+        listener = listenerFactory.createControlListener(id,
                 controlEndpoint, new ControlMessageReceiver());
         
-        publicListener = listenerFactory.createControlListener(
+        //publicListener = listenerFactory.createControlListener(
+        //        publicEndpoint, new ControlMessageReceiver());
+        
+        publicListener = listenerFactory.createControlListener(id,
                 publicEndpoint, new ControlMessageReceiver());
 
         if (type.equals(Constants.SENSOR_TYPE_BLOCK)) {
             JMSSenderFactory senderFactory = new JMSSenderFactory();
-            sender = senderFactory.create(dataEndpoint);
+            //sender = senderFactory.create(dataEndpoint);
+            sender = senderFactory.create(id,dataEndpoint);
+            
         } else {
             StreamingSenderFactory senderFactory = new StreamingSenderFactory();
             sender = senderFactory.create(dataEndpoint);
@@ -136,8 +145,6 @@ public abstract class AbstractSensor implements Sensor, ManagedLifeCycle {
     }
 
     public void sendMessage(SensorMessage message) {
-    	if(sender == null)
-    		System.out.println("== Sender is null ==");
         sender.send(message);
     }
 

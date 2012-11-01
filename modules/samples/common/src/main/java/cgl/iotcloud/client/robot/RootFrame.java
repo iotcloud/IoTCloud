@@ -66,7 +66,7 @@ public class RootFrame extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		initComponents();
 		SensorDataContainerPanel.getInstance().setImage(null);
-		
+
 	}
 
 	private void initComponents() {

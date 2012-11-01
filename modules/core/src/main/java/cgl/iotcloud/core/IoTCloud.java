@@ -529,7 +529,7 @@ public class IoTCloud {
      * @return the sensor
      */
     public Sensor registerSensor(String name, String type) {
-        SCSensor sensor = new SCSensor(name);
+    	SCSensor sensor = new SCSensor(name);
 
         String uid = UUID.randomUUID().toString();
         sensor.setId(uid);
@@ -547,7 +547,7 @@ public class IoTCloud {
             //dataEndpoint.setProperties(
             //        configuration.getBroker().getConnections("topic").getParameters());
             dataEndpoint.setProperties(
-                    configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
+                    configuration.getBrokerPool().getBroker(sensor.getId()).getConnections("topic").getParameters());
         } else if (Constants.SENSOR_TYPE_STREAMING.equalsIgnoreCase(type)) {
             dataEndpoint = new StreamingEndpoint();
 
@@ -563,7 +563,9 @@ public class IoTCloud {
             //dataEndpoint.setProperties(
             //        configuration.getBroker().getConnections("topic").getParameters());
             dataEndpoint.setProperties(
-                    configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
+                    configuration.getBrokerPool().getBroker(sensor.getId()).getConnections("topic").getParameters());
+            //dataEndpoint.setProperties(
+            //        configuration.getBrokerPool().getBroker(sensor.getId()).getConnections("topic").getParameters());
         }
 
         sensor.setDataEndpoint(dataEndpoint);
@@ -576,7 +578,7 @@ public class IoTCloud {
         //controlEndpoint.setProperties(
         //        configuration.getBroker().getConnections("topic").getParameters());
         controlEndpoint.setProperties(
-                configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
+                configuration.getBrokerPool().getBroker(sensor.getId()).getConnections("topic").getParameters());
         sensor.setControlEndpoint(controlEndpoint);
 
         // set the update sending endpoint as the global endpoint
@@ -586,7 +588,9 @@ public class IoTCloud {
         //updateSendingEndpoint.setProperties(
         //        configuration.getBroker().getConnections("topic").getParameters());
         updateSendingEndpoint.setProperties(
-                configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
+                configuration.getBrokerPool().getBroker(sensor.getId()).getConnections("topic").getParameters());
+        //updateSendingEndpoint.setProperties(
+        //        configuration.getBrokerPool().getBroker(sensor.getId()).getConnections("topic").getParameters());
         updateSendingEndpoint.setAddress(sensor.getId() + "/update");
         sensor.setUpdateEndpoint(updateSendingEndpoint);
         

@@ -1,7 +1,9 @@
 package cgl.iotcloud.core.broker;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +19,11 @@ import cgl.iotcloud.core.config.xml.BrokersFactory;
 public class BrokerPool {
 	private Logger log = LoggerFactory.getLogger(BrokerPool.class);
 	private static BrokerPool brokerPool;
+	private static Map<String,Broker> assignedBrokerMap;
 	private static LinkedList<Broker> brokerQueue;
 
 	private BrokerPool(){
-
+		init();
 	}
 	
 	/**
@@ -34,6 +37,8 @@ public class BrokerPool {
 		
 		if(brokerPool == null)
 			brokerPool = new BrokerPool();
+		
+		assignedBrokerMap = new HashMap<String,Broker>();
 		
 		return brokerPool;
 	}
@@ -64,6 +69,18 @@ public class BrokerPool {
 		brokerQueue.add(broker);
 		return broker;
 	}
+	
+	public synchronized Broker getBroker(String id){
+		Broker retVal = null;
+		if(assignedBrokerMap.containsKey(id))
+			retVal = assignedBrokerMap.get(id);
+		else{
+			retVal =  getBroker();
+			assignedBrokerMap.put(id, retVal);
+		}
+		return retVal;
+	}
+	
 
 	/**
 	 * Adds broker back to pool
