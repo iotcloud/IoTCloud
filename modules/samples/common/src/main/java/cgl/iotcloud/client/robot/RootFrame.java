@@ -184,7 +184,7 @@ public class RootFrame extends JFrame {
     }
 
     public JPanel getDataContainer() {
-        return SensorDataContainerPanel.getInstance();
+        return SensorDataContainerPanel.getDataPanel();
     }
 }
 
@@ -622,6 +622,7 @@ class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 	private static JTextArea senDataTextArea = new JTextArea();
 	private static JPanel senDataPanel = new JPanel();
 	private JScrollPane scrollPane;
+    private static JPanel dataPanel = null;
 
 	public static SensorDataContainerPanel getInstance(){
 		if(senDataContainerPanel == null)
@@ -635,10 +636,12 @@ class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 		this.addComponents();
 	}
 
-    BufferedImage image;
-
     public void setImage(BufferedImage image){
     	TurtleBotDataPanel.getInstance().setImage(image);
+    }
+
+    public static JPanel getDataPanel() {
+        return dataPanel;
     }
 
     @Override
@@ -667,6 +670,7 @@ class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder{
 							.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 							.addComponent(TurtleBotDataPanel.getInstance(),GroupLayout.PREFERRED_SIZE, 419, Short.MAX_VALUE))
 					);
+            dataPanel = TurtleBotDataPanel.getInstance();
 		}else{
 			scrollPane = new JScrollPane (senDataTextArea,
 					JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);

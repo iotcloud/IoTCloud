@@ -79,7 +79,7 @@ public class TurtleClient {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-            RootFrame.getInstance().getDataContainer().repaint();
+            RootFrame.getInstance().getDataContainer();
         }
     }
 
@@ -93,7 +93,7 @@ public class TurtleClient {
         controlMessage.addControl("a.x", angular.getX());
         controlMessage.addControl("a.y", angular.getY());
         controlMessage.addControl("a.z", angular.getZ());
-
+        System.out.println("Sending message");
         sensorClient.sendControlMessage(controlMessage);
     }
 }
