@@ -1,42 +1,16 @@
 package cgl.iotcloud.samples.turtlebot.client;
 
 
-import cgl.iotcloud.client.robot.ActionController;
-import cgl.iotcloud.client.robot.RootFrame;
+import cgl.iotcloud.client.robot.*;
 import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.samples.turtlebot.sensor.Velocity;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 
 public class TurtleUI {
-
     private TurtleClient client;
-
-    private ActionController actController = new ActionController() {
-        @Override
-        public void up() {
-            client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
-        }
-
-        @Override
-        public void down() {
-            client.setVelocity(new Velocity(-.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
-        }
-
-        @Override
-        public void left() {
-            client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0, 0.0, -.5));
-        }
-
-        @Override
-        public void right() {
-            client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, .5));
-        }
-
-        @Override
-        public void stop() {
-            client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
-        }
-    };
 
     public void start() {
         Thread t = new Thread(new Runnable() {
@@ -53,11 +27,49 @@ public class TurtleUI {
         });
 
         t.start();
-        RootFrame rootFrame = RootFrame.getInstance();
-        
-        //to invoke turtlebot UI.
-        RootFrame.setRobotName("turtlebot");
-        rootFrame.addActionController(actController);
+        RootFrame rootFrame = new RootFrame();
+        RootPanel rootPanel = rootFrame.getRootPanel();
+        SenConPanel senConPanel = rootPanel.getSenConPanel();
+
+        ControlContainerPanel controlContainerPanel = senConPanel.getControlContainerPanel();
+
+        ControlPanel controlPanel = controlContainerPanel.getControlPanel();
+        ControlSessionPanel controlSessionPanel = controlContainerPanel.getControlSessionPanel();
+
+        controlPanel.getBackButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                client.setVelocity(new Velocity(-.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
+            }
+        });
+
+        controlPanel.getStarightButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
+            }
+        });
+
+        controlPanel.getLeftButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0, 0.0, -.5));
+            }
+        });
+
+        controlPanel.getRightButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, .5));
+            }
+        });
+
+        controlSessionPanel.getStopButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
+            }
+        });
 
         rootFrame.setVisible(true);
     }

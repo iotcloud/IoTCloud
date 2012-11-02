@@ -73,13 +73,13 @@ public class TurtleClient {
                     im.setRGB(x, y, rgb);
                 }
             }
-            try {
-				RootFrame.getInstance().setImage(im);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            RootFrame.getInstance().getDataContainer().repaint();
+//            try {
+//				RootFrame.getInstance().setImage(im);
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//            RootFrame.getInstance().getDataContainer().repaint();
         }
     }
 
