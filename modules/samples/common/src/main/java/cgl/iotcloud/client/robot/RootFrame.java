@@ -34,7 +34,7 @@ import cgl.iotcloud.core.sensor.Sensor;
  */
 public class RootFrame extends JFrame {
 	private static RootFrame rootFrame;
-	private static String robotName=" ";
+	private static String robotName="turtlebot";
 
 	//To Test UI.
 	public static void main(String args[]){

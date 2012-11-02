@@ -79,7 +79,7 @@ public class TurtleClient {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-            RootFrame.getInstance().getDataContainer();
+            RootFrame.getInstance().getDataContainer().repaint();
         }
     }
 
