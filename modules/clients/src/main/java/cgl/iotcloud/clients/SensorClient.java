@@ -80,7 +80,7 @@ public class SensorClient {
         criteria.addProperty("name", name);
         SCSensor sensor = client.getSensor("name", criteria);
         if (sensor == null) {
-            handleException("Sensor with the name: " + name + " cannot be fount");
+            handleException("Sensor with the name: " + name + " cannot be found");
             return;
         }
         register(sensor.getId());

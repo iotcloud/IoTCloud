@@ -42,7 +42,7 @@ public class ChatSensor extends AbstractSensor {
 
                 chat = reader.readLine();
             }
-        } catch (IOException e) {
+        }catch (IOException e) {
             System.out.println(e);
         }
 

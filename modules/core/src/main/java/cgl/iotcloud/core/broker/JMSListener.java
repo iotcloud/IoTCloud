@@ -58,7 +58,6 @@ public class JMSListener implements cgl.iotcloud.core.Listener {
      */
     public void init() {
         connections.init();
-
         connection = connections.getConnection();
         session = connections.getSession(connection);
         destination = connections.getDestination(destinationPath, session);

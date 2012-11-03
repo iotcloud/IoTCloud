@@ -38,7 +38,8 @@ public class BrokerPool {
 		if(brokerPool == null)
 			brokerPool = new BrokerPool();
 		
-		assignedBrokerMap = new HashMap<String,Broker>();
+		if(assignedBrokerMap == null)
+			assignedBrokerMap = new HashMap<String,Broker>();
 		
 		return brokerPool;
 	}
@@ -72,9 +73,9 @@ public class BrokerPool {
 	
 	public synchronized Broker getBroker(String id){
 		Broker retVal = null;
-		if(assignedBrokerMap.containsKey(id))
+		if(assignedBrokerMap!= null && assignedBrokerMap.containsKey(id)){
 			retVal = assignedBrokerMap.get(id);
-		else{
+		}else{
 			retVal =  getBroker();
 			assignedBrokerMap.put(id, retVal);
 		}

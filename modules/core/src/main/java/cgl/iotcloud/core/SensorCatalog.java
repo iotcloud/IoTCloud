@@ -25,6 +25,15 @@ public class SensorCatalog {
         }
         return null;
     }
+    
+    public SCSensor getSensorWithName(String name) {
+        for (SCSensor s : sensors) {
+            if (s.getName().equalsIgnoreCase(name)) {
+                return s;
+            }
+        }
+        return null;
+    }
 
     public void addSensor(SCSensor sensor) {
         if (sensor.getId() == null) {
@@ -50,6 +59,15 @@ public class SensorCatalog {
     public boolean hasSensor(String id) {
         for (Sensor s : sensors) {
             if (s.getId().endsWith(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean hasSensorWithName(String name) {
+        for (Sensor s : sensors) {
+            if (s.getName().equalsIgnoreCase(name)) {
                 return true;
             }
         }

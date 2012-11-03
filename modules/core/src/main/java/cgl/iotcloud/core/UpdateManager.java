@@ -62,7 +62,6 @@ public class UpdateManager implements ManagedLifeCycle {
      * Initialize the update manager. This will create message senders and listeners.
      */
     public void init() {
-    	System.out.println("=== enter init of the UpdateManager ==");
         receivingEndpoint = new JMSEndpoint();
         receivingEndpoint.setAddress("update/receive");
         //receivingEndpoint.setProperties(configuration.getBroker().getConnections("topic").getParameters());

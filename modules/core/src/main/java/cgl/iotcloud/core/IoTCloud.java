@@ -535,6 +535,10 @@ public class IoTCloud {
         sensor.setId(uid);
         sensor.setType(type);
 
+        //temporary fix..
+        if(sensorCatalog.hasSensorWithName(name))
+        	sensorCatalog.removeSensor(sensorCatalog.getSensorWithName(name).getId());
+        
         // Setting PublicEndPoint
         sensor.setPublicEndpoint(publicEndPoint);
         
@@ -653,6 +657,7 @@ public class IoTCloud {
     }
 
     public SCClient registerClient(String clientId, String sensorId) {
+    	System.out.println("== register client of IotCloud called ==");
         if (!sensorCatalog.hasSensor(sensorId)) {
             return null;
         }
