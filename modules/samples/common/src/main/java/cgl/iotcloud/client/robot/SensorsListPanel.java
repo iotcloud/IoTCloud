@@ -1,6 +1,9 @@
 package cgl.iotcloud.client.robot;
 
 import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,80 +12,88 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SensorsListPanel extends JPanel implements RobotUIPanelBuilder {
-    // private SensorsListPanel sensorsListPanel;
-    private Map<String, JButton> sensorNameToButtonMap = new HashMap<String, JButton>();
-    private String sensorSelected = null;
-    private GroupLayout.ParallelGroup parallelGrp;
-    private GroupLayout.SequentialGroup sequentialGrp;
-    private GroupLayout senPanelLayout = new GroupLayout(this);
+	private RootFrame rootFrame;
+	private JTree sensorTree;
+	private DefaultMutableTreeNode rootNode;
+	private Map<String, DefaultMutableTreeNode> sensorNameToNodeMap = new HashMap<String, DefaultMutableTreeNode>();
+	private String sensorSelected = null;
+	private GroupLayout.ParallelGroup parallelGrp;
+	private GroupLayout.SequentialGroup sequentialGrp;
+	private GroupLayout senPanelLayout;
 
-    public void removeSensor(String sensorName) {
-        JButton sensorButton = null;
-        if (sensorNameToButtonMap != null && sensorNameToButtonMap.containsKey(sensorName))
-            sensorButton = sensorNameToButtonMap.remove(sensorName);
-        removeSensorFromPanel(sensorButton);
-    }
+	public void addSensor(String sensorName) {
+		DefaultMutableTreeNode sensorNode = new DefaultMutableTreeNode(sensorName);
+		if (sensorNameToNodeMap != null)
+			sensorNameToNodeMap.put(sensorName, sensorNode);
+		updateUITree();
+	}
+	
+	public void deleteSensor(String sensorName) {
+		sensorNameToNodeMap.remove(sensorName);
+		updateUITree();
+	}
+	
+	public void addRobotNode(String robot){
+		rootNode = new DefaultMutableTreeNode(robot);
+	}
 
-    private void removeSensorFromPanel(JButton sensorButton) {
-        parallelGrp = senPanelLayout.createParallelGroup();
-        sequentialGrp = senPanelLayout.createSequentialGroup();
+	public void updateUITree(){
+		Collection<DefaultMutableTreeNode> sensorNodes = sensorNameToNodeMap.values();
 
-        Collection<JButton> sensorButtons = sensorNameToButtonMap.values();
-        for (JButton _sensorButton : sensorButtons) {
-            parallelGrp.addComponent(_sensorButton, 20, javax.swing.GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE);
-            sequentialGrp.addComponent(_sensorButton);
-            sequentialGrp.addGap(20);
+		DefaultTreeModel treeModel = (DefaultTreeModel)sensorTree.getModel();
+		DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
 
-            senPanelLayout.setHorizontalGroup(senPanelLayout.createSequentialGroup().addGap(40).addGroup(parallelGrp).addGap(40));
-            senPanelLayout.setVerticalGroup(sequentialGrp);
-        }
-    }
+		for(DefaultMutableTreeNode sensorNode : sensorNodes){
+			rootNode.add(sensorNode);
+		}
 
-    public void addSensor(String sensorName) {
-        JButton sensorButton = new JButton(sensorName);
-        if (sensorNameToButtonMap != null)
-            sensorNameToButtonMap.put(sensorName, sensorButton);
-        sensorButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String sensorName = ((JButton) e.getSource()).getText();
-                sensorSelected = sensorName;
-            }
-        });
-        addSensorToPanel(sensorButton);
-    }
+		treeModel.reload(rootNode);
+		sensorTree.addTreeSelectionListener(new TreeSelectionListener() {
+			@Override
+			public void valueChanged(TreeSelectionEvent e) {
+				sensorSelected = sensorTree.getLastSelectedPathComponent().toString();
+			}
+		});
+		sensorTree.setRowHeight(40);
+	}
 
-    private void addSensorToPanel(JButton sensorButton) {
-        parallelGrp.addComponent(sensorButton, 20, javax.swing.GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE);
-        sequentialGrp.addComponent(sensorButton);
-        sequentialGrp.addGap(20);
+	public String getSensorSelected() {
+		if(sensorSelected.isEmpty()){
+			JOptionPane.showMessageDialog(rootFrame, "Select a sensor.", "WARNING", 1, null);
+			return "";
+		}else	
+			return sensorSelected;
+	}
 
-        senPanelLayout.setHorizontalGroup(senPanelLayout.createSequentialGroup().addGap(40).addGroup(parallelGrp).addGap(40));
-        senPanelLayout.setVerticalGroup(sequentialGrp);
-    }
+	public SensorsListPanel(RootFrame rootFrame) {
+		this.rootFrame = rootFrame;
+		senPanelLayout = new GroupLayout(this);
+		this.setBackground(new Color(255, 255, 255));
+		this.addComponents();
 
-    public String getSensorSelected() {
-        return sensorSelected;
-    }
+	}
 
-    public SensorsListPanel() {
-        this.setBackground(new Color(255, 255, 255));
-        this.addComponents();
-    }
+	@Override
+	public void addComponents() {
+		this.setLayout(senPanelLayout);
 
-    @Override
-    public void addComponents() {
-        this.setLayout(senPanelLayout);
+		parallelGrp = senPanelLayout.createParallelGroup();
+		sequentialGrp = senPanelLayout.createSequentialGroup();
 
-        parallelGrp = senPanelLayout.createParallelGroup();
-        sequentialGrp = senPanelLayout.createSequentialGroup();
+		rootNode = new DefaultMutableTreeNode("TurtleBot");
+		sensorTree = new JTree(rootNode);
+		sensorTree.setRowHeight(40);
+		parallelGrp.addComponent(sensorTree);
 
-        senPanelLayout.setHorizontalGroup(senPanelLayout.createSequentialGroup().addGap(40).addGroup(parallelGrp).addGap(40));
-        senPanelLayout.setVerticalGroup(sequentialGrp);
-    }
+		sequentialGrp.addComponent(sensorTree);
+		senPanelLayout.setHorizontalGroup(senPanelLayout.createSequentialGroup().addGap(40).addGroup(parallelGrp).addGap(40));
+		senPanelLayout.setVerticalGroup(sequentialGrp);
 
-    @Override
-    public void removeComponents() {
+	}
 
-    }
+
+	@Override
+	public void removeComponents() {
+
+	}
 }

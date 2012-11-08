@@ -3,11 +3,19 @@ package cgl.iotcloud.client.robot;
 import javax.swing.*;
 
 public class RootPanel extends JPanel implements RobotUIPanelBuilder {
-    private SensorContainerPanel sensorContainerPanel = new SensorContainerPanel();
+    private SensorContainerPanel sensorContainerPanel;
+    private RootFrame rootFrame;
+    private SenConPanel senConPanel;
+    
+  /*  public static void main(String args[]){
+    	RootPanel panel = new RootPanel(rootFrame);
+        panel.setVisible(true);
+    }*/
 
-    private SenConPanel senConPanel = new SenConPanel();
-
-    public RootPanel() {
+    public RootPanel(RootFrame rootFrame) {
+    	this.rootFrame = rootFrame;
+    	sensorContainerPanel = new SensorContainerPanel(rootFrame);
+    	senConPanel = new SenConPanel(rootFrame);
         try {
             this.addComponents();
         } catch (Exception e) {

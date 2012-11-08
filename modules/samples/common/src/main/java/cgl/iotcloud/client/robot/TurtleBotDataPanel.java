@@ -5,14 +5,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class TurtleBotDataPanel extends JPanel implements RobotUIPanelBuilder{
-
+	
+	private static RootFrame rootFrame;
     private static TurtleBotDataPanel turtleBotDataPanel;
     private BufferedImage image = null;
 
-    public static TurtleBotDataPanel getInstance(){
-        if(turtleBotDataPanel == null)
-            turtleBotDataPanel = new TurtleBotDataPanel();
-        return turtleBotDataPanel;
+    public TurtleBotDataPanel (RootFrame rootFrame){
+    	this.rootFrame = rootFrame;
     }
 
     @Override
@@ -32,7 +31,7 @@ public class TurtleBotDataPanel extends JPanel implements RobotUIPanelBuilder{
         repaint();
     }
 
-    public void setImage(BufferedImage _image){
-        image = _image;
+    public void setImage(BufferedImage image){
+        this.image = image;
     }
 }

@@ -14,6 +14,11 @@ import cgl.iotcloud.samples.lego_nxt.sensor.Velocity;
 
 public class LegoNXTClient {
 	private SensorClient sensorClient;
+	private LegoNXTUI legoNXTUI;
+	
+	public LegoNXTClient(LegoNXTUI _legoNXTUI){
+		legoNXTUI = _legoNXTUI;
+	}
 
 	public void start() {
 		sensorClient = new SensorClient("http://localhost:8080/");
@@ -26,7 +31,6 @@ public class LegoNXTClient {
 					UpdateMessage updateMessage = (UpdateMessage) message;
 					if (updateMessage.getUpdate(Constants.Updates.STATUS) != null &&
 							updateMessage.getUpdate(Constants.Updates.STATUS).equals(Constants.Updates.REMOVED)) {
-
 					}
 				}
 			}
@@ -39,20 +43,20 @@ public class LegoNXTClient {
 					String sensorMsgString = ((TextDataMessage) message).getText();
 					
 					if(sensorMsgString.indexOf(LegoNXTSensorTypes.TOUCH_SENSOR)!=-1){
-						if(LegoNXTUI.getInstance().isTouchSensorEnabled()){
-							LegoNXTUI.getInstance().updateUI(sensorMsgString);
+						if(legoNXTUI.isTouchSensorEnabled()){
+							legoNXTUI.update(sensorMsgString);
 						}
 					}
 					
 					if(sensorMsgString.indexOf(LegoNXTSensorTypes.ULTRASONIC_SENSOR)!=-1){
-						if(LegoNXTUI.getInstance().isUltrasonicSensorEnabled()){
-							LegoNXTUI.getInstance().updateUI(sensorMsgString);
+						if(legoNXTUI.isUltrasonicSensorEnabled()){
+							legoNXTUI.update(sensorMsgString);
 						}
 					}
 					
 					if(sensorMsgString.indexOf(LegoNXTSensorTypes.GYRO_SENSOR)!=-1){
-						if(LegoNXTUI.getInstance().isGyroSensorEnabled()){
-							LegoNXTUI.getInstance().updateUI(sensorMsgString);
+						if(legoNXTUI.isGyroSensorEnabled()){
+							legoNXTUI.update(sensorMsgString);
 						}
 					}
 				}

@@ -16,7 +16,12 @@ import java.awt.image.BufferedImage;
 
 public class TurtleClient {
     private SensorClient sensorClient;
+    private TurtleUI turtleUI;
 
+    public TurtleClient(TurtleUI turtleUI){
+    	this.turtleUI = turtleUI;
+    }
+    
     public void start() {
         sensorClient = new SensorClient("http://localhost:8080/");
 
@@ -73,13 +78,13 @@ public class TurtleClient {
                     im.setRGB(x, y, rgb);
                 }
             }
-//            try {
-//				RootFrame.getInstance().setImage(im);
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//            RootFrame.getInstance().getDataContainer().repaint();
+            try {
+            	if(turtleUI.isKinectEnabled())
+            		turtleUI.update(im);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+            
         }
     }
 

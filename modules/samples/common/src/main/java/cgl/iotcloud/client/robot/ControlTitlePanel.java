@@ -3,17 +3,13 @@ package cgl.iotcloud.client.robot;
 import javax.swing.*;
 
 public class ControlTitlePanel extends JPanel implements RobotUIPanelBuilder {
-    // private static ControlTitlePanel conTitlePanel;
+	private RootFrame rootFrame;
     private JLabel conTitleLabel = new JLabel("Control");
 
-//    public static ControlTitlePanel getInstance(){
-//        if(conTitlePanel == null)
-//            conTitlePanel = new ControlTitlePanel();
-//        return conTitlePanel;
-//    }
 
-    public ControlTitlePanel() {
-        this.setBackground(new java.awt.Color(0, 0, 0));
+    public ControlTitlePanel(RootFrame rootFrame) {
+    	this.rootFrame = rootFrame;
+    	this.setBackground(new java.awt.Color(0, 0, 0));
         conTitleLabel.setForeground(new java.awt.Color(255, 255, 255));
         this.addComponents();
     }

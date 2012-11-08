@@ -1,16 +1,24 @@
 package cgl.iotcloud.client.robot;
 
+import java.awt.image.BufferedImage;
+
 import javax.swing.*;
 
 public class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder {
-    private SensorDataTitlePanel sensorDataTitlePanel = new SensorDataTitlePanel();
+    private RootFrame rootFrame;
+    private SensorDataTitlePanel sensorDataTitlePanel;
 
     private JTextArea senDataTextArea = new JTextArea();
     private JPanel dataPanel = null;
 
-    public SensorDataContainerPanel() {
+    public SensorDataContainerPanel(RootFrame rootFrame) {
+    	this.rootFrame = rootFrame;
+    	sensorDataTitlePanel = new SensorDataTitlePanel(rootFrame);
         this.setBackground(new java.awt.Color(255, 255, 255));
         this.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        
+        if(rootFrame.getRobot().equalsIgnoreCase("turtlebot"))
+        	dataPanel = new TurtleBotDataPanel(rootFrame);
         this.addComponents();
     }
 
@@ -66,8 +74,12 @@ public class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuil
 
     }
 
-//    public void updateData(String data) {
-//        String currentData = senDataTextArea.getText();
-//        senDataTextArea.setText(currentData + "\n" + data);
-//    }
+    public void updateData(String data) {
+        String currentData = senDataTextArea.getText();
+        senDataTextArea.setText(currentData + "\n" + data);
+    }
+    
+    public void updateData(BufferedImage data) {
+    	((TurtleBotDataPanel)dataPanel).setImage(data);
+    }
 }

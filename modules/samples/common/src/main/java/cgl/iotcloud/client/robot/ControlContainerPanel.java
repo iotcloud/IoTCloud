@@ -3,11 +3,16 @@ package cgl.iotcloud.client.robot;
 import javax.swing.*;
 
 public class ControlContainerPanel extends JPanel implements RobotUIPanelBuilder {
-    private ControlPanel controlPanel = new ControlPanel();
-    private ControlSessionPanel controlSessionPanel = new ControlSessionPanel();
-    private ControlTitlePanel controlTitlePanel = new ControlTitlePanel();
+    private RootFrame rootFrame;
+	private ControlPanel controlPanel; 
+    private SessionControlPanel sessionControlPanel; 
+    private ControlTitlePanel controlTitlePanel; 
 
-    public ControlContainerPanel() {
+    public ControlContainerPanel(RootFrame rootFrame) {
+    	this.rootFrame = rootFrame;
+    	controlPanel = new ControlPanel(rootFrame);
+    	sessionControlPanel = new SessionControlPanel(rootFrame);
+    	controlTitlePanel = new ControlTitlePanel(rootFrame);
         this.setBackground(new java.awt.Color(255, 255, 255));
         this.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         addComponents();
@@ -23,7 +28,7 @@ public class ControlContainerPanel extends JPanel implements RobotUIPanelBuilder
                                 .addContainerGap()
                                 .addComponent(controlPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                                .addComponent(controlSessionPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(sessionControlPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())
                         .addComponent(controlTitlePanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
         );
@@ -33,7 +38,7 @@ public class ControlContainerPanel extends JPanel implements RobotUIPanelBuilder
                                 .addComponent(controlTitlePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addGroup(conContainerPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                        .addComponent(controlSessionPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(sessionControlPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(controlPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(19, 19, 19))
         );
@@ -44,14 +49,14 @@ public class ControlContainerPanel extends JPanel implements RobotUIPanelBuilder
         GroupLayout conContainerPanelLayout = (GroupLayout) getLayout();
         conContainerPanelLayout.removeLayoutComponent(controlPanel);
         conContainerPanelLayout.removeLayoutComponent(controlTitlePanel);
-        conContainerPanelLayout.removeLayoutComponent(controlSessionPanel);
+        conContainerPanelLayout.removeLayoutComponent(sessionControlPanel);
     }
 
     public ControlPanel getControlPanel() {
         return controlPanel;
     }
 
-    public ControlSessionPanel getControlSessionPanel() {
-        return controlSessionPanel;
+    public SessionControlPanel getSessionControlPanel() {
+        return sessionControlPanel;
     }
 }

@@ -2,7 +2,7 @@ package cgl.iotcloud.samples.lego_nxt.common;
 
 
 public interface LegoNXTSensorTypes {
-	String TOUCH_SENSOR = "TOUCH"; 
-	String ULTRASONIC_SENSOR = "ULTRASONIC";
-	String GYRO_SENSOR = "GYRO";
+	String TOUCH_SENSOR = "Touch"; 
+	String ULTRASONIC_SENSOR = "Ultrasonic";
+	String GYRO_SENSOR = "Gyro";
 }

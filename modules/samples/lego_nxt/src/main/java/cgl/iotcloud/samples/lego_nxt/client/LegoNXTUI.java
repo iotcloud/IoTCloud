@@ -3,14 +3,15 @@ package cgl.iotcloud.samples.lego_nxt.client;
 
 import cgl.iotcloud.client.robot.ActionController;
 import cgl.iotcloud.client.robot.RootFrame;
-import cgl.iotcloud.client.robot.SensorDataController;
+import cgl.iotcloud.client.robot.DataController;
 import cgl.iotcloud.samples.lego_nxt.common.LegoNXTSensorTypes;
 import cgl.iotcloud.samples.lego_nxt.sensor.Velocity;
 
 
 public class LegoNXTUI {
-
-    private static LegoNXTClient client;
+	
+	private RootFrame rootFrame;
+    private LegoNXTClient client;
     private static LegoNXTUI legoNXTUI;
     
     private boolean touchSensorEnabled;
@@ -18,33 +19,102 @@ public class LegoNXTUI {
     private boolean gyroSensorEnabled;
 
     private ActionController actController = new ActionController() {
+    	Thread worker;
+    	boolean started;
+    	
         @Override
         public void up() {
-            client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
+        	worker = new Thread(){
+				public void run(){
+					while(isStarted()){
+						client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
+						try {
+							Thread.sleep(200);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}	
+				}
+			};
+			worker.start();
+            //client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
         }
 
         @Override
         public void down() {
-            client.setVelocity(new Velocity(-.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
+        	worker = new Thread(){
+				public void run(){
+					while(isStarted()){
+						client.setVelocity(new Velocity(-.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
+						try {
+							Thread.sleep(200);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}	
+				}
+			};
+			worker.start();
+            //client.setVelocity(new Velocity(-.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
         }
 
         @Override
         public void left() {
-            client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0, 0.0, -.5));
+        	worker = new Thread(){
+				public void run(){
+					while(isStarted()){
+						client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0, 0.0, -.5));
+						try {
+							Thread.sleep(200);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}	
+				}
+			};
+			worker.start();
+            //client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0, 0.0, -.5));
         }
 
         @Override
         public void right() {
-            client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, .5));
+        	worker = new Thread(){
+				public void run(){
+					while(isStarted()){
+						client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, .5));
+						try {
+							Thread.sleep(200);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}	
+				}
+			};
+			worker.start();
+            //client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, .5));
         }
 
         @Override
         public void stop() {
             client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
+        	setStarted(false);
+        	worker = null;
+        }
+        
+        public void start(){
+        	setStarted(true); 
+        }
+        
+        public boolean isStarted(){
+        	return started;
+        }
+        
+        public void setStarted(boolean value){
+        	started = value;
         }
     };
     
-    private SensorDataController  senDataController = new SensorDataController() {
+    private DataController  dataController = new DataController() {
 		
 		@Override
 		public void stop(String sensorName) {
@@ -80,18 +150,28 @@ public class LegoNXTUI {
 	}
 
     public void start() {
-        client = new LegoNXTClient();
-
-        client.start();
-
-        RootFrame rootFrame = RootFrame.getInstance();
+    	rootFrame = new RootFrame();
+        rootFrame.setRobot("lego_ nxt");
         rootFrame.addSensor(LegoNXTSensorTypes.TOUCH_SENSOR);
         rootFrame.addSensor(LegoNXTSensorTypes.ULTRASONIC_SENSOR);
         rootFrame.addSensor(LegoNXTSensorTypes.GYRO_SENSOR);
         rootFrame.addActionController(actController);
-        rootFrame.addSensorDataController(senDataController);
-
+        rootFrame.addSensorDataController(dataController);
         rootFrame.setVisible(true);
+    	
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                client = new LegoNXTClient(legoNXTUI);
+                try {
+                    client.start();
+                } catch (IOTRuntimeException e) {
+                    e.printStackTrace();
+
+                }
+            }
+        });
+        t.start();
     }
 
     public static void main(String[] args) {
@@ -105,8 +185,7 @@ public class LegoNXTUI {
     	return legoNXTUI;
     }
     
-    public void updateUI(String msg){
-    	RootFrame rootFrame = RootFrame.getInstance();
+    public void update(String msg){
     	rootFrame.update(msg);
     }
 }
