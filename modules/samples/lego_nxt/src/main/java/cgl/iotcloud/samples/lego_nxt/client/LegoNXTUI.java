@@ -4,6 +4,7 @@ package cgl.iotcloud.samples.lego_nxt.client;
 import cgl.iotcloud.client.robot.ActionController;
 import cgl.iotcloud.client.robot.RootFrame;
 import cgl.iotcloud.client.robot.DataController;
+import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.samples.lego_nxt.common.LegoNXTSensorTypes;
 import cgl.iotcloud.samples.lego_nxt.sensor.Velocity;
 
@@ -155,8 +156,8 @@ public class LegoNXTUI {
         rootFrame.addSensor(LegoNXTSensorTypes.TOUCH_SENSOR);
         rootFrame.addSensor(LegoNXTSensorTypes.ULTRASONIC_SENSOR);
         rootFrame.addSensor(LegoNXTSensorTypes.GYRO_SENSOR);
-        rootFrame.addActionController(actController);
-        rootFrame.addSensorDataController(dataController);
+        rootFrame.setActionController(actController);
+        rootFrame.setDataController(dataController);
         rootFrame.setVisible(true);
     	
         Thread t = new Thread(new Runnable() {

@@ -3,16 +3,19 @@ package cgl.iotcloud.samples.turtlebot.client;
 
 import cgl.iotcloud.client.robot.*;
 import cgl.iotcloud.core.IOTRuntimeException;
+import cgl.iotcloud.samples.turtlebot.common.TurtleSensorTypes;
 import cgl.iotcloud.samples.turtlebot.sensor.Velocity;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 
 public class TurtleUI {
     private TurtleClient client;
-    private TurtleUI ui;
+    private static TurtleUI ui;
     private RootFrame rootFrame;
+    private boolean kinectEnabled;
     
     private ActionController actController = new ActionController() {
     	Thread worker;
@@ -94,7 +97,7 @@ public class TurtleUI {
         public void stop() {
             client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
         	setStarted(false);
-        	worker = false;
+        	worker = null;
         }
         
         public void start(){
@@ -125,7 +128,7 @@ public class TurtleUI {
 		}
 	}; 
 	
-	boolean isKinectSensorEnabled(){
+	public boolean isKinectSensorEnabled(){
 		return kinectEnabled;
 	}
     
@@ -195,8 +198,8 @@ public class TurtleUI {
         rootFrame = new RootFrame();
         rootFrame.setRobot("turtlebot");
         rootFrame.addSensor(TurtleSensorTypes.KINECT_SENSOR);
-        rootFrame.addActionController(actController);
-        rootFrame.addSensorDataController(senDataController);
+        rootFrame.setActionController(actController);
+        rootFrame.setDataController(dataController);
         
         rootFrame.setVisible(true);
         
@@ -207,7 +210,7 @@ public class TurtleUI {
         ui.start();
     }
     
-    public update(BufferedImage data){
+    public void update(BufferedImage data){
     	rootFrame.update(data);
     }
 }

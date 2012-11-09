@@ -27,12 +27,12 @@ public class SensorsListPanel extends JPanel implements RobotUIPanelBuilder {
 			sensorNameToNodeMap.put(sensorName, sensorNode);
 		updateUITree();
 	}
-	
+
 	public void deleteSensor(String sensorName) {
 		sensorNameToNodeMap.remove(sensorName);
 		updateUITree();
 	}
-	
+
 	public void addRobotNode(String robot){
 		rootNode = new DefaultMutableTreeNode(robot);
 	}

@@ -79,7 +79,7 @@ public class TurtleClient {
                 }
             }
             try {
-            	if(turtleUI.isKinectEnabled())
+            	if(turtleUI.isKinectSensorEnabled())
             		turtleUI.update(im);
 			} catch (Exception e) {
 				e.printStackTrace();
