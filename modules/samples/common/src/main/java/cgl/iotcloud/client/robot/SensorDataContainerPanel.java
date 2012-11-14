@@ -1,29 +1,21 @@
 package cgl.iotcloud.client.robot;
 
-import java.awt.image.BufferedImage;
-
+import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 public class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuilder {
-    private RootFrame rootFrame;
     private SensorDataTitlePanel sensorDataTitlePanel;
 
     private JTextArea senDataTextArea = new JTextArea();
-    private JPanel dataPanel = null;
+    private JPanel dataPanel = new JPanel();
 
-    public SensorDataContainerPanel(RootFrame rootFrame) {
-    	this.rootFrame = rootFrame;
-    	sensorDataTitlePanel = new SensorDataTitlePanel(rootFrame);
-        this.setBackground(new java.awt.Color(255, 255, 255));
-        this.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
-        
-        if(rootFrame.getRobot().equalsIgnoreCase("turtlebot"))
-        	dataPanel = new TurtleBotDataPanel(rootFrame);
+    public SensorDataContainerPanel() {
+    	sensorDataTitlePanel = new SensorDataTitlePanel();
+        this.setBackground(new Color(255, 255, 255));
+        this.setBorder(new LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+
         this.addComponents();
-    }
-
-    public JPanel getDataPanel() {
-        return dataPanel;
     }
 
     @Override
@@ -33,10 +25,11 @@ public class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuil
         senDataTextArea.setEditable(false);
         senDataTextArea.setVisible(true);
 
+        setLayout(senDataMainPanelLayout);
         // by default Text Panel, turtlebot image panel.
         JScrollPane scrollPane;
         if (dataPanel != null) {
-            this.setLayout(senDataMainPanelLayout);
+
             senDataMainPanelLayout.setHorizontalGroup(
                     senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addComponent(sensorDataTitlePanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -45,7 +38,7 @@ public class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuil
             senDataMainPanelLayout.setVerticalGroup(
                     senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addGroup(senDataMainPanelLayout.createSequentialGroup()
-                                    .addComponent(sensorDataTitlePanel, GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(sensorDataTitlePanel, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(dataPanel, GroupLayout.PREFERRED_SIZE, 419, Short.MAX_VALUE))
             );
@@ -53,20 +46,23 @@ public class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuil
             scrollPane = new JScrollPane(senDataTextArea,
                     JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-            this.setLayout(senDataMainPanelLayout);
             senDataMainPanelLayout.setHorizontalGroup(
                     senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(sensorDataTitlePanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(scrollPane, javax.swing.GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+                            .addComponent(sensorDataTitlePanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(scrollPane, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
             );
             senDataMainPanelLayout.setVerticalGroup(
                     senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addGroup(senDataMainPanelLayout.createSequentialGroup()
-                                    .addComponent(sensorDataTitlePanel, GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(sensorDataTitlePanel, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 419, Short.MAX_VALUE))
             );
         }
+    }
+
+    public JPanel getDataPanel() {
+        return dataPanel;
     }
 
     @Override
@@ -77,9 +73,5 @@ public class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuil
     public void updateData(String data) {
         String currentData = senDataTextArea.getText();
         senDataTextArea.setText(currentData + "\n" + data);
-    }
-    
-    public void updateData(BufferedImage data) {
-    	((TurtleBotDataPanel)dataPanel).setImage(data);
     }
 }

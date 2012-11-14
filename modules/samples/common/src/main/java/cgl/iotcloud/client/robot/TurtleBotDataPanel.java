@@ -4,26 +4,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class TurtleBotDataPanel extends JPanel implements RobotUIPanelBuilder{
-	
-	private static RootFrame rootFrame;
-    private static TurtleBotDataPanel turtleBotDataPanel;
+public class TurtleBotDataPanel extends JPanel implements RobotUIPanelBuilder {
     private BufferedImage image = null;
 
-    public TurtleBotDataPanel (RootFrame rootFrame){
-    	this.rootFrame = rootFrame;
+    public TurtleBotDataPanel() {
     }
 
     @Override
     public void addComponents() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void removeComponents() {
-        // TODO Auto-generated method stub
-
     }
 
     public void paint(Graphics g) {
@@ -31,7 +23,7 @@ public class TurtleBotDataPanel extends JPanel implements RobotUIPanelBuilder{
         repaint();
     }
 
-    public void setImage(BufferedImage image){
+    public void setImage(BufferedImage image) {
         this.image = image;
     }
 }

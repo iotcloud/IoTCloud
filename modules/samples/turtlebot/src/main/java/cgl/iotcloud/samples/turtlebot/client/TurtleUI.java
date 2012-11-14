@@ -1,136 +1,18 @@
 package cgl.iotcloud.samples.turtlebot.client;
 
-
 import cgl.iotcloud.client.robot.*;
 import cgl.iotcloud.core.IOTRuntimeException;
-import cgl.iotcloud.samples.turtlebot.common.TurtleSensorTypes;
 import cgl.iotcloud.samples.turtlebot.sensor.Velocity;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
-
 
 public class TurtleUI {
     private TurtleClient client;
     private static TurtleUI ui;
     private RootFrame rootFrame;
-    private boolean kinectEnabled;
-    
-    private ActionController actController = new ActionController() {
-    	Thread worker;
-    	boolean started;
-    	
-        @Override
-        public void up() {
-        	worker = new Thread(){
-				public void run(){
-					while(isStarted()){
-						client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
-						try {
-							Thread.sleep(200);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}	
-				}
-			};
-			worker.start();
-            //client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
-        }
-
-        @Override
-        public void down() {
-        	worker = new Thread(){
-				public void run(){
-					while(isStarted()){
-						client.setVelocity(new Velocity(-.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
-						try {
-							Thread.sleep(200);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}	
-				}
-			};
-			worker.start();
-            //client.setVelocity(new Velocity(-.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
-        }
-
-        @Override
-        public void left() {
-        	worker = new Thread(){
-				public void run(){
-					while(isStarted()){
-						client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0, 0.0, -.5));
-						try {
-							Thread.sleep(200);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}	
-				}
-			};
-			worker.start();
-            //client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0, 0.0, -.5));
-        }
-
-        @Override
-        public void right() {
-        	worker = new Thread(){
-				public void run(){
-					while(isStarted()){
-						client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, .5));
-						try {
-							Thread.sleep(200);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}	
-				}
-			};
-			worker.start();
-            //client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, .5));
-        }
-
-        @Override
-        public void stop() {
-            client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
-        	setStarted(false);
-        	worker = null;
-        }
-        
-        public void start(){
-        	setStarted(true); 
-        }
-        
-        public boolean isStarted(){
-        	return started;
-        }
-        
-        public void setStarted(boolean value){
-        	started = value;
-        }
-    };
-    
-    private DataController  dataController = new DataController() {
-		
-		@Override
-		public void stop(String sensorName) {
-			if(sensorName.equalsIgnoreCase(TurtleSensorTypes.KINECT_SENSOR))
-				kinectEnabled = false;
-		}
-		
-		@Override
-		public void start(String sensorName) {
-			if(sensorName.equalsIgnoreCase(TurtleSensorTypes.KINECT_SENSOR))
-				kinectEnabled = true;
-		}
-	}; 
-	
-	public boolean isKinectSensorEnabled(){
-		return kinectEnabled;
-	}
+    private TurtleBotDataPanel dataPanel;
     
     public void start() {
         Thread t = new Thread(new Runnable() {
@@ -148,69 +30,114 @@ public class TurtleUI {
 
         t.start();
         
-      /*  rootFrame = new RootFrame();
+        rootFrame = new RootFrame();
         rootFrame.setRobot("turtlebot");
         
         RootPanel rootPanel = rootFrame.getRootPanel();
         SenConPanel senConPanel = rootPanel.getSenConPanel();
 
+        JPanel dataContainerPanel = senConPanel.getSensorDataContainerPanel().getDataPanel();
+
+        // GroupLayout senDataMainPanelLayout = (GroupLayout) dataContainerPanel.getLayout();
+        dataPanel = new TurtleBotDataPanel();
+
+        GroupLayout senDataMainPanelLayout = new GroupLayout(dataContainerPanel);
+        dataContainerPanel.setLayout(senDataMainPanelLayout);
+        senDataMainPanelLayout.setHorizontalGroup(
+                senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(dataPanel, javax.swing.GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        senDataMainPanelLayout.setVerticalGroup(
+                senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(senDataMainPanelLayout.createSequentialGroup()
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(dataPanel, GroupLayout.PREFERRED_SIZE, 419, Short.MAX_VALUE))
+        );
+
         ControlContainerPanel controlContainerPanel = senConPanel.getControlContainerPanel();
 
         ControlPanel controlPanel = controlContainerPanel.getControlPanel();
-        ControlSessionPanel controlSessionPanel = controlContainerPanel.getControlSessionPanel();
 
-        controlPanel.getBackButton().addActionListener(new ActionListener() {
+        controlPanel.getStarightButton().addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                client.setVelocity(new Velocity(-.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
+            public void mousePressed(MouseEvent e) {
+                forward();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                stop();
             }
         });
 
-        controlPanel.getStarightButton().addActionListener(new ActionListener() {
+        controlPanel.getLeftButton().addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
+            public void mousePressed(MouseEvent e) {
+                left();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                stop();
             }
         });
 
-        controlPanel.getLeftButton().addActionListener(new ActionListener() {
+        controlPanel.getRightButton().addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0, 0.0, -.5));
+            public void mousePressed(MouseEvent e) {
+                right();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                stop();
             }
         });
 
-        controlPanel.getRightButton().addActionListener(new ActionListener() {
+        controlPanel.getBackButton().addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, .5));
+            public void mousePressed(MouseEvent e) {
+                back();
             }
-        });
 
-        controlSessionPanel.getStopButton().addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
+            public void mouseReleased(MouseEvent e) {
+                stop();
             }
         });
-*/
-        
-        rootFrame = new RootFrame();
         rootFrame.setRobot("turtlebot");
-        rootFrame.addSensor(TurtleSensorTypes.KINECT_SENSOR);
-        rootFrame.setActionController(actController);
-        rootFrame.setDataController(dataController);
-        
         rootFrame.setVisible(true);
-        
+    }
+
+    private void forward() {
+        client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
+    }
+
+    private void back() {
+        client.setVelocity(new Velocity(-.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
+    }
+
+    private void left() {
+        client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0, 0.0, -.5));
+    }
+
+    private void right() {
+        client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, .5));
+    }
+
+    private void stop() {
+        client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
     }
 
     public static void main(String[] args) {
         ui = new TurtleUI();
         ui.start();
     }
-    
+
     public void update(BufferedImage data){
-    	rootFrame.update(data);
+    	dataPanel.setImage(data);
+        dataPanel.repaint();
     }
+
+
 }

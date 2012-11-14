@@ -21,13 +21,14 @@ public class RootFrame extends JFrame {
 	 * Creates new form SwingClient
 	 */
 	public RootFrame() {
-		rootPanel = new RootPanel(this);
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		initComponents();
+        initComponents();
 	}
 
 	private void initComponents() {
 		try {
+            rootPanel = new RootPanel(this);
+
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 			GroupLayout layout = new GroupLayout(getContentPane());
 			getContentPane().setLayout(layout);
@@ -68,24 +69,12 @@ public class RootFrame extends JFrame {
 		rootPanel.getSenConPanel().getSensorDataContainerPanel().updateData(data);
 	}
 
-	public void update(BufferedImage data){
-		rootPanel.getSenConPanel().getSensorDataContainerPanel().updateData(data);
-	}
-
 	public void setDataController(DataController dataController){
 		this.dataController = dataController;
 	}
 
 	public DataController getDataController(){
 		return dataController;
-	}
-
-	public ActionController getActionController(){
-		return this.actionController ;
-	}
-
-	public void setActionController(ActionController actionController){
-		this.actionController = actionController;
 	}
 
 	public String getSensorSelected(){

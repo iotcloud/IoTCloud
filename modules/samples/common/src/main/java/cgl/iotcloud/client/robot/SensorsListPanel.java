@@ -58,11 +58,12 @@ public class SensorsListPanel extends JPanel implements RobotUIPanelBuilder {
 	}
 
 	public String getSensorSelected() {
-		if(sensorSelected.isEmpty()){
-			JOptionPane.showMessageDialog(rootFrame, "Select a sensor.", "WARNING", 1, null);
-			return "";
-		}else	
-			return sensorSelected;
+//		if(sensorSelected.isEmpty()){
+//			JOptionPane.showMessageDialog(rootFrame, "Select a sensor.", "WARNING", 1, null);
+//			return "";
+//		}else
+//			return sensorSelected;
+        return "";
 	}
 
 	public SensorsListPanel(RootFrame rootFrame) {

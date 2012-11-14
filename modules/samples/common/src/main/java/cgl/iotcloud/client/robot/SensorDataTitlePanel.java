@@ -4,11 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SensorDataTitlePanel extends JPanel implements RobotUIPanelBuilder {
-	private RootFrame rootFrame;
     private JLabel senDataTitleLabel = new JLabel("Sensor Data");
 
-    public SensorDataTitlePanel(RootFrame rootFrame) {
-    	this.rootFrame = rootFrame;
+    public SensorDataTitlePanel() {
         this.setBackground(new java.awt.Color(0, 0, 0));
         senDataTitleLabel.setForeground(new Color(255, 255, 255));
         this.addComponents();
