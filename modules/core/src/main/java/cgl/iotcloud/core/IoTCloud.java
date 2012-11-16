@@ -136,11 +136,14 @@ public class IoTCloud {
         return registerSensor(name, Constants.SENSOR_TYPE_BLOCK);
     }
 
+    public Endpoint getPublicEndPoint() {
+        return publicEndPoint;
+    }
+
     /**
      * Initializes a Public End-Point for generic messages to be dispatched to all the registered Sensors and Clients  
      */
-    public void initPublicEndpoint()
-    {
+    public void initPublicEndpoint() {
     	//TODO: Register the new Public End Point with in the Content Repository Node
     	
     	String uniqueId = UUID.randomUUID().toString();
@@ -149,44 +152,41 @@ public class IoTCloud {
     	publicEndPoint.setAddress(uniqueId + "/public");
     	
     	publicEndPoint.setProperties(configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
-    	
-    	if(isContentRepositoryAvail)
-    	{
-			try {
-				
-				javax.jcr.Node publicEndPointNode = contentRepositorySession.getRootNode().addNode(ContentRepositoryConstants.PUBLIC_END_POINT);
-				javax.jcr.Node keyNode = publicEndPointNode.addNode(ContentRepositoryConstants.PUBLIC_END_POINT_KEY_NODE);
-				
-				publicEndPointNode.setProperty(ContentRepositoryConstants.PUBLIC_END_POINT_PROPERTIES.public_end_point_address.toString(), publicEndPoint.getAddress());
-				
-				Map<String, String> properties = publicEndPoint.getProperties();
-				Iterator<String> propKeySetIte = properties.keySet().iterator();
-				
-				while (propKeySetIte.hasNext())
-				{
-					String key = propKeySetIte.next();
-					publicEndPointNode.setProperty(key, properties.get(key));
-					keyNode.setProperty(key, key);
-				}
-				
-				contentRepositorySession.save();
-			} catch (RepositoryException e) {
-				// TODO Auto-generated catch block
-				log.error(" ******** Failed to create Public End Point Repository Node ********* ");
-				log.error(" ******** Shutting down all Content Repository Services ********* ");
-				isContentRepositoryAvail = false;
-				contentRepositorySession.logout();
-			}
-    	}
-		
-    	
-    	publicSender = initPublicSender(new JMSSenderFactory().create(publicEndPoint));
+
+        if (isContentRepositoryAvail) {
+            try {
+
+                javax.jcr.Node publicEndPointNode = contentRepositorySession.getRootNode().addNode(ContentRepositoryConstants.PUBLIC_END_POINT);
+                javax.jcr.Node keyNode = publicEndPointNode.addNode(ContentRepositoryConstants.PUBLIC_END_POINT_KEY_NODE);
+
+                publicEndPointNode.setProperty(ContentRepositoryConstants.PUBLIC_END_POINT_PROPERTIES.public_end_point_address.toString(), publicEndPoint.getAddress());
+
+                Map<String, String> properties = publicEndPoint.getProperties();
+                Iterator<String> propKeySetIte = properties.keySet().iterator();
+
+                while (propKeySetIte.hasNext()) {
+                    String key = propKeySetIte.next();
+                    publicEndPointNode.setProperty(key, properties.get(key));
+                    keyNode.setProperty(key, key);
+                }
+
+                contentRepositorySession.save();
+            } catch (RepositoryException e) {
+                // TODO Auto-generated catch block
+                log.error(" ******** Failed to create Public End Point Repository Node ********* ");
+                log.error(" ******** Shutting down all Content Repository Services ********* ");
+                isContentRepositoryAvail = false;
+                contentRepositorySession.logout();
+            }
+        }
+
+
+        publicSender = initPublicSender(new JMSSenderFactory().create(publicEndPoint));
     	
     	isPublicEndPointInit = true;
     }
     
-    public void initPublicEndpoint(String address, Map<String, String> properties)
-    {
+    public void initPublicEndpoint(String address, Map<String, String> properties) {
     	
     	publicEndPoint = new JMSEndpoint();
     	publicEndPoint.setAddress(address);
@@ -198,8 +198,7 @@ public class IoTCloud {
     	isPublicEndPointInit = true;
     }
     
-    private void getContentRepositorySession()
-    {
+    private void getContentRepositorySession() {
     	Repository repository;
 		try {
 			repository = new URLRemoteRepository("http://localhost:9091/rmi");
@@ -221,7 +220,6 @@ public class IoTCloud {
 			log.error(" ******** Shutting down all Content Repository Services ********* ");
 			isContentRepositoryAvail = false;
 		}
-    	
     }
     
     public void shutDownContentRepoSession()
@@ -229,8 +227,7 @@ public class IoTCloud {
     	contentRepositorySession.logout();
     }
     
-    public void clearContentRepository() throws RepositoryException
-    {
+    public void clearContentRepository() throws RepositoryException {
     	javax.jcr.Node rootNode = contentRepositorySession.getRootNode();
 		
 		try{
@@ -261,8 +258,7 @@ public class IoTCloud {
     /**
      * Creates Content Repository Nodes
      */
-    private void initContentRepositoryNodes()
-    {
+    private void initContentRepositoryNodes() {
     	
 		// Verify if previous Shut-Down was Legal/Valid
 		Iterator<javax.jcr.Node> childNodesIterator;
@@ -304,7 +300,6 @@ public class IoTCloud {
 			isContentRepositoryAvail = false;
 			contentRepositorySession.logout();
 		}
-		
     }
     
 	private void initiateContentRepState() throws RepositoryException {
@@ -672,6 +667,7 @@ public class IoTCloud {
         client.setControlEndpoint(sensor.getControlEndpoint());
         client.setUpdateEndpoint(sensor.getUpdateEndpoint());
         client.setType(sensor.getType());
+
         if (sensor.getType().equals(Constants.SENSOR_TYPE_BLOCK)) {
             client.setDataEndpoint(sensor.getDataEndpoint());
         } else {
@@ -690,41 +686,6 @@ public class IoTCloud {
 
             // add the route to the streaming server
             server.addRoute("sensor" + sensor.getId() + "/data", "localhost", port, "*");
-        }
-        
-        if(isContentRepositoryAvail)
-        {
-        	javax.jcr.Node crClient;
-			try {
-				crClient = clientNode.addNode(client.getId());
-				crClient.setProperty(ContentRepositoryConstants.CLIENT_PROPERTIES.CLIENT_ID.toString(), client.getId());
-				crClient.setProperty(ContentRepositoryConstants.CLIENT_PROPERTIES.SENSOR_ID.toString(), sensor.getId());
-				
-				if(!sensor.getType().equals(Constants.SENSOR_TYPE_BLOCK))
-				{
-					// Setting the Data End Point
-					javax.jcr.Node dataEndPointNode = crClient.addNode(ContentRepositoryConstants.CLIENT_PROPERTIES.DATA_END_POINT_NODE.toString());
-					Map<String, String> dataEndPointProperties = client.getDataEndpoint().getProperties();
-					Iterator<String> deppKeysetIte = dataEndPointProperties.keySet().iterator();
-					while (deppKeysetIte.hasNext())
-					{
-						String key = deppKeysetIte.next();
-						dataEndPointNode.setProperty(key, dataEndPointProperties.get(key));
-					}
-					
-					if(client.getDataEndpoint() instanceof JMSEndpoint)
-						dataEndPointNode.setProperty(ContentRepositoryConstants.CLIENT_PROPERTIES.END_POINT.toString(), ContentRepositoryConstants.CLIENT_PROPERTIES.JMS_END_POINT.toString());
-					else if(client.getDataEndpoint() instanceof StreamingEndpoint)
-						dataEndPointNode.setProperty(ContentRepositoryConstants.CLIENT_PROPERTIES.END_POINT.toString(), ContentRepositoryConstants.CLIENT_PROPERTIES.STREAMING_END_POINT.toString());
-				}
-				
-				contentRepositorySession.save();
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				log.error(" ********* Failed to add a Client in to the Content Repository ********* ");
-			}
-        	
         }
         
         clientCatalog.addClient(client);
@@ -747,38 +708,6 @@ public class IoTCloud {
         client.setControlEndpoint(sensor.getControlEndpoint());
         client.setUpdateEndpoint(sensor.getUpdateEndpoint());
         client.setDataEndpoint(dataEpr);
-        
-        if(isContentRepositoryAvail)
-        {
-        	javax.jcr.Node crClient;
-			try {
-				crClient = clientNode.addNode(client.getId());
-				crClient.setProperty(ContentRepositoryConstants.CLIENT_PROPERTIES.CLIENT_ID.toString(), client.getId());
-				crClient.setProperty(ContentRepositoryConstants.CLIENT_PROPERTIES.SENSOR_ID.toString(), sensor.getId());
-				
-				// Setting the Data End Point
-				javax.jcr.Node dataEndPointNode = crClient.addNode(ContentRepositoryConstants.CLIENT_PROPERTIES.DATA_END_POINT_NODE.toString());
-				Map<String, String> dataEndPointProperties = client.getDataEndpoint().getProperties();
-				Iterator<String> deppKeysetIte = dataEndPointProperties.keySet().iterator();
-				while (deppKeysetIte.hasNext())
-				{
-					String key = deppKeysetIte.next();
-					dataEndPointNode.setProperty(key, dataEndPointProperties.get(key));
-				}
-				
-				if(client.getDataEndpoint() instanceof JMSEndpoint)
-					dataEndPointNode.setProperty(ContentRepositoryConstants.CLIENT_PROPERTIES.END_POINT.toString(), ContentRepositoryConstants.CLIENT_PROPERTIES.JMS_END_POINT.toString());
-				else if(client.getDataEndpoint() instanceof StreamingEndpoint)
-					dataEndPointNode.setProperty(ContentRepositoryConstants.CLIENT_PROPERTIES.END_POINT.toString(), ContentRepositoryConstants.CLIENT_PROPERTIES.STREAMING_END_POINT.toString());
-				
-				contentRepositorySession.save();
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				log.error(" ********* Failed to add a Client in to the Content Repository ********* ");
-			}
-        	
-        }
         
         clientCatalog.addClient(client);
 
