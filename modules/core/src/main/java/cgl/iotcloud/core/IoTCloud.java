@@ -83,14 +83,14 @@ public class IoTCloud {
         updateManager.init();
 
         endpointAllocator = new EndpointAllocator(configuration, nodeCatalog);
-        
+
+        registry = new JCRRegistry(this);
+        registry.init();
+
         // Initialize Public-End-Point
         if(!isPublicEndPointInit) {
         	initPublicEndpoint();
         }
-
-        registry = new JCRRegistry(this);
-        registry.init();
     }
 
     public SensorCatalog getSensorCatalog() {
