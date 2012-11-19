@@ -4,7 +4,6 @@ import cgl.iotcloud.core.broker.Connections;
 import cgl.iotcloud.core.broker.JMSSender;
 import cgl.iotcloud.core.broker.JMSSenderFactory;
 import cgl.iotcloud.core.client.SCClient;
-import cgl.iotcloud.core.config.ContentRepositoryConstants;
 import cgl.iotcloud.core.config.SCConfiguration;
 import cgl.iotcloud.core.endpoint.JMSEndpoint;
 import cgl.iotcloud.core.endpoint.StreamingEndpoint;
@@ -18,30 +17,15 @@ import cgl.iotcloud.core.sensor.filter.SensorNameFilter;
 import cgl.iotcloud.core.sensor.filter.SensorTypeFilter;
 import cgl.iotcloud.core.stream.StreamingServer;
 
-import org.apache.jackrabbit.rmi.repository.URLRemoteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemExistsException;
-import javax.jcr.LoginException;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.version.VersionException;
 
 /**
  * Instance of the Sensor cloud. This captures all the information about the IoTCloud.
@@ -68,14 +52,7 @@ public class IoTCloud {
 
     private EndpointAllocator endpointAllocator = null;
     
-    private Session contentRepositorySession;
-    
     private static boolean isPublicEndPointInit = false;
-    
-    public static boolean isContentRepositoryAvail = false;
-    
-    private javax.jcr.Node sensorNode;
-	private javax.jcr.Node clientNode;
 
     /** The registry to use for state saving */
     private JCRRegistry registry;
@@ -126,10 +103,6 @@ public class IoTCloud {
 
     public UpdateManager getUpdateManager() {
         return updateManager;
-    }
-
-    public ClientCatalog getClientCatalog() {
-        return clientCatalog;
     }
 
     public Sensor registerSensor(String name) {
@@ -363,18 +336,6 @@ public class IoTCloud {
     public void unRegisterClient(String id) {
         if (clientCatalog.hasClient(id)) {
             clientCatalog.removeClient(id);
-            
-            if(isContentRepositoryAvail)
-            {
-            	try {
-					clientNode.getNode(id).remove();
-					contentRepositorySession.save();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					log.error(" ********* Failed to remove a Client from the Content Repository ********* ");
-				} 
-            }
-            
         } else {
             handleException("Failed to unregister the client, non existing client");
         }
@@ -406,7 +367,7 @@ public class IoTCloud {
      */
     public List<SCSensor> getSensors(String type, Map<String, String> props)
             throws SensorException {
-        AbstractSensorFilter sensorFilter = null;
+        AbstractSensorFilter sensorFilter;
         if (type.equals("id")) {
             sensorFilter = new SensorIdFilter(this);
         } else if (type.equals("type")) {
