@@ -109,7 +109,7 @@ public class JCRRegistry {
     }
 
     public void createPublicEndpoint() {
-        if (isContentRepositoryAvail) {
+        if (!isContentRepositoryAvail) {
             return;
         }
         try {
@@ -186,6 +186,7 @@ public class JCRRegistry {
     }
 
     private void initiateContentRepState() throws RepositoryException {
+        if (!isContentRepositoryAvail) return;
         // Checking if Public End point exists in the saved state, If found
         // initiate the saved state Public End Point
         javax.jcr.Node rootNode;
@@ -348,23 +349,23 @@ public class JCRRegistry {
     }
 
     public void unRegisterSensor(String id) {
-        if (isContentRepositoryAvail) {
-            try {
-                sensorNode.getNode(id).remove();
-                Iterator<javax.jcr.Node> clients = clientNode.getNodes();
-                while (clients.hasNext()) {
-                    javax.jcr.Node eachClientNode = clients.next();
-                    if (eachClientNode.getProperty(
-                            ContentRepositoryConstants.CLIENT_PROPERTIES.SENSOR_ID.toString()).
-                            getValue().getString().equals(id)) {
-                        eachClientNode.remove();
-                    }
+        if (!isContentRepositoryAvail) return;
+
+        try {
+            sensorNode.getNode(id).remove();
+            Iterator<javax.jcr.Node> clients = clientNode.getNodes();
+            while (clients.hasNext()) {
+                javax.jcr.Node eachClientNode = clients.next();
+                if (eachClientNode.getProperty(
+                        ContentRepositoryConstants.CLIENT_PROPERTIES.SENSOR_ID.toString()).
+                        getValue().getString().equals(id)) {
+                    eachClientNode.remove();
                 }
-                contentRepositorySession.save();
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                log.error(" ********* Failed to remove a Sensor from the Content Repository ********* ");
             }
+            contentRepositorySession.save();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            log.error(" ********* Failed to remove a Sensor from the Content Repository ********* ");
         }
     }
 }
