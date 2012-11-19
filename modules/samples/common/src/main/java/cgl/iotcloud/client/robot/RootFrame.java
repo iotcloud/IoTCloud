@@ -13,14 +13,11 @@ public class RootFrame extends JFrame {
 	private String robot ;
 	private DataController dataController;
 	private ActionController actionController;
-
-	public static void main(String args[]){
-		new RootFrame().setVisible(true);
-	}
 	/**
 	 * Creates new form SwingClient
 	 */
 	public RootFrame() {
+        super("IoTCloud Samples");
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         initComponents();
 	}

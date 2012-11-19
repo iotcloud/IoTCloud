@@ -19,9 +19,9 @@ public class JMSListenerFactory {
         return new JMSListener(connections, handler, endpoint.getAddress());
     }
     
-    public JMSListener create(String id,Endpoint endpoint, MessageHandler handler) {
+    public JMSListener create(String id, Endpoint endpoint, MessageHandler handler) {
         ConnectionsFactory fac = new ConnectionsFactory();
-        Connections connections = BrokerPool.getInstance().getBroker(id).getConnections("topic");
+        Connections connections = fac.create(endpoint.getName(), endpoint.getProperties());
 
         return new JMSListener(connections, handler, endpoint.getAddress());
     }
@@ -34,12 +34,13 @@ public class JMSListenerFactory {
         return new JMSListener(connections, endpoint.getAddress());
     }
     
-    public JMSListener create(String id,Endpoint endpoint) {
+    public JMSListener create(String id, Endpoint endpoint) {
         ConnectionsFactory fac = new ConnectionsFactory();
-        Connections connections = BrokerPool.getInstance().getBroker(id).getConnections("topic");
+        Connections connections = fac.create(endpoint.getName(), endpoint.getProperties());
 
         return new JMSListener(connections, endpoint.getAddress());
     }
+
 
     public JMSListener createControlListener(Endpoint endpoint, MessageHandler handler) {
         ConnectionsFactory fac = new ConnectionsFactory();
@@ -52,7 +53,7 @@ public class JMSListenerFactory {
     
     public JMSListener createControlListener(String id,Endpoint endpoint, MessageHandler handler) {
         ConnectionsFactory fac = new ConnectionsFactory();
-        Connections connections = BrokerPool.getInstance().getBroker(id).getConnections("topic");
+        Connections connections = fac.create(endpoint.getName(), endpoint.getProperties());
 
         JMSListener listener = new JMSListener(connections, handler, endpoint.getAddress());
         listener.setMessageFactory(new JMSControlMessageFactory());

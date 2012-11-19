@@ -2,6 +2,7 @@ package cgl.iotcloud.core.config;
 
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.broker.Broker;
+import cgl.iotcloud.core.broker.BrokerPool;
 import cgl.iotcloud.core.config.xml.BrokerFactory;
 import cgl.iotcloud.core.config.xml.BrokersFactory;
 import cgl.iotcloud.core.config.xml.StreamingServerFactory;
@@ -22,15 +23,10 @@ public class SCCConfigurationFactory {
 
         configuration.setBrokerConfigFile(file);
 
-       /* BrokersFactory fac = new BrokersFactory();
-        List<Broker> brokers =fac.create(file);
-
-        Broker broker = null;
-        for(Broker br:brokers)
-        	if(br.getName().equalsIgnoreCase(brokerName))
-        		broker = br;*/
+        BrokersFactory bf = new BrokersFactory();
+        BrokerPool pool = bf.create(file);
         
-        //configuration.setBroker(broker);
+        configuration.setBrokerPool(pool);
         
         StreamingServerFactory sSF = new StreamingServerFactory();
         StreamingServer streamingHttpServer = sSF.create(file);

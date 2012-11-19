@@ -1,6 +1,5 @@
 package cgl.iotcloud.core.config;
 
-import cgl.iotcloud.core.broker.Broker;
 import cgl.iotcloud.core.broker.BrokerPool;
 import cgl.iotcloud.core.stream.StreamingServer;
 
@@ -17,18 +16,8 @@ public class SCConfiguration {
 	private StreamingServer streamingServer = null;
 
 	public void init() {
-		brokerPool = BrokerPool.getInstance();
-		brokerPool.init();
+        brokerPool.init();
 	}
-
-	public void setBroker(Broker broker) {
-    
-    }
-
-	/*public Broker getBroker() {
-		System.out.println("=== Entering get broker ===");
-		return brokerPool.getBroker();
-	}*/
 
 	public StreamingServer getStreamingServer() {
 		return streamingServer;

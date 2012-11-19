@@ -72,11 +72,11 @@ public class Client implements ManagedLifeCycle {
         JMSListenerFactory listenerFactory = new JMSListenerFactory();
         // Creating a Public Listener
         //publicMessageListener = listenerFactory.create(sensor.getPublicEndpoint(), publicMessagehandler);
-        publicMessageListener = listenerFactory.create(clientId,sensor.getPublicEndpoint(), publicMessagehandler);
+        publicMessageListener = listenerFactory.create(clientId, sensor.getPublicEndpoint(), publicMessagehandler);
         
         if (sensor.getType().equals(Constants.SENSOR_TYPE_BLOCK)) {
             //messageListener = listenerFactory.create(sensor.getDataEndpoint(), handler);
-            messageListener = listenerFactory.create(clientId,sensor.getDataEndpoint(), handler);
+            messageListener = listenerFactory.create(clientId, sensor.getDataEndpoint(), handler);
         } else {
             messageListener = new StreamingListenerFactory().create(sensor.getDataEndpoint());
             if (messageListener instanceof StreamingListener) {
@@ -86,7 +86,7 @@ public class Client implements ManagedLifeCycle {
 
         if (sensor.getUpdateEndpoint() != null && updateHandler != null) {
             //updateLister = listenerFactory.create(sensor.getUpdateEndpoint(), updateHandler);
-            updateLister = listenerFactory.create(clientId,sensor.getUpdateEndpoint(), updateHandler);
+            updateLister = listenerFactory.create(clientId, sensor.getUpdateEndpoint(), updateHandler);
             updateLister.setMessageFactory(new MessageToUpdateFactory());
 
             updateLister.init();

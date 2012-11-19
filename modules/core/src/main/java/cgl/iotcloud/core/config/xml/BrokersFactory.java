@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cgl.iotcloud.core.IOTRuntimeException;
+import cgl.iotcloud.core.broker.BrokerPool;
 import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ import cgl.iotcloud.core.broker.Broker;
 public class BrokersFactory {
 	private static Logger log = LoggerFactory.getLogger(BrokersFactory.class);
 
-	public List<Broker> create(String filePath){
+	public BrokerPool create(String filePath){
 		File brokerFile = new File(filePath);
 		List<Broker> brokers= new ArrayList<Broker>();
 
@@ -44,7 +45,11 @@ public class BrokersFactory {
 			Broker broker =bFac.createBroker(xmlBroker);
 			brokers.add(broker);
 		}
-		return brokers;
+
+        BrokerPool pool = new BrokerPool();
+        pool.addBrokers(brokers);
+
+		return pool;
 	}
 
 	private void handleException(String s, Exception e) {

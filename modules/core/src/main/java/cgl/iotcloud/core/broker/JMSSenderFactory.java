@@ -18,7 +18,7 @@ public class JMSSenderFactory {
     
     public JMSSender create(String id,Endpoint endpoint) {
         ConnectionsFactory fac = new ConnectionsFactory();
-        Connections connections = BrokerPool.getInstance().getBroker(id).getConnections("topic");
+        Connections connections = fac.create(endpoint.getName(), endpoint.getProperties());
 
         return new JMSSender(connections, endpoint.getAddress());
     }
@@ -37,9 +37,9 @@ public class JMSSenderFactory {
         return sender;
     }
     
-    public JMSSender createControlSender(String id,Endpoint endpoint) {
+    public JMSSender createControlSender(String id, Endpoint endpoint) {
         ConnectionsFactory fac = new ConnectionsFactory();
-        Connections connections = BrokerPool.getInstance().getBroker().getConnections("topic");
+        Connections connections = fac.create(endpoint.getName(), endpoint.getProperties());
 
         JMSSender sender = new JMSSender(connections, endpoint.getAddress());
         sender.setMessageFactory(new JMSControlMessageFactory());

@@ -19,50 +19,15 @@ import java.io.IOException;
 public class BrokerFactory {
     private static Logger log = LoggerFactory.getLogger(BrokerFactory.class);
 
-    /**
-     * Create a broker from the XML file in the given file path
-     *
-     * @param filePath the file path to the broker config xml file
-     * @return a broker
-     */
-    
-   /* public Broker create(String filePath) {
-        log.info("Creating Broker Configuration using file: " + filePath);
+    public Broker createBroker(com.iotcloud.xsd.Broker xmlBroker) {
         Broker broker = new Broker();
+        broker.setName(xmlBroker.getName());
 
-        File brokerFile = new File(filePath);
-        BrokerConfigDocument document;
-        try {
-            document = BrokerConfigDocument.Factory.parse(brokerFile);
-        } catch (XmlException e) {
-            handleException("Error parsing the broker configuration xml file: " + filePath, e);
-            return null;
-        } catch (IOException e) {
-            handleException("IO error reading the file: " + filePath, e);
-            return null;
-        }
-
-        BrokerConfigDocument.BrokerConfig bc = document.getBrokerConfig();
-
-        com.iotcloud.xsd.Broker b = bc.getBroker();
-        ConnectionFactory fac[] = b.getConnectionFactoryArray();
+        ConnectionFactory fac[] = xmlBroker.getConnectionFactoryArray();
 
         for (ConnectionFactory f : fac) {
             broker.addConnections(createConnections(f));
         }
-
-        return broker;
-    }*/
-
-    public Broker createBroker(com.iotcloud.xsd.Broker xmlBroker){
-    	Broker broker = new Broker();
-    	broker.setName(xmlBroker.getName());
-    	
-    	ConnectionFactory fac[] = xmlBroker.getConnectionFactoryArray();
-    	
-    	for(ConnectionFactory f:fac){
-    		broker.addConnections(createConnections(f));
-    	}
     	return broker;
     }
     
@@ -81,5 +46,4 @@ public class BrokerFactory {
         log.error(s, e);
         throw new IOTRuntimeException(s, e);
     }
-
 }
