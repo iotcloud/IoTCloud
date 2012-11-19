@@ -3,21 +3,22 @@ package cgl.iotcloud.core.registry;
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.Endpoint;
 import cgl.iotcloud.core.IoTCloud;
-import cgl.iotcloud.core.client.SCClient;
 import cgl.iotcloud.core.config.ContentRepositoryConstants;
 import cgl.iotcloud.core.endpoint.JMSEndpoint;
 import cgl.iotcloud.core.endpoint.StreamingEndpoint;
 import cgl.iotcloud.core.sensor.SCSensor;
-import cgl.iotcloud.core.sensor.Sensor;
 import org.apache.jackrabbit.rmi.repository.URLRemoteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 
 public class JCRRegistry {
     private Logger log = LoggerFactory.getLogger(JCRRegistry.class);
@@ -32,6 +33,20 @@ public class JCRRegistry {
     private IoTCloud ioTCloud = null;
 
     public JCRRegistry(IoTCloud ioTCloud) {
+        Properties prop = new Properties();
+        InputStream in = getClass().getResourceAsStream("repository.properties");
+
+        try {
+            prop.load(in);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (prop.containsKey("jcr.url")) {
+            url = (String) prop.get("jcr.url");
+        }
+
         this.ioTCloud = ioTCloud;
     }
 
@@ -63,17 +78,14 @@ public class JCRRegistry {
             contentRepositorySession = repository.login(new SimpleCredentials("guest", new char[0]));
             isContentRepositoryAvail = true;
         } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
             log.error("Failed to obtain Content Repository Session" + e.getMessage());
             log.error("Shutting down all Content Repository Services");
             isContentRepositoryAvail = false;
         } catch (LoginException e) {
-            // TODO Auto-generated catch block
             log.error("Failed to obtain Content Repository Session " + e.getMessage());
             log.error("Shutting down all Content Repository Services");
             isContentRepositoryAvail = false;
         } catch (RepositoryException e) {
-            // TODO Auto-generated catch block
             log.error("Failed to obtain Content Repository Session " + e.getMessage());
             log.error("Shutting down all Content Repository Services");
             isContentRepositoryAvail = false;
@@ -122,10 +134,8 @@ public class JCRRegistry {
                     ioTCloud.getPublicEndPoint().getAddress());
 
             Map<String, String> properties = ioTCloud.getPublicEndPoint().getProperties();
-            Iterator<String> propKeySetIte = properties.keySet().iterator();
 
-            while (propKeySetIte.hasNext()) {
-                String key = propKeySetIte.next();
+            for (String key : properties.keySet()) {
                 publicEndPointNode.setProperty(key, properties.get(key));
                 keyNode.setProperty(key, key);
             }
