@@ -23,7 +23,7 @@ public class JCRRegistry {
     private Logger log = LoggerFactory.getLogger(JCRRegistry.class);
 
     private Session contentRepositorySession;
-    private static boolean isContentRepositoryAvail = false;
+    private boolean isContentRepositoryAvail = false;
     private String url = "http://localhost:9091/rmi";
     private javax.jcr.Node sensorNode;
     private javax.jcr.Node clientNode;
@@ -39,13 +39,21 @@ public class JCRRegistry {
         getContentRepositorySession();
 
         // Initialize Content Repository State
-        if(isContentRepositoryAvail) {
+        if (isContentRepositoryAvail) {
             initContentRepositoryNodes();
         }
     }
 
     public void shutDownContentRepoSession() {
         contentRepositorySession.logout();
+    }
+
+    public boolean isContentRepositoryAvail() {
+        return isContentRepositoryAvail;
+    }
+
+    public static boolean isPublicEndPointInit() {
+        return isPublicEndPointInit;
     }
 
     private void getContentRepositorySession() {

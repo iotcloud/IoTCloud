@@ -11,6 +11,7 @@ import cgl.iotcloud.core.endpoint.StreamingEndpoint;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.data.TextDataMessage;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
+import cgl.iotcloud.core.registry.JCRRegistry;
 import cgl.iotcloud.core.sensor.*;
 import cgl.iotcloud.core.sensor.filter.SensorIdFilter;
 import cgl.iotcloud.core.sensor.filter.SensorNameFilter;
@@ -76,6 +77,9 @@ public class IoTCloud {
     private javax.jcr.Node sensorNode;
 	private javax.jcr.Node clientNode;
 
+    /** The registry to use for state saving */
+    private JCRRegistry registry;
+
     public IoTCloud(SCConfiguration configuration) {
         this.configuration = configuration;
     }
@@ -103,17 +107,13 @@ public class IoTCloud {
 
         endpointAllocator = new EndpointAllocator(configuration, nodeCatalog);
         
-        // Initialize Content Repository Session
-        getContentRepositorySession();
-        
-        // Initialize Content Repository State
-        if(isContentRepositoryAvail)
-        	initContentRepositoryNodes();
-        
         // Initialize Public-End-Point
-        if(!isPublicEndPointInit)
+        if(!isPublicEndPointInit) {
         	initPublicEndpoint();
-        
+        }
+
+        registry = new JCRRegistry(this);
+        registry.init();
     }
 
     public SensorCatalog getSensorCatalog() {
@@ -145,7 +145,6 @@ public class IoTCloud {
      */
     public void initPublicEndpoint() {
     	//TODO: Register the new Public End Point with in the Content Repository Node
-    	
     	String uniqueId = UUID.randomUUID().toString();
     	
     	publicEndPoint = new JMSEndpoint();
@@ -153,33 +152,8 @@ public class IoTCloud {
     	
     	publicEndPoint.setProperties(configuration.getBrokerPool().getBroker().getConnections("topic").getParameters());
 
-        if (isContentRepositoryAvail) {
-            try {
-
-                javax.jcr.Node publicEndPointNode = contentRepositorySession.getRootNode().addNode(ContentRepositoryConstants.PUBLIC_END_POINT);
-                javax.jcr.Node keyNode = publicEndPointNode.addNode(ContentRepositoryConstants.PUBLIC_END_POINT_KEY_NODE);
-
-                publicEndPointNode.setProperty(ContentRepositoryConstants.PUBLIC_END_POINT_PROPERTIES.public_end_point_address.toString(), publicEndPoint.getAddress());
-
-                Map<String, String> properties = publicEndPoint.getProperties();
-                Iterator<String> propKeySetIte = properties.keySet().iterator();
-
-                while (propKeySetIte.hasNext()) {
-                    String key = propKeySetIte.next();
-                    publicEndPointNode.setProperty(key, properties.get(key));
-                    keyNode.setProperty(key, key);
-                }
-
-                contentRepositorySession.save();
-            } catch (RepositoryException e) {
-                // TODO Auto-generated catch block
-                log.error(" ******** Failed to create Public End Point Repository Node ********* ");
-                log.error(" ******** Shutting down all Content Repository Services ********* ");
-                isContentRepositoryAvail = false;
-                contentRepositorySession.logout();
-            }
-        }
-
+        // save the public endpoint from the registry
+        registry.createPublicEndpoint();
 
         publicSender = initPublicSender(new JMSSenderFactory().create(publicEndPoint));
     	
@@ -197,297 +171,21 @@ public class IoTCloud {
     	
     	isPublicEndPointInit = true;
     }
-    
-    private void getContentRepositorySession() {
-    	Repository repository;
-		try {
-			repository = new URLRemoteRepository("http://localhost:9091/rmi");
-			contentRepositorySession = repository.login(new SimpleCredentials("guest", new char[0]));
-			isContentRepositoryAvail = true;
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			log.error(" ***** Failed to obtain Content Repository Session --> "+e.getMessage());
-			log.error(" ******** Shutting down all Content Repository Services ********* ");
-			isContentRepositoryAvail = false;
-		} catch (LoginException e) {
-			// TODO Auto-generated catch block
-			log.error(" ***** Failed to obtain Content Repository Session --> "+e.getMessage());
-			log.error(" ******** Shutting down all Content Repository Services ********* ");
-			isContentRepositoryAvail = false;
-		} catch (RepositoryException e) {
-			// TODO Auto-generated catch block
-			log.error(" ***** Failed to obtain Content Repository Session --> "+e.getMessage());
-			log.error(" ******** Shutting down all Content Repository Services ********* ");
-			isContentRepositoryAvail = false;
-		}
-    }
-    
-    public void shutDownContentRepoSession()
-    {
-    	contentRepositorySession.logout();
+
+    public void shutDownContentRepoSession() {
+    	registry.shutDownContentRepoSession();
     }
     
     public void clearContentRepository() throws RepositoryException {
-    	javax.jcr.Node rootNode = contentRepositorySession.getRootNode();
-		
-		try{
-			rootNode.getNode(ContentRepositoryConstants.PUBLIC_END_POINT).remove();
-			log.debug(" ***** Removed the Public End Point Node ***** ");
-			contentRepositorySession.save();
-		} catch (Exception e) {
-			log.debug(" ***** Failed to remove Public End Point Node --> " + e.getMessage());
-		}
-		
-		try{
-			rootNode.getNode(ContentRepositoryConstants.SENSOR_NODE).remove();
-			log.debug(" ***** Removed the SENSOR Node ***** ");
-			contentRepositorySession.save();
-		} catch (Exception e) {
-			log.debug(" ***** Failed to remove SENSOR Node --> " + e.getMessage());
-		}
-		
-		try{
-			rootNode.getNode(ContentRepositoryConstants.CLIENT_NODE).remove();
-			log.debug(" ***** Removed the CLIENT Node ***** ");
-			contentRepositorySession.save();
-		} catch (Exception e) {
-			log.debug(" ***** Failed to remove CLIENT Node --> " + e.getMessage());
-		}
+    	registry.clearContentRepository();
     }
-    
-    /**
-     * Creates Content Repository Nodes
-     */
-    private void initContentRepositoryNodes() {
-    	
-		// Verify if previous Shut-Down was Legal/Valid
-		Iterator<javax.jcr.Node> childNodesIterator;
-		try {
-			childNodesIterator = contentRepositorySession.getRootNode().getNodes();
-			while(childNodesIterator.hasNext())
-			{
-				javax.jcr.Node eachChildNode = childNodesIterator.next();
-				
-				if(eachChildNode.getName().equals(ContentRepositoryConstants.CLIENT_NODE) || eachChildNode.getName().equals(ContentRepositoryConstants.SENSOR_NODE))
-				{
-					initiateContentRepState();
-					if(isPublicEndPointInit)
-						return;
-					else{
-						log.error(" ******** FAILED TO INIT SAVED PUBLIC END POINT ******** ");
-						log.error(" ******** DROPPING THE WHOLE CONTENT TREE  ******** ");
-						clearContentRepository();
-					}
-				}
-			}
-			
-			sensorNode = contentRepositorySession.getRootNode().addNode(ContentRepositoryConstants.SENSOR_NODE);
-			clientNode = contentRepositorySession.getRootNode().addNode(ContentRepositoryConstants.CLIENT_NODE);
-			contentRepositorySession.save();
-			
-		} catch (RepositoryException e) {
-			// Failed to create Essential Nodes
-			try {
-				log.error(" ******** Failed to initiate the Content Repository ******** ");
-				log.error(" ******** Trying to CLEAN the Content Repositorty ******** ");
-				clearContentRepository();
-			} catch (RepositoryException e1) {
-				// TODO Auto-generated catch block
-				log.error(" ******** Failed to CLEAN the Content Repository ******** ");
-			}
-			
-			log.error(" ******** Shutting down all Content Repository Services ********* ");
-			isContentRepositoryAvail = false;
-			contentRepositorySession.logout();
-		}
-    }
-    
-	private void initiateContentRepState() throws RepositoryException {
-		// Checking if Public End point exists in the saved state, If found
-		// initiate the saved state Public End Point
-		javax.jcr.Node rootNode;
-		try {
-			rootNode = contentRepositorySession.getRootNode();
-
-			javax.jcr.Node publicEndPointNode = rootNode.getNode(ContentRepositoryConstants.PUBLIC_END_POINT);
-			javax.jcr.Node keyNode = publicEndPointNode.getNode(ContentRepositoryConstants.PUBLIC_END_POINT_KEY_NODE);
-			Map<String, String> properties = new HashMap<String, String>();
-			PropertyIterator keyIterator = keyNode.getProperties();
-			while (keyIterator.hasNext())
-			{
-				String key = ((Property) keyIterator.next()).getString();
-				// Avoiding the default property notifying an unstructured Node
-				if(!key.equals("nt:unstructured"))
-					properties.put(key, publicEndPointNode.getProperty(key).getValue().getString());
-			}
-			
-			initPublicEndpoint(publicEndPointNode.getProperty(ContentRepositoryConstants.PUBLIC_END_POINT_PROPERTIES.public_end_point_address.toString()).getValue().getString(), properties);
-		} catch (PathNotFoundException e) {
-			isPublicEndPointInit = false;
-			return;
-		}
-
-		// Trying to invoke Saved Sensors
-		try {
-			sensorNode = rootNode.getNode(ContentRepositoryConstants.SENSOR_NODE);
-			Iterator<javax.jcr.Node> sensors = sensorNode.getNodes();
-			
-			while (sensors.hasNext()) {
-				javax.jcr.Node eachSensor = sensors.next();
-				SCSensor sensor = new SCSensor(eachSensor.getName());
-				sensor.setId(eachSensor.getProperty(ContentRepositoryConstants.SENSOR_PROPERTIES.ID.toString()).getValue().getString());
-				sensor.setType(eachSensor.getProperty(ContentRepositoryConstants.SENSOR_PROPERTIES.TYPE.toString()).getValue().getString());
-
-				sensor.setPublicEndpoint(publicEndPoint);
-
-				Endpoint dataEndpoint;
-				if (Constants.SENSOR_TYPE_BLOCK.equalsIgnoreCase(sensor.getType())) 
-				{
-					dataEndpoint = new JMSEndpoint();
-					dataEndpoint.setAddress(sensor.getId() + "/data");
-				} else if (Constants.SENSOR_TYPE_STREAMING.equalsIgnoreCase(sensor.getType())) 
-				{
-					dataEndpoint = new StreamingEndpoint();
-				} else {
-					dataEndpoint = new JMSEndpoint();
-					dataEndpoint.setAddress(sensor.getId() + "/data");
-				}
-				
-				// Setting the Data End Point Properties from Content Repository
-				javax.jcr.Node dataEndPointNode = eachSensor.getNode(ContentRepositoryConstants.SENSOR_PROPERTIES.DATA_END_POINT_NODE.toString());
-				javax.jcr.Node dataEndPointKeyNode = dataEndPointNode.getNode(ContentRepositoryConstants.SENSOR_PROPERTIES.DATA_END_POINT_NODE_KEY.toString());
-				Map<String, String> properties = new HashMap<String, String>();
-				PropertyIterator propertyIterator = dataEndPointKeyNode.getProperties();
-				while (propertyIterator.hasNext()) 
-				{
-					String key = ((Property) propertyIterator.next()).getString();
-					// Avoiding the default property notifying an unstructured Node
-					if(!key.equals("nt:unstructured"))
-						properties.put(key, dataEndPointNode.getProperty(key).getValue().getString());
-				}
-				dataEndpoint.setProperties(properties);
-				sensor.setDataEndpoint(dataEndpoint);
-
-				Endpoint controlEndpoint;
-				controlEndpoint = new JMSEndpoint();
-				controlEndpoint.setAddress(sensor.getId() + "/control");
-				
-				// Setting the Control End Point Properties from Content Repository
-				javax.jcr.Node cntrlEndPointNode = eachSensor.getNode(ContentRepositoryConstants.SENSOR_PROPERTIES.CNTRL_END_POINT_NODE.toString());
-				javax.jcr.Node cntrlEndPointKeyNode = cntrlEndPointNode.getNode(ContentRepositoryConstants.SENSOR_PROPERTIES.CNTRL_END_POINT_KEY_NODE.toString());
-				properties = new HashMap<String, String>();
-				propertyIterator = cntrlEndPointKeyNode.getProperties();
-				while (propertyIterator.hasNext()) 
-				{
-					String key = ((Property) propertyIterator.next()).getString();
-					// Avoiding the default property notifying an unstructured Node
-					if(!key.equals("nt:unstructured"))
-						properties.put(key, cntrlEndPointNode.getProperty(key).getValue().getString());
-				}
-				controlEndpoint.setProperties(properties);
-				sensor.setControlEndpoint(controlEndpoint);
-
-				// set the update sending endpoint as the global endpoint
-				Endpoint updateSendingEndpoint;
-				updateSendingEndpoint = new JMSEndpoint();
-				
-				// Setting the Update Sending End Point Properties from Content Repository
-				javax.jcr.Node updateSendingEndPointNode = eachSensor.getNode(ContentRepositoryConstants.SENSOR_PROPERTIES.UPDATE_SENDING_END_POINT_NODE.toString());
-				javax.jcr.Node updateSendingEndPointKeyNode = updateSendingEndPointNode.getNode(ContentRepositoryConstants.SENSOR_PROPERTIES.UPDATE_SENDING_END_POINT_KEY_NODE.toString());
-				properties = new HashMap<String, String>();
-				propertyIterator = updateSendingEndPointKeyNode.getProperties();
-				while (propertyIterator.hasNext()) 
-				{
-					String key = ((Property) propertyIterator.next()).getString();
-					// Avoiding the default property notifying an unstructured Node
-					if(!key.equals("nt:unstructured"))
-						properties.put(key,	updateSendingEndPointNode.getProperty(key).getValue().getString());
-				}
-				updateSendingEndpoint.setProperties(properties);
-				updateSendingEndpoint.setAddress(sensor.getId() + "/update");
-				sensor.setUpdateEndpoint(updateSendingEndpoint);
-				sensorCatalog.addSensor(sensor);
-			}
-		} catch (PathNotFoundException e) {
-			rootNode.addNode(ContentRepositoryConstants.SENSOR_NODE);
-			contentRepositorySession.save();
-		}
-
-		// Trying to invoke Saved Clients
-		try {
-			clientNode = rootNode.getNode(ContentRepositoryConstants.CLIENT_NODE);
-			Iterator<javax.jcr.Node> clients = clientNode.getNodes();
-			
-			while (clients.hasNext()) 
-			{
-				javax.jcr.Node eachClient = clients.next();
-
-				Sensor sensor = sensorCatalog.getSensor(eachClient.getProperty(ContentRepositoryConstants.CLIENT_PROPERTIES.SENSOR_ID.toString()).getValue().getString());
-				SCClient client = new SCClient(eachClient.getProperty(ContentRepositoryConstants.CLIENT_PROPERTIES.CLIENT_ID.toString()).getValue().getString());
-
-				client.setPublicEndpoint(publicEndPoint);
-				client.setControlEndpoint(sensor.getControlEndpoint());
-				client.setUpdateEndpoint(sensor.getUpdateEndpoint());
-				client.setType(sensor.getType());
-				
-				try
-				{
-					javax.jcr.Node dataEndPointNode = eachClient.getNode(ContentRepositoryConstants.CLIENT_PROPERTIES.DATA_END_POINT_NODE.toString());
-					Endpoint dataEndpoint = null;
-					if(dataEndPointNode.getProperty(ContentRepositoryConstants.CLIENT_PROPERTIES.END_POINT.toString()).getValue().getString().equals(ContentRepositoryConstants.CLIENT_PROPERTIES.JMS_END_POINT.toString()))
-					{
-						dataEndpoint = new JMSEndpoint(); 
-					}else{
-						dataEndpoint = new StreamingEndpoint();
-					}
-					
-					Map<String, String> properties = new HashMap<String, String>();
-					PropertyIterator propertyIterator = dataEndPointNode.getProperties();
-					while (propertyIterator.hasNext()) 
-					{
-						String key = (String) propertyIterator.next();
-						if(!key.equals(ContentRepositoryConstants.CLIENT_PROPERTIES.END_POINT.toString()))
-							properties.put(key, dataEndPointNode.getProperty(key).getValue().getString());
-					}
-					
-					dataEndpoint.setProperties(properties);
-					client.setDataEndpoint(dataEndpoint);
-				} catch (PathNotFoundException e) {
-					client.setDataEndpoint(sensor.getDataEndpoint());
-				}
-
-				clientCatalog.addClient(client);
-			}
-		} catch (PathNotFoundException e) {
-			rootNode.addNode(ContentRepositoryConstants.CLIENT_NODE);
-			contentRepositorySession.save();
-		}
-		
-		/*log.error(" ==== Sensors Reinvoked in to the Sensor_Catalog ==== ");
-		Iterator<SCSensor> sensorIterator = sensorCatalog.getSensors().iterator();
-		while (sensorIterator.hasNext())
-		{
-			SCSensor scSensor = sensorIterator.next();
-			log.error(" ==== Sensor - " + scSensor.getId() + " ==== ");
-		}
-		
-		log.error(" ==== Clients Reinvoked in to the Client_Catalog ==== ");
-		Iterator<SCClient> clientIterator = clientCatalog.getClients().iterator();
-		while (clientIterator.hasNext())
-		{
-			SCClient scClient = clientIterator.next();
-			log.error(" ==== Client - " + scClient.getId() + " ==== ");
-		}*/
-
-	}
     
     /**
      * Registers a Sender specific to the Public End-Point
      *
      * @param publicSender this sender is used for sending information about the iotcloud to the nodes.
      */
-    public JMSSender initPublicSender(JMSSender publicSender)
-    {
+    public JMSSender initPublicSender(JMSSender publicSender) {
     	publicSender.setMessageFactory(new JMSDataMessageFactory());
 
     	publicSender.init();
@@ -500,8 +198,7 @@ public class IoTCloud {
      * Sends a IOT-Middle-ware Shut Down message to all the Registered Sensors and Clients (representing limited service)
      * Called prior to exiting the java-runtime  
      */
-    public void sendIOTCloudShutDownMssg()
-    {
+    public void sendIOTCloudShutDownMssg() {
     	TextDataMessage message = new TextDataMessage();
         message.setText(IOTCloudShutDownMssg);
         
@@ -512,8 +209,7 @@ public class IoTCloud {
      * Sends a Message over Public End-Point
      * @param message
      */
-    public void sendPublicMessage(SensorMessage message)
-    {
+    public void sendPublicMessage(SensorMessage message) {
     	publicSender.send(message);
     }
     
@@ -593,58 +289,7 @@ public class IoTCloud {
         updateSendingEndpoint.setAddress(sensor.getId() + "/update");
         sensor.setUpdateEndpoint(updateSendingEndpoint);
         
-        if(isContentRepositoryAvail)
-        {
-        	javax.jcr.Node crSensor;
-			try {
-				crSensor = sensorNode.addNode(sensor.getId());
-				crSensor.setProperty(ContentRepositoryConstants.SENSOR_PROPERTIES.ID.toString(), sensor.getId());
-				crSensor.setProperty(ContentRepositoryConstants.SENSOR_PROPERTIES.TYPE.toString(), sensor.getType());
-				
-				// Setting the Data Point Properties
-				javax.jcr.Node dataEndPointNode = crSensor.addNode(ContentRepositoryConstants.SENSOR_PROPERTIES.DATA_END_POINT_NODE.toString());
-				javax.jcr.Node dataEndPointKeyNode = dataEndPointNode.addNode(ContentRepositoryConstants.SENSOR_PROPERTIES.DATA_END_POINT_NODE_KEY.toString());
-				Map<String, String> dataEndPointProperties = sensor.getDataEndpoint().getProperties();
-				Iterator<String> deppKeysetIte = dataEndPointProperties.keySet().iterator();
-				while (deppKeysetIte.hasNext())
-				{
-					String key = deppKeysetIte.next();
-					dataEndPointNode.setProperty(key, dataEndPointProperties.get(key));
-					dataEndPointKeyNode.setProperty(key, key);
-				}
-				
-				// Setting Control End Point Properties
-				javax.jcr.Node cntrlEndPointNode = crSensor.addNode(ContentRepositoryConstants.SENSOR_PROPERTIES.CNTRL_END_POINT_NODE.toString());
-				javax.jcr.Node cntrlEndPointKeyNode = cntrlEndPointNode.addNode(ContentRepositoryConstants.SENSOR_PROPERTIES.CNTRL_END_POINT_KEY_NODE.toString());
-				Map<String, String> cntrlEndPointProperties = sensor.getControlEndpoint().getProperties();
-				Iterator<String> ceppKeysetIte = cntrlEndPointProperties.keySet().iterator();
-				while (ceppKeysetIte.hasNext())
-				{
-					String key = ceppKeysetIte.next();
-					cntrlEndPointNode.setProperty(key, cntrlEndPointProperties.get(key));
-					cntrlEndPointKeyNode.setProperty(key, key);
-				}
-				
-				// Setting Update Sending End Point Properties
-				javax.jcr.Node updateSendingEndPointNode = crSensor.addNode(ContentRepositoryConstants.SENSOR_PROPERTIES.UPDATE_SENDING_END_POINT_NODE.toString());
-				javax.jcr.Node updateSendingEndPointKeyNode = updateSendingEndPointNode.addNode(ContentRepositoryConstants.SENSOR_PROPERTIES.UPDATE_SENDING_END_POINT_KEY_NODE.toString());
-				Map<String, String> updateSendingEndPointProperties = sensor.getUpdateEndpoint().getProperties();
-				Iterator<String> useppKeysetIte = updateSendingEndPointProperties.keySet().iterator();
-				while (useppKeysetIte.hasNext())
-				{
-					String key = useppKeysetIte.next();
-					updateSendingEndPointNode.setProperty(key, updateSendingEndPointProperties.get(key));
-					updateSendingEndPointKeyNode.setProperty(key, key);
-				}
-				
-				contentRepositorySession.save();
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				log.error(" ********* Failed to add a sensor in to the Content Repository ********* ");
-			}
-        	
-        }
+        registry.addSensor(sensor);
         
         sensorCatalog.addSensor(sensor);
         updateManager.sensorChange(Constants.Updates.ADDED, sensor.getId());
@@ -744,23 +389,7 @@ public class IoTCloud {
             updateManager.sensorChange(Constants.Updates.REMOVED, id);
             sensorCatalog.removeSensor(id);
             
-            if(isContentRepositoryAvail)
-            {
-            	try {
-					sensorNode.getNode(id).remove();
-					Iterator<javax.jcr.Node> clients = clientNode.getNodes();
-		    		while(clients.hasNext())
-		    		{
-		    			javax.jcr.Node eachClientNode = clients.next();
-		    			if(eachClientNode.getProperty(ContentRepositoryConstants.CLIENT_PROPERTIES.SENSOR_ID.toString()).getValue().getString().equals(id))
-		    				eachClientNode.remove();
-		    		}
-					contentRepositorySession.save();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					log.error(" ********* Failed to remove a Sensor from the Content Repository ********* ");
-				} 
-            }
+            registry.unRegisterSensor(id);
             
         } else {
             handleException("Failed to unregister the sensor, non existing sensor");
@@ -945,5 +574,18 @@ public class IoTCloud {
     protected void handleException(String s) {
         log.error(s);
         throw new IOTRuntimeException(s);
+    }
+
+    public void destroy() {
+        sendIOTCloudShutDownMssg();
+
+        if (registry.isContentRepositoryAvail()) {
+            try {
+                clearContentRepository();
+                shutDownContentRepoSession();
+            } catch (RepositoryException e) {
+                log.error("Failed to CLEAN the Content Repository....");
+            }
+        }
     }
 }

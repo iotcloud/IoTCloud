@@ -40,19 +40,7 @@ public class ServerManager {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
             	log.info("Shutting down IOTCloud...");
-            	cloud.sendIOTCloudShutDownMssg();
-            	
-            	if(cloud.isContentRepositoryAvail)
-            	{
-	            	try {
-						cloud.clearContentRepository();
-						cloud.shutDownContentRepoSession();
-					} catch (RepositoryException e) {
-						// TODO Auto-generated catch block
-						log.error(" ********** Failed to CLEAN the Content Repository ********** ");
-					}
-            	}
-            	
+            	cloud.destroy();
                 server.stop();
             }
         });
