@@ -21,6 +21,13 @@ public class RootFrame extends JFrame {
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         initComponents();
 	}
+	
+	public RootFrame(String robot) {
+		super("IoTCloud Samples");
+		this.robot = robot;
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        initComponents();
+	}
 
 	private void initComponents() {
 		try {
@@ -72,6 +79,14 @@ public class RootFrame extends JFrame {
 
 	public DataController getDataController(){
 		return dataController;
+	}
+	
+	public void setActionController(ActionController actionController){
+		this.actionController = actionController;
+	}
+
+	public ActionController getActionController(){
+		return actionController;
 	}
 
 	public String getSensorSelected(){

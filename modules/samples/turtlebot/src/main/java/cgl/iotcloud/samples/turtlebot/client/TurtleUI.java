@@ -2,6 +2,7 @@ package cgl.iotcloud.samples.turtlebot.client;
 
 import cgl.iotcloud.client.robot.*;
 import cgl.iotcloud.core.IOTRuntimeException;
+import cgl.iotcloud.samples.turtlebot.common.TurtleSensorTypes;
 import cgl.iotcloud.samples.turtlebot.sensor.Velocity;
 
 import javax.swing.*;
@@ -30,8 +31,7 @@ public class TurtleUI {
 
         t.start();
         
-        rootFrame = new RootFrame();
-        rootFrame.setRobot("turtlebot");
+        rootFrame = new RootFrame("TurtleBot");
         
         RootPanel rootPanel = rootFrame.getRootPanel();
         SenConPanel senConPanel = rootPanel.getSenConPanel();
@@ -105,8 +105,8 @@ public class TurtleUI {
                 stop();
             }
         });
-        rootFrame.setRobot("turtlebot");
         rootFrame.setVisible(true);
+        rootFrame.addSensor(TurtleSensorTypes.KINECT_SENSOR);
     }
 
     private void forward() {

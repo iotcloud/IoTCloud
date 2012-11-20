@@ -40,7 +40,6 @@ public class RosLegoNXT extends AbstractNodeMain {
 		contactSubscriber.addMessageListener(new MessageListener<Contact>(){
 
 			public void onNewMessage(Contact msg){
-				//System.out.println("== msg from touch sensor ==");
 				if(rosListener != null)
 					rosListener.onRosSensorMessage(msg);
 			}
@@ -51,34 +50,53 @@ public class RosLegoNXT extends AbstractNodeMain {
 		ultrasonicSubscriber.addMessageListener(new MessageListener<Range>(){
 
 			public void onNewMessage(Range msg){
-				//System.out.println("== msg from ultrasonic sensor ==");
 				if(rosListener != null)
 					rosListener.onRosSensorMessage(msg);
 			}
 		});
-		
+
 		//gyro sensor
 		final Subscriber<Gyro> gyroSubscriber  = connectedNode.newSubscriber("gyro_sensor",Gyro._TYPE);
 		gyroSubscriber.addMessageListener(new MessageListener<Gyro>(){
 
 			public void onNewMessage(Gyro msg){
-				//System.out.println("== msg from gyso sensor ==");
 				if(rosListener != null)
 					rosListener.onRosSensorMessage(msg);
 			}
 		});
 
-	}
+		connectedNode.executeCancellableLoop(new CancellableLoop() {
+			@Override
+			protected void loop() throws InterruptedException {
+				Twist str = publisher.newMessage();
 
-	public static void main(String[] args) {
-		RosLegoNXT legoNXT = new RosLegoNXT();
+				if (linear != null) {
+					str.getLinear().setX(linear.getX());
+					str.getLinear().setY(linear.getY());
+					str.getLinear().setZ(linear.getZ());
+				}
 
-		while (true) {
-			legoNXT.setLinear(new Velocity(.1, 0, 0));
-		}
-	}
+				if (angular != null) {
+					str.getAngular().setX(angular.getX());
+					str.getAngular().setY(angular.getY());
+					str.getAngular().setZ(angular.getZ());
+				}
 
-	public void registerListener(RosLegoNXTListener listener) {
-		rosListener = listener;
+				publisher.publish(str);
+				Thread.sleep(500);
+			}
+		});
+}
+
+public static void main(String[] args) {
+	RosLegoNXT legoNXT = new RosLegoNXT();
+
+	while (true) {
+		legoNXT.setLinear(new Velocity(.1, 0, 0));
 	}
+}
+
+public void registerListener(RosLegoNXTListener listener) {
+	rosListener = listener;
+}
 } 

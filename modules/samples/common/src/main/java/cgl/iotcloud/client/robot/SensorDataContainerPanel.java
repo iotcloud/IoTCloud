@@ -18,6 +18,8 @@ public class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuil
         this.addComponents();
     }
 
+    //Refer turtlebot and lego nxt for addition of panels.
+    //following code is overriden in sensor code... due to diffrence the data panels among robots.
     @Override
     public void addComponents() {
         GroupLayout senDataMainPanelLayout = new GroupLayout(this);
@@ -43,6 +45,7 @@ public class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuil
                                     .addComponent(dataPanel, GroupLayout.PREFERRED_SIZE, 419, Short.MAX_VALUE))
             );
         } else {
+        	//System.out.println("===called else ==");
             scrollPane = new JScrollPane(senDataTextArea,
                     JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
@@ -64,12 +67,18 @@ public class SensorDataContainerPanel extends JPanel implements RobotUIPanelBuil
     public JPanel getDataPanel() {
         return dataPanel;
     }
+    
 
     @Override
     public void removeComponents() {
 
     }
+    
+    public SensorDataTitlePanel getSensorDataTitlePanel(){
+    	return sensorDataTitlePanel;
+    }
 
+    //not used... sensor code expected to handle update.
     public void updateData(String data) {
         String currentData = senDataTextArea.getText();
         senDataTextArea.setText(currentData + "\n" + data);

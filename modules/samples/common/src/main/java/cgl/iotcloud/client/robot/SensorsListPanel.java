@@ -16,7 +16,7 @@ public class SensorsListPanel extends JPanel implements RobotUIPanelBuilder {
 	private JTree sensorTree;
 	private DefaultMutableTreeNode rootNode;
 	private Map<String, DefaultMutableTreeNode> sensorNameToNodeMap = new HashMap<String, DefaultMutableTreeNode>();
-	private String sensorSelected = null;
+	private String sensorSelected = "";
 	private GroupLayout.ParallelGroup parallelGrp;
 	private GroupLayout.SequentialGroup sequentialGrp;
 	private GroupLayout senPanelLayout;
@@ -58,12 +58,12 @@ public class SensorsListPanel extends JPanel implements RobotUIPanelBuilder {
 	}
 
 	public String getSensorSelected() {
-//		if(sensorSelected.isEmpty()){
-//			JOptionPane.showMessageDialog(rootFrame, "Select a sensor.", "WARNING", 1, null);
-//			return "";
-//		}else
-//			return sensorSelected;
-        return "";
+		if(sensorSelected.isEmpty()){
+			JOptionPane.showMessageDialog(rootFrame, "Select a sensor.", "WARNING", 1, null);
+			return "";
+		}else
+			return sensorSelected;
+        //return "";
 	}
 
 	public SensorsListPanel(RootFrame rootFrame) {
@@ -81,7 +81,7 @@ public class SensorsListPanel extends JPanel implements RobotUIPanelBuilder {
 		parallelGrp = senPanelLayout.createParallelGroup();
 		sequentialGrp = senPanelLayout.createSequentialGroup();
 
-		rootNode = new DefaultMutableTreeNode("TurtleBot");
+		rootNode = new DefaultMutableTreeNode(rootFrame.getRobot());
 		sensorTree = new JTree(rootNode);
 		sensorTree.setRowHeight(40);
 		parallelGrp.addComponent(sensorTree);
@@ -89,7 +89,6 @@ public class SensorsListPanel extends JPanel implements RobotUIPanelBuilder {
 		sequentialGrp.addComponent(sensorTree);
 		senPanelLayout.setHorizontalGroup(senPanelLayout.createSequentialGroup().addGap(40).addGroup(parallelGrp).addGap(40));
 		senPanelLayout.setVerticalGroup(sequentialGrp);
-
 	}
 
 

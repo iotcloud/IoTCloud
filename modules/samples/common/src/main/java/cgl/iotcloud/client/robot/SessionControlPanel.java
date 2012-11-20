@@ -28,6 +28,7 @@ public class SessionControlPanel extends JPanel implements RobotUIPanelBuilder {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+				System.out.println("=== sensor selected  == : "+ rootFrame.getSensorSelected());
 				rootFrame.getDataController().start(rootFrame.getSensorSelected());
 			}
 
@@ -60,6 +61,7 @@ public class SessionControlPanel extends JPanel implements RobotUIPanelBuilder {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+				System.out.println("=== sensor selected  == : "+ rootFrame.getSensorSelected());
 				rootFrame.getDataController().stop(rootFrame.getSensorSelected());
 			}
 
