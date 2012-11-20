@@ -1,5 +1,6 @@
 package cgl.iotcloud.samples.turtlebot.sensor;
 
+import cgl.iotcloud.core.message.SensorMessage;
 import geometry_msgs.Twist;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.ros.concurrent.CancellableLoop;
@@ -11,6 +12,10 @@ import org.ros.node.topic.Publisher;
 import org.ros.node.topic.Subscriber;
 import sensor_msgs.Image;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RosTurtle extends AbstractNodeMain {
@@ -18,7 +23,7 @@ public class RosTurtle extends AbstractNodeMain {
 
     private volatile Velocity angular = null;
 
-    private AtomicInteger count = new AtomicInteger(0);
+    // private AtomicInteger count = new AtomicInteger(0);
 
     private TurtleSensor sensor;
 
@@ -54,13 +59,15 @@ public class RosTurtle extends AbstractNodeMain {
                 f.setWidth(message.getWidth());
                 f.setHeight(message.getHeight());
                 f.setStep(message.getStep());
-                ChannelBuffer buffer = message.getData();
+                //ChannelBuffer buffer = message.getData();
 
-                if (buffer.hasArray()) {
-                    f.setBuffer(buffer.array());
-                }
+                //if (buffer.hasArray()) {
+                    //f.setBuffer(buffer.array());
+                //}
+                f.setBuffer(handleMessage(message));
                 System.out.println("received image");
                 sensor.sendMessage(f);
+                //handleMessage(message);
             }
         });
 
@@ -92,5 +99,42 @@ public class RosTurtle extends AbstractNodeMain {
                 Thread.sleep(500);
             }
         });
+    }
+    int count = 0;
+    private byte[] handleMessage(Image m) {
+//        if (m instanceof Frame) {
+        byte [] array = new byte[m.getHeight() * m.getWidth() * 3];
+
+        for (int i = 0; i < m.getHeight() * m.getWidth() * 3; i++) {
+            array[i] = m.getData().getByte(i);
+        }
+
+//            Image message =  m;
+//            BufferedImage im = new BufferedImage(message.getWidth(), message.getHeight(), BufferedImage.TYPE_INT_RGB);
+//            for (int x = 0; x < message.getWidth(); x++) {
+//                for (int y = 0; y < message.getHeight(); y++) {
+//                    byte red =
+//                            message.getData().getByte((int) (y * message.getStep() + 3 * x));
+//                    byte green =
+//                            message.getData().getByte(((int) (y * message.getStep() + 3 * x + 1)));
+//                    byte blue =
+//                            message.getData().getByte(((int) (y * message.getStep() + 3 * x + 2)));
+//                    int rgb = (red & 0xFF);
+//                    rgb = (rgb << 8) + (green & 0xFF);
+//                    rgb = (rgb << 8) + (blue & 0xFF);
+//
+//                    im.setRGB(x, y, new Color(red & 0xFF, green & 0xFF, blue & 0xFF).getRGB());
+//                }
+//            }
+//            try {
+//                File outputfile = new File("saved_" + count++ + ".png");
+//                ImageIO.write(im, "png", outputfile);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+
+//        }
+
+        return array;
     }
 }
