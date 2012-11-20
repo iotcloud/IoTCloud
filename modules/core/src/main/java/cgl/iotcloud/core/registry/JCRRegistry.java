@@ -35,18 +35,18 @@ public class JCRRegistry {
     public JCRRegistry(IoTCloud ioTCloud) {
         Properties prop = new Properties();
         InputStream in = getClass().getResourceAsStream("repository.properties");
+        if (in != null) {
+            try {
+                prop.load(in);
+                in.close();
+            } catch (IOException e) {
+                log.error("Failed to load properties from repository.properties");
+            }
 
-        try {
-            prop.load(in);
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            if (prop.containsKey("jcr.url")) {
+                url = (String) prop.get("jcr.url");
+            }
         }
-
-        if (prop.containsKey("jcr.url")) {
-            url = (String) prop.get("jcr.url");
-        }
-
         this.ioTCloud = ioTCloud;
     }
 

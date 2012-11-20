@@ -59,7 +59,7 @@ public class RosTurtle extends AbstractNodeMain {
                 if (buffer.hasArray()) {
                     f.setBuffer(buffer.array());
                 }
-                System.out.println("recevived image");
+                System.out.println("received image");
                 sensor.sendMessage(f);
             }
         });

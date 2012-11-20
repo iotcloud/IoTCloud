@@ -12,6 +12,7 @@ import cgl.iotcloud.core.message.update.UpdateMessage;
 import cgl.iotcloud.samples.turtlebot.sensor.Frame;
 import cgl.iotcloud.samples.turtlebot.sensor.Velocity;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class TurtleClient {
@@ -75,7 +76,8 @@ public class TurtleClient {
                     int rgb = (red & 0xFF);
                     rgb = (rgb << 8) + (green & 0xFF);
                     rgb = (rgb << 8) + (blue & 0xFF);
-                    im.setRGB(x, y, rgb);
+
+                    im.setRGB(x, y, new Color(red & 0xFF, green & 0xFF, blue & 0xFF).getRGB());
                 }
             }
             try {
