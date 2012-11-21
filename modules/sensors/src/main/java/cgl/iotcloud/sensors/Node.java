@@ -76,6 +76,28 @@ public class Node implements cgl.iotcloud.core.sensor.Node {
         return listener;
     }
 
+    public boolean deleteListener(String name, String type, String path) throws IOTException {
+        if (listeners.containsKey(name)) {
+            Listener l = listeners.get(name);
+            l.stop();
+            l.destroy();
+
+            return adaptor.unRegisterConsumer(name, type, path);
+        }
+        return false;
+    }
+
+    public boolean deleteSender(String name, String type, String path) throws IOTException {
+        if (senders.containsKey(name)) {
+            Sender s = senders.get(name);
+            s.stop();
+            s.destroy();
+
+            return adaptor.unRegisterProducer(name, type, path);
+        }
+        return false;
+    }
+
     @Override
     public void stop() throws IOTException {
         for (Sender sender : senders.values()) {

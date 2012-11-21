@@ -4,6 +4,7 @@ import cgl.iotcloud.client.robot.*;
 import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.samples.turtlebot.common.TurtleSensorTypes;
 import cgl.iotcloud.samples.turtlebot.sensor.Velocity;
+import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -105,6 +106,12 @@ public class TurtleUI {
                 stop();
             }
         });
+
+        try {
+            UIManager.setLookAndFeel(new GTKLookAndFeel());
+        } catch (UnsupportedLookAndFeelException ignore) {
+            // e.printStackTrace();
+        }
         rootFrame.setVisible(true);
         rootFrame.addSensor(TurtleSensorTypes.KINECT_SENSOR);
     }

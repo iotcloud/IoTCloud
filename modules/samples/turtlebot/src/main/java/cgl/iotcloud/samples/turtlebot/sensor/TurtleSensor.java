@@ -83,9 +83,24 @@ public class TurtleSensor {
         // register with ros_java
         CommandLineLoader loader = new CommandLineLoader(Lists.newArrayList(argv));
         NodeConfiguration nodeConfiguration = loader.build();
-        TurtleSensor sensor = new TurtleSensor();
+        final TurtleSensor sensor = new TurtleSensor();
 
         sensor.start(nodeConfiguration);
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                sensor.stop();
+            }
+        });
+    }
+
+    private void stop() {
+        try {
+            node.stop();
+        } catch (IOTException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onControlMessage(SensorMessage message) {
