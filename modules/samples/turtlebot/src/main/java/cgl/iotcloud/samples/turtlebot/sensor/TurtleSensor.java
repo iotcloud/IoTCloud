@@ -31,6 +31,8 @@ public class TurtleSensor {
 
     private Node node;
 
+    private NodeMainExecutor nodeMainExecutor;
+
     public TurtleSensor() {
         try {
             node = new Node(new NodeName("turtle-sensor"), "http://localhost:8080");
@@ -73,7 +75,7 @@ public class TurtleSensor {
         }
 
         Preconditions.checkState(turtle != null);
-        NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
+        nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
         nodeMainExecutor.execute(turtle, nodeConfiguration);
 
         turtle.setSensor(this);
@@ -97,6 +99,9 @@ public class TurtleSensor {
 
     private void stop() {
         try {
+            System.out.println("Shutting down sensor.....");
+            turtle.stop();
+            nodeMainExecutor.shutdown();
             node.stop();
         } catch (IOTException e) {
             e.printStackTrace();
