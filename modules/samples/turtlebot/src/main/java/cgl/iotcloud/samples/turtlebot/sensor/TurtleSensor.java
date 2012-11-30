@@ -13,6 +13,7 @@ import cgl.iotcloud.core.message.jms.JMSControlMessageFactory;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
 import cgl.iotcloud.core.sensor.NodeName;
 import cgl.iotcloud.sensors.Node;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.ros.internal.loader.CommandLineLoader;
 import org.ros.node.DefaultNodeMainExecutor;
@@ -29,6 +30,8 @@ public class TurtleSensor {
     private Sender depthSender;
 
     private Node node;
+
+    private NodeMainExecutor nodeMainExecutor;
 
     public TurtleSensor() {
         try {
@@ -71,8 +74,8 @@ public class TurtleSensor {
             ((JMSSender) depthSender).setMessageFactory(new JMSDataMessageFactory());
         }
 
-        //Preconditions.checkState(turtle != null);
-        NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
+        Preconditions.checkState(turtle != null);
+        nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
         nodeMainExecutor.execute(turtle, nodeConfiguration);
 
         turtle.setSensor(this);
@@ -96,6 +99,9 @@ public class TurtleSensor {
 
     private void stop() {
         try {
+            System.out.println("Shutting down sensor.....");
+            turtle.stop();
+            nodeMainExecutor.shutdown();
             node.stop();
         } catch (IOTException e) {
             e.printStackTrace();

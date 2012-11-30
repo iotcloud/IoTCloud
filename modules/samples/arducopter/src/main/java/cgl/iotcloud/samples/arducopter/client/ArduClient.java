@@ -39,9 +39,9 @@ public class ArduClient {
 
     public void start() {
         try {
-            NodeInformation nodeInformation = nodeClient.getNode(new NodeName("ardu-sensor"));
+            NodeInformation nodeInformation = nodeClient.getNode(new NodeName("ardusensor"));
 
-            Endpoint endpoint = nodeInformation.getConsumer("attitudeData");
+            Endpoint endpoint = nodeInformation.getProducer("attitudeData");
             attitudeListener = nodeClient.newListener(endpoint);
             if (attitudeListener instanceof JMSListener) {
                 ((JMSListener) attitudeListener).setMessageFactory(new JMSDataMessageFactory());
@@ -57,7 +57,7 @@ public class ArduClient {
             attitudeListener.init();
             attitudeListener.start();
 
-            endpoint = nodeInformation.getConsumer("stateData");
+            endpoint = nodeInformation.getProducer("stateData");
             stateListener = nodeClient.newListener(endpoint);
             if (stateListener instanceof JMSListener) {
                 ((JMSListener) stateListener).setMessageFactory(new JMSDataMessageFactory());
@@ -73,7 +73,7 @@ public class ArduClient {
             stateListener.init();
             stateListener.start();
 
-            endpoint = nodeInformation.getConsumer("mriData");
+            endpoint = nodeInformation.getProducer("mriData");
             mriListener = nodeClient.newListener(endpoint);
             if (mriListener instanceof JMSListener) {
                 ((JMSListener) mriListener).setMessageFactory(new JMSDataMessageFactory());
@@ -89,7 +89,7 @@ public class ArduClient {
             mriListener.init();
             mriListener.start();
 
-            endpoint = nodeInformation.getConsumer("vhData");
+            endpoint = nodeInformation.getProducer("vhData");
             vhListener = nodeClient.newListener(endpoint);
             if (vhListener instanceof JMSListener) {
                 ((JMSListener) vhListener).setMessageFactory(new JMSDataMessageFactory());
@@ -105,7 +105,7 @@ public class ArduClient {
             vhListener.init();
             vhListener.start();
 
-            endpoint = nodeInformation.getConsumer("rcData");
+            endpoint = nodeInformation.getProducer("rcData");
             rcListener = nodeClient.newListener(endpoint);
             if (rcListener instanceof JMSListener) {
                 ((JMSListener) rcListener).setMessageFactory(new JMSDataMessageFactory());
@@ -121,7 +121,7 @@ public class ArduClient {
             rcListener.init();
             rcListener.start();
 
-            endpoint = nodeInformation.getConsumer("controlData");
+            endpoint = nodeInformation.getProducer("controlData");
             controlListener = nodeClient.newListener(endpoint);
             if (controlListener instanceof JMSListener) {
                 ((JMSListener) controlListener).setMessageFactory(new JMSDataMessageFactory());

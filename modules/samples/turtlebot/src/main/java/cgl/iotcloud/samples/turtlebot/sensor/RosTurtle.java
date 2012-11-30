@@ -8,6 +8,7 @@ import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
+import org.ros.node.Node;
 import org.ros.node.topic.Publisher;
 import org.ros.node.topic.Subscriber;
 import sensor_msgs.Image;
@@ -24,6 +25,8 @@ public class RosTurtle extends AbstractNodeMain {
     private volatile Velocity angular = null;
 
     private TurtleSensor sensor;
+
+    private boolean stop = false;
 
     public void setLinear(Velocity linear) {
         this.linear = linear;
@@ -60,7 +63,9 @@ public class RosTurtle extends AbstractNodeMain {
 
                 f.setBuffer(handleMessage(message));
                 System.out.println("received rgb image");
-                sensor.getRgbSender().send(f);
+                if (!stop) {
+                    sensor.getRgbSender().send(f);
+                }
             }
         });
 
@@ -103,8 +108,9 @@ public class RosTurtle extends AbstractNodeMain {
                     str.getAngular().setY(angular.getY());
                     str.getAngular().setZ(angular.getZ());
                 }
-
-                publisher.publish(str);
+                if (!stop) {
+                    publisher.publish(str);
+                }
                 Thread.sleep(100);
             }
         });
@@ -177,5 +183,14 @@ public class RosTurtle extends AbstractNodeMain {
 //            }
 
         return array;
+    }
+
+    @Override
+    public void onShutdown(Node node) {
+        node.shutdown();
+    }
+
+    public void stop() {
+        stop = true;
     }
 }

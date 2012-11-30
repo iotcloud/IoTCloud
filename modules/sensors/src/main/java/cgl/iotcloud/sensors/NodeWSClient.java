@@ -127,12 +127,16 @@ public class NodeWSClient {
         Endpoint consumers[] = detail.getConsumers();
         Endpoint producers[] = detail.getProducers();
 
-        for (Endpoint e : consumers) {
-            nodeInformation.addConsumer(createEndpoint(e));
+        if (consumers != null) {
+            for (Endpoint e : consumers) {
+                nodeInformation.addConsumer(createEndpoint(e));
+            }
         }
 
-        for (Endpoint e : producers) {
-            nodeInformation.addProducer(createEndpoint(e));
+        if (producers != null) {
+            for (Endpoint e : producers) {
+                nodeInformation.addProducer(createEndpoint(e));
+            }
         }
 
         return nodeInformation;

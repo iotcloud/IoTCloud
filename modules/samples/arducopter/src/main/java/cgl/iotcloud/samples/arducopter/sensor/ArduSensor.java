@@ -27,7 +27,7 @@ public class ArduSensor {
 
     public ArduSensor() {
         try {
-            node = new Node(new NodeName("ardu-sensor"), "http://localhost:8080");
+            node = new Node(new NodeName("ardusensor"), "http://localhost:8080");
         } catch (IOTException e) {
             e.printStackTrace();
         }
