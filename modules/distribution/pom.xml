@@ -73,6 +73,21 @@
 		</dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>iotcloud-samples-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>iotcloud-samples-turtlebot</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>iotcloud-samples-arducopter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>iotcloud-http-api</artifactId>
             <version>${project.version}</version>
         </dependency>
