@@ -95,6 +95,9 @@ elif [ "$1" = "-client" ]; then
         exec="cgl.iotcloud.samples.arducopter.client.ArduUI"
     fi
     shift 2
+elif [ "$1" = "-ros-uri" ]; then
+    export ROS_MASTER_URI=$2
+    shift 2
 elif [ "$1" = "-h" ]; then
     echo "Usage: scserver.sh ( commands ... )"
     echo "commands:"
@@ -109,8 +112,6 @@ else
 fi
 
 done
-
-echo $exec
 
 # ----- Execute The Requested Command -----------------------------------------
 
