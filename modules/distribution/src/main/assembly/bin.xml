@@ -13,6 +13,11 @@
             <fileMode>755</fileMode>
         </fileSet>
         <fileSet>
+            <directory>./src/release/samples/bin</directory>
+            <outputDirectory>iotcloud-${pom.version}/samples/bin</outputDirectory>
+            <fileMode>755</fileMode>
+        </fileSet>
+        <fileSet>
             <directory>../../repository</directory>
             <outputDirectory>iotcloud-${pom.version}/repository</outputDirectory>
         </fileSet>
@@ -39,28 +44,29 @@
                 <exclude>org.apache.axis2:axis2-webapp:war</exclude>
                 <exclude>iotcloud:iotcloud-services:aar</exclude>
                 <exclude>org.apache.axis2:addressing:mar</exclude>
-                <exclude>iotcloud:iotcloud-http-api:war</exclude>
+                <exclude>ros.rosjava_core:rosjava:jar</exclude>
+                <exclude>ros.rosjava_core:rosjava_messages:jar</exclude>
+                <exclude>ros.rosjava_core:rosjava_bootstrap:jar</exclude>
             </excludes>
         </dependencySet>
-        <!--<dependencySet>-->
-            <!--<useProjectArtifact>false</useProjectArtifact>-->
-            <!--<outputDirectory>iotcloud-${project.version}/webapps</outputDirectory>-->
-            <!--<includes>-->
-                <!--<include>org.apache.axis2:axis2-webapp:war</include>-->
-            <!--</includes>-->
-        <!--</dependencySet>-->
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>iotcloud-${pom.version}/samples/lib</outputDirectory>
+            <includes>
+                <include>iotcloud:iotcloud-samples-general:jar</include>
+                <include>iotcloud:iotcloud-samples-common:jar</include>
+                <include>iotcloud:iotcloud-samples-turtlebot:jar</include>
+                <include>iotcloud:iotcloud-samples-arducopter:jar</include>
+                <include>ros.rosjava_core:rosjava:jar</include>
+                <include>ros.rosjava_core:rosjava_messages:jar</include>
+                <include>ros.rosjava_core:rosjava_bootstrap:jar</include>
+            </includes>
+        </dependencySet>
         <dependencySet>
             <useProjectArtifact>false</useProjectArtifact>
             <outputDirectory>iotcloud-${pom.version}/repository/axis2/services</outputDirectory>
             <includes>
                 <include>iotcloud:iotcloud-services:aar</include>
-            </includes>
-        </dependencySet>
-        <dependencySet>
-            <useProjectArtifact>false</useProjectArtifact>
-            <outputDirectory>iotcloud-${pom.version}/webapps</outputDirectory>
-            <includes>
-                <include>iotcloud:iotcloud-http-api:war</include>
             </includes>
         </dependencySet>
         <dependencySet>
