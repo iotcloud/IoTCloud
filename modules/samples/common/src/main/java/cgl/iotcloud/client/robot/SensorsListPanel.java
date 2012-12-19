@@ -63,7 +63,7 @@ public class SensorsListPanel extends JPanel implements RobotUIPanelBuilder {
 			return "";
 		}else
 			return sensorSelected;
-        //return "";
+		//return "";
 	}
 
 	public SensorsListPanel(RootFrame rootFrame) {
@@ -84,10 +84,15 @@ public class SensorsListPanel extends JPanel implements RobotUIPanelBuilder {
 		rootNode = new DefaultMutableTreeNode(rootFrame.getRobot());
 		sensorTree = new JTree(rootNode);
 		sensorTree.setRowHeight(40);
-		parallelGrp.addComponent(sensorTree);
 
-		sequentialGrp.addComponent(sensorTree);
-		senPanelLayout.setHorizontalGroup(senPanelLayout.createSequentialGroup().addGap(40).addGroup(parallelGrp).addGap(40));
+		SensorPanel sensorPanel = new SensorPanel(sensorTree);
+		//parallelGrp.addComponent(sensorTree);
+		parallelGrp.addComponent(sensorPanel);
+
+
+		//sequentialGrp.addComponent(sensorTree);
+		sequentialGrp.addComponent(sensorPanel);
+		senPanelLayout.setHorizontalGroup(senPanelLayout.createSequentialGroup().addGap(10).addGroup(parallelGrp).addGap(10));
 		senPanelLayout.setVerticalGroup(sequentialGrp);
 	}
 
@@ -95,5 +100,44 @@ public class SensorsListPanel extends JPanel implements RobotUIPanelBuilder {
 	@Override
 	public void removeComponents() {
 
+	}
+
+	private class SensorPanel extends javax.swing.JPanel {
+		public SensorPanel(JTree sensorTree) {
+			this.sensorTree = sensorTree;
+			initComponents();
+		}
+
+		private void initComponents() {
+
+			sensorsListPane = new javax.swing.JScrollPane();
+
+			sensorsListPane.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+			sensorTree.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED, java.awt.Color.black, java.awt.Color.lightGray, null, null));
+			sensorTree.setFont(new java.awt.Font("Trebuchet MS", 0, 13)); // NOI18N
+			sensorsListPane.setViewportView(sensorTree);
+
+			javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+			this.setLayout(layout);
+			layout.setHorizontalGroup(
+					layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+					.addGroup(layout.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(sensorsListPane, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+							.addContainerGap())
+					);
+			layout.setVerticalGroup(
+					layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+					.addGroup(layout.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(sensorsListPane, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
+							.addContainerGap())
+					);
+
+		}
+
+		private javax.swing.JTree sensorTree;
+		private javax.swing.JScrollPane sensorsListPane;
 	}
 }

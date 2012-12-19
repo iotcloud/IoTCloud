@@ -5,8 +5,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.GroupLayout;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JPanel;
 import javax.swing.LayoutStyle;
 
 import cgl.iotcloud.client.robot.ControlContainerPanel;
@@ -15,7 +14,6 @@ import cgl.iotcloud.client.robot.RootFrame;
 import cgl.iotcloud.client.robot.DataController;
 import cgl.iotcloud.client.robot.RootPanel;
 import cgl.iotcloud.client.robot.SenConPanel;
-import cgl.iotcloud.client.robot.SensorDataContainerPanel;
 import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.samples.lego_nxt.common.LegoNXTSensorTypes;
 import cgl.iotcloud.samples.lego_nxt.sensor.Velocity;
@@ -30,106 +28,8 @@ public class LegoNXTUI {
 	private boolean touchSensorEnabled;
 	private boolean ultrasonicSensorEnabled;
 	private boolean gyroSensorEnabled;
-	private JTextArea senDataTextArea;
+	private NXTSensorsListPanel sensorsListPanel;
 
-	//old code...
-	/*  private ActionController actController = new ActionController() {
-    	Thread worker;
-    	boolean started;
-
-        @Override
-        public void up() {
-        	worker = new Thread(){
-				public void run(){
-
-					while(isStarted()){
-						System.out.println("=== isStarted ===");
-						client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
-						try {
-							Thread.sleep(200);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}	
-				}
-			};
-			worker.start();
-            //client.setVelocity(new Velocity(.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
-        }
-
-        @Override
-        public void down() {
-        	worker = new Thread(){
-				public void run(){
-					while(isStarted()){
-						client.setVelocity(new Velocity(-.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
-						try {
-							Thread.sleep(200);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}	
-				}
-			};
-			worker.start();
-            //client.setVelocity(new Velocity(-.1, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
-        }
-
-        @Override
-        public void left() {
-        	worker = new Thread(){
-				public void run(){
-					while(isStarted()){
-						client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0, 0.0, -.5));
-						try {
-							Thread.sleep(200);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}	
-				}
-			};
-			worker.start();
-            //client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0, 0.0, -.5));
-        }
-
-        @Override
-        public void right() {
-        	worker = new Thread(){
-				public void run(){
-					while(isStarted()){
-						client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, .5));
-						try {
-							Thread.sleep(200);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}	
-				}
-			};
-			worker.start();
-            //client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, .5));
-        }
-
-        @Override
-        public void stop() {
-            client.setVelocity(new Velocity(0, 0.0, 0.0), new Velocity(0.0, 0.0, 0));
-        	setStarted(false);
-        	worker = null;
-        }
-
-        public void start(){
-        	setStarted(true); 
-        }
-
-        public boolean isStarted(){
-        	return started;
-        }
-
-        public void setStarted(boolean value){
-        	started = value;
-        }
-    };*/
 
 	private DataController  dataController = new DataController() {
 
@@ -187,7 +87,7 @@ public class LegoNXTUI {
 	}
 
 	public void start() {
-		rootFrame = new RootFrame("lego_ nxt");
+		rootFrame = new RootFrame("Lego NXT");
 		rootFrame.addSensor(LegoNXTSensorTypes.TOUCH_SENSOR);
 		rootFrame.addSensor(LegoNXTSensorTypes.ULTRASONIC_SENSOR);
 		rootFrame.addSensor(LegoNXTSensorTypes.GYRO_SENSOR);
@@ -197,35 +97,23 @@ public class LegoNXTUI {
 		RootPanel rootPanel = rootFrame.getRootPanel();
 		SenConPanel senConPanel = rootPanel.getSenConPanel();
 
-		SensorDataContainerPanel dataContainerPanel = senConPanel.getSensorDataContainerPanel();
+		JPanel dataContainerPanel  = senConPanel.getSensorDataContainerPanel().getDataPanel();
 
-		senDataTextArea = new JTextArea();
-		senDataTextArea.setEditable(false);
-		senDataTextArea.setVisible(true);
 
-		JScrollPane scrollPane = new JScrollPane(senDataTextArea,
-				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-
+		sensorsListPanel = new NXTSensorsListPanel();
 
 		GroupLayout senDataMainPanelLayout = new GroupLayout(dataContainerPanel);
 		dataContainerPanel.setLayout(senDataMainPanelLayout);
-
-		scrollPane = new JScrollPane(senDataTextArea,
-				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-
 		senDataMainPanelLayout.setHorizontalGroup(
 				senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(dataContainerPanel.getSensorDataTitlePanel(), GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-				.addComponent(scrollPane, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+				.addComponent(sensorsListPanel, javax.swing.GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 				);
 		senDataMainPanelLayout.setVerticalGroup(
 				senDataMainPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
 				.addGroup(senDataMainPanelLayout.createSequentialGroup()
-						.addComponent(dataContainerPanel.getSensorDataTitlePanel(), GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 419, Short.MAX_VALUE))
+						.addComponent(sensorsListPanel, GroupLayout.PREFERRED_SIZE, 419, Short.MAX_VALUE))
 				);
-
 
 		ControlContainerPanel controlContainerPanel = senConPanel.getControlContainerPanel();
 
@@ -310,7 +198,148 @@ public class LegoNXTUI {
 	}
 
 	public void update(String msg){
-		String currentData = senDataTextArea.getText();
-		senDataTextArea.setText(currentData + "\n" + msg);
+		String displayMsg;
+		System.out.println("==== msg receieved from robot === : "+msg);
+		if(msg.indexOf(LegoNXTSensorTypes.TOUCH_SENSOR) !=-1){
+			displayMsg = msg.substring(msg.indexOf(":")+1);
+			sensorsListPanel.updateTouchData(displayMsg);
+		}else if(msg.indexOf(LegoNXTSensorTypes.GYRO_SENSOR) !=-1){
+			displayMsg = msg.substring(msg.indexOf(":")+1);
+			sensorsListPanel.updateGyroData(displayMsg);
+		}else{
+			displayMsg = msg.substring(msg.indexOf(":")+1);
+			sensorsListPanel.updateUltrasonicData(displayMsg);
+		}
 	}
+
+
+	public class NXTSensorsListPanel extends javax.swing.JPanel {
+		public NXTSensorsListPanel() {
+			initComponents();
+		}
+
+		private void initComponents() {
+			sensorsPanel = new javax.swing.JPanel();
+			gyroLabel = new javax.swing.JLabel();
+			gyroTextField = new javax.swing.JTextField();
+
+			ultrasonicTextField = new javax.swing.JTextField();
+			utrasonicLabel = new javax.swing.JLabel();
+			
+			touchLabel = new javax.swing.JLabel();
+			touchTextField = new javax.swing.JTextField();
+			
+			
+
+			sensorsPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.lightGray, java.awt.Color.black));
+
+			gyroLabel.setFont(new java.awt.Font("Trebuchet MS", 0, 13)); // NOI18N
+			gyroLabel.setText("Gyro");
+
+			ultrasonicTextField.setText(" ");
+
+			touchLabel.setFont(new java.awt.Font("Trebuchet MS", 0, 13)); // NOI18N
+			touchLabel.setText("Touch");
+
+			touchTextField.setText(" ");
+
+			utrasonicLabel.setFont(new java.awt.Font("Trebuchet MS", 0, 13)); // NOI18N
+			utrasonicLabel.setText("Ultrasonic");
+
+			gyroTextField.setText(" ");
+
+			javax.swing.GroupLayout sensorsPanelLayout = new javax.swing.GroupLayout(sensorsPanel);
+			sensorsPanel.setLayout(sensorsPanelLayout);
+			sensorsPanelLayout.setHorizontalGroup(
+					sensorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+					.addGroup(sensorsPanelLayout.createSequentialGroup()
+							.addGap(41, 41, 41)
+							.addComponent(utrasonicLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+							.addGap(18, 18, 18)
+							.addComponent(ultrasonicTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
+							.addGap(26, 26, 26))
+							.addGroup(sensorsPanelLayout.createSequentialGroup()
+									.addGap(38, 38, 38)
+									.addComponent(gyroLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+									.addGap(18, 18, 18)
+									.addComponent(gyroTextField)
+									.addGap(29, 29, 29))
+									.addGroup(sensorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+											.addGroup(sensorsPanelLayout.createSequentialGroup()
+													.addGap(44, 44, 44)
+													.addComponent(touchLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+													.addContainerGap(242, Short.MAX_VALUE)))
+													.addGroup(sensorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+															.addGroup(sensorsPanelLayout.createSequentialGroup()
+																	.addGap(149, 149, 149)
+																	.addComponent(touchTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
+																	.addGap(22, 22, 22)))
+					);
+			sensorsPanelLayout.setVerticalGroup(
+					sensorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+					.addGroup(sensorsPanelLayout.createSequentialGroup()
+							.addGap(117, 117, 117)
+							.addGroup(sensorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+									.addComponent(ultrasonicTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+									.addComponent(utrasonicLabel))
+									.addGap(28, 28, 28)
+									.addGroup(sensorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+											.addComponent(gyroLabel)
+											.addComponent(gyroTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+											.addContainerGap(73, Short.MAX_VALUE))
+											.addGroup(sensorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+													.addGroup(sensorsPanelLayout.createSequentialGroup()
+															.addGap(67, 67, 67)
+															.addComponent(touchLabel)
+															.addContainerGap(188, Short.MAX_VALUE)))
+															.addGroup(sensorsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+																	.addGroup(sensorsPanelLayout.createSequentialGroup()
+																			.addGap(62, 62, 62)
+																			.addComponent(touchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+																			.addContainerGap(183, Short.MAX_VALUE)))
+					);
+
+			javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+			this.setLayout(layout);
+			layout.setHorizontalGroup(
+					layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+					.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(sensorsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+							.addContainerGap())
+					);
+			layout.setVerticalGroup(
+					layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+					.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(sensorsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+							.addContainerGap())
+					);
+
+			//pack();
+		}
+
+		public void updateGyroData(String data){
+			gyroTextField.setText(data);
+		}
+
+		public void updateUltrasonicData(String data){
+			ultrasonicTextField.setText(data);
+		}
+
+		public void updateTouchData(String data){
+			touchTextField.setText(data);
+		}
+
+
+		private javax.swing.JLabel gyroLabel;
+		private javax.swing.JTextField gyroTextField;
+		private javax.swing.JPanel sensorsPanel;
+		private javax.swing.JLabel touchLabel;
+		private javax.swing.JTextField touchTextField;
+		private javax.swing.JTextField ultrasonicTextField;
+		private javax.swing.JLabel utrasonicLabel;
+		// End of variables declaration
+	}
+
 }
