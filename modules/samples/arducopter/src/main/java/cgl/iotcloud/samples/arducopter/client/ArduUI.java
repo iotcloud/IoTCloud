@@ -61,8 +61,7 @@ public class ArduUI {
         ui.start();
     }
 
-    public void updateAttitudeMessage(SensorMessage message)
-    {
+    public void updateAttitudeMessage(SensorMessage message) {
         AttitudeMessage attitudeMessage = (AttitudeMessage) message;
         dataPanel.updateAttitudeData(attitudeMessage.getPitch(),
                 attitudeMessage.getPitchSpeed(),
@@ -72,8 +71,7 @@ public class ArduUI {
                 attitudeMessage.getYawSpeed());
     }
 
-    public void updateControlMessage(SensorMessage message)
-    {
+    public void updateControlMessage(SensorMessage message) {
         ControlMessage controlMessage = (ControlMessage) message;
         dataPanel.updateControlData(controlMessage.getPitch(),
                 controlMessage.getRoll(),
@@ -81,8 +79,7 @@ public class ArduUI {
                 controlMessage.getYaw());
     }
 
-    public void updateMRIMessage(SensorMessage message)
-    {
+    public void updateMRIMessage(SensorMessage message) {
         MRIMessage mriMessage = (MRIMessage) message;
         dataPanel.updateMRIData(mriMessage.getTimeUsec(),
                 mriMessage.getXacc(),
@@ -96,16 +93,14 @@ public class ArduUI {
                 mriMessage.getZmag());
     }
 
-    public void updateStateMessage(SensorMessage message)
-    {
+    public void updateStateMessage(SensorMessage message) {
         StateMessage stateMessage = (StateMessage) message;
         dataPanel.updateStateData(stateMessage.getMode(),
                 stateMessage.isArmed(),
                 stateMessage.isGuided());
     }
 
-    public void updateVHMessage(SensorMessage message)
-    {
+    public void updateVHMessage(SensorMessage message) {
         VHMessage vhMessage = (VHMessage) message;
         dataPanel.updateVHData(vhMessage.getAirSpeed(),
                 vhMessage.getAlt(),

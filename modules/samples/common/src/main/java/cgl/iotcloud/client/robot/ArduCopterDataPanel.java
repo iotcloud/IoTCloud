@@ -3,7 +3,7 @@ package cgl.iotcloud.client.robot;
 import javax.swing.*;
 import java.awt.*;
 
-public class ArduCopterDataPanel extends JScrollPane implements RobotUIPanelBuilder{
+public class ArduCopterDataPanel extends JScrollPane implements RobotUIPanelBuilder {
     // Attitude Data Label
     private JLabel pitchDataLabel;
     private JLabel pitchSpeedDataLabel;
@@ -39,8 +39,7 @@ public class ArduCopterDataPanel extends JScrollPane implements RobotUIPanelBuil
     private JLabel headingDataLabel;
     private JLabel throttleDataLabel;
 
-    public ArduCopterDataPanel()
-    {
+    public ArduCopterDataPanel() {
         this.setLayout(null);
 
         init();
@@ -57,8 +56,7 @@ public class ArduCopterDataPanel extends JScrollPane implements RobotUIPanelBuil
 
     }
 
-    private void init()
-    {
+    private void init() {
         JLabel pitchLabel = new JLabel("Pitch");
         pitchLabel.setBounds(0, 1, 100, 15);
         pitchLabel.setBackground(Color.WHITE);
@@ -495,53 +493,48 @@ public class ArduCopterDataPanel extends JScrollPane implements RobotUIPanelBuil
         this.add(throttleDataLabel);
     }
 
-    public void updateAttitudeData(float pitch, float pitchSpeed, float roll, float rollSpeed, float yaw, float yawSpeed)
-    {
-        pitchDataLabel.setText(((Float)pitch).toString());
-        pitchSpeedDataLabel.setText(((Float)pitchSpeed).toString());
-        rollDataLabel.setText(((Float)roll).toString());
-        rollSpeedDataLabel.setText(((Float)rollSpeed).toString());
-        yawDataLabel.setText(((Float)yaw).toString());
-        yawSpeedDataLabel.setText(((Float)yawSpeed).toString());
+    public void updateAttitudeData(float pitch, float pitchSpeed, float roll, float rollSpeed, float yaw, float yawSpeed) {
+        pitchDataLabel.setText(((Float) pitch).toString());
+        pitchSpeedDataLabel.setText(((Float) pitchSpeed).toString());
+        rollDataLabel.setText(((Float) roll).toString());
+        rollSpeedDataLabel.setText(((Float) rollSpeed).toString());
+        yawDataLabel.setText(((Float) yaw).toString());
+        yawSpeedDataLabel.setText(((Float) yawSpeed).toString());
     }
 
-    public void updateControlData(float pitch, float roll, float thrust, float yaw)
-    {
-        pitchControlDataLabel.setText(((Float)pitch).toString());
-        rollControlDataLabel.setText(((Float)roll).toString());
-        yawControlDataLabel.setText(((Float)yaw).toString());
-        thrustDataLabel.setText(((Float)thrust).toString());
+    public void updateControlData(float pitch, float roll, float thrust, float yaw) {
+        pitchControlDataLabel.setText(((Float) pitch).toString());
+        rollControlDataLabel.setText(((Float) roll).toString());
+        yawControlDataLabel.setText(((Float) yaw).toString());
+        thrustDataLabel.setText(((Float) thrust).toString());
     }
 
     public void updateMRIData(long timeUsec, int xacc, int xgyro, int xmag,
-                              int yacc, int ygyro, int ymag, int zacc, int zgyro, int zmag)
-    {
-        xaccDataLabel.setText(((Integer)xacc).toString());
-        xgyroDataLabel.setText(((Integer)xgyro).toString());
-        xmagDataLabel.setText(((Integer)xmag).toString());
-        yaccDataLabel.setText(((Integer)yacc).toString());
-        ygyroDataLabel.setText(((Integer)ygyro).toString());
-        ymagDataLabel.setText(((Integer)ymag).toString());
-        zaccDataLabel.setText(((Integer)zacc).toString());
-        zgyroDataLabel.setText(((Integer)zgyro).toString());
-        zmagDataLabel.setText(((Integer)zmag).toString());
-        timeUsecDataLabel.setText(((Long)timeUsec).toString());
+                              int yacc, int ygyro, int ymag, int zacc, int zgyro, int zmag) {
+        xaccDataLabel.setText(((Integer) xacc).toString());
+        xgyroDataLabel.setText(((Integer) xgyro).toString());
+        xmagDataLabel.setText(((Integer) xmag).toString());
+        yaccDataLabel.setText(((Integer) yacc).toString());
+        ygyroDataLabel.setText(((Integer) ygyro).toString());
+        ymagDataLabel.setText(((Integer) ymag).toString());
+        zaccDataLabel.setText(((Integer) zacc).toString());
+        zgyroDataLabel.setText(((Integer) zgyro).toString());
+        zmagDataLabel.setText(((Integer) zmag).toString());
+        timeUsecDataLabel.setText(((Long) timeUsec).toString());
     }
 
-    public void updateStateData(String mode, boolean armed, boolean guided)
-    {
+    public void updateStateData(String mode, boolean armed, boolean guided) {
         modeDataLabel.setText(mode);
-        armedDataLabel.setText(((Boolean)armed).toString());
-        guidedDataLabel.setText(((Boolean)guided).toString());
+        armedDataLabel.setText(((Boolean) armed).toString());
+        guidedDataLabel.setText(((Boolean) guided).toString());
     }
 
-    public void updateVHData(float airSpeed, float alt, float climb, float groundSpeed, short heading, short throttle)
-    {
-        airSpeedDataLabel.setText(((Float)airSpeed).toString());
-        altDataLabel.setText(((Float)alt).toString());
-        climbDataLabel.setText(((Float)climb).toString());
-        groundSpeedDataLabel.setText(((Float)groundSpeed).toString());
-        headingDataLabel.setText(((Short)heading).toString());
-        throttleDataLabel.setText(((Short)throttle).toString());
+    public void updateVHData(float airSpeed, float alt, float climb, float groundSpeed, short heading, short throttle) {
+        airSpeedDataLabel.setText(((Float) airSpeed).toString());
+        altDataLabel.setText(((Float) alt).toString());
+        climbDataLabel.setText(((Float) climb).toString());
+        groundSpeedDataLabel.setText(((Float) groundSpeed).toString());
+        headingDataLabel.setText(((Short) heading).toString());
+        throttleDataLabel.setText(((Short) throttle).toString());
     }
 }

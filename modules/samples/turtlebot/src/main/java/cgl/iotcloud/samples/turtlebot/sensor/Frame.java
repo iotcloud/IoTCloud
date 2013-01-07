@@ -1,9 +1,6 @@
 package cgl.iotcloud.samples.turtlebot.sensor;
 
-import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.data.ObjectDataMessage;
-
-import javax.jms.ObjectMessage;
 
 public class Frame extends ObjectDataMessage {
     int width;

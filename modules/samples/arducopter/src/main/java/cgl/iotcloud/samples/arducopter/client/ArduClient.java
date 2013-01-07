@@ -3,12 +3,9 @@ package cgl.iotcloud.samples.arducopter.client;
 import cgl.iotcloud.core.Endpoint;
 import cgl.iotcloud.core.IOTException;
 import cgl.iotcloud.core.Listener;
-import cgl.iotcloud.core.Sender;
 import cgl.iotcloud.core.broker.JMSListener;
-import cgl.iotcloud.core.broker.JMSSender;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
-import cgl.iotcloud.core.message.jms.JMSControlMessageFactory;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
 import cgl.iotcloud.core.sensor.NodeInformation;
 import cgl.iotcloud.core.sensor.NodeName;
@@ -28,7 +25,7 @@ public class ArduClient {
     private Listener rcListener;
     private Listener controlListener;
 
-    public ArduClient(ArduUI arduUI){
+    public ArduClient(ArduUI arduUI) {
         this.arduUI = arduUI;
         try {
             nodeClient = new NodeClient("http://localhost:8080/");
@@ -142,50 +139,38 @@ public class ArduClient {
         }
     }
 
-    private void handleAttitudeMessage(SensorMessage message)
-    {
-        if (message instanceof AttitudeMessage)
-        {
+    private void handleAttitudeMessage(SensorMessage message) {
+        if (message instanceof AttitudeMessage) {
             arduUI.updateAttitudeMessage(message);
         }
     }
 
-    private void handleStateMessage(SensorMessage message)
-    {
-        if (message instanceof StateMessage)
-        {
+    private void handleStateMessage(SensorMessage message) {
+        if (message instanceof StateMessage) {
             arduUI.updateStateMessage(message);
         }
     }
 
-    private void handleMRIMessage(SensorMessage message)
-    {
-        if (message instanceof MRIMessage)
-        {
+    private void handleMRIMessage(SensorMessage message) {
+        if (message instanceof MRIMessage) {
             arduUI.updateMRIMessage(message);
         }
     }
 
-    private void handleVHMessage(SensorMessage message)
-    {
-        if (message instanceof VHMessage)
-        {
+    private void handleVHMessage(SensorMessage message) {
+        if (message instanceof VHMessage) {
             arduUI.updateVHMessage(message);
         }
     }
 
-    private void handleRCMessage(SensorMessage message)
-    {
-        if (message instanceof RCMessage)
-        {
+    private void handleRCMessage(SensorMessage message) {
+        if (message instanceof RCMessage) {
             // TODO: Push the Message to the UI/Client
         }
     }
 
-    private void handleControlMessage(SensorMessage message)
-    {
-        if (message instanceof ControlMessage)
-        {
+    private void handleControlMessage(SensorMessage message) {
+        if (message instanceof ControlMessage) {
             arduUI.updateControlMessage(message);
         }
     }
