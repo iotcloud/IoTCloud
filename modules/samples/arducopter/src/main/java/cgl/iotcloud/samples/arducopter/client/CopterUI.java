@@ -1,10 +1,11 @@
 package cgl.iotcloud.samples.arducopter.client;
 
 import javax.swing.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class CopterUI extends javax.swing.JPanel {
+    private CopterUIDataModel dataModel;
+
+    private KeyControlListener keyControlListener;
 
     /**
      * Creates new form CopterUI
@@ -22,69 +23,48 @@ public class CopterUI extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jScrollPane1 = new JScrollPane();
+        jTable1 = new JTable();
 
-//        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-//                new Object [][] {
-//                        {null, null},
-//                        {null, null},
-//                        {null, null},
-//                        {null, null},
-//                        {null, null},
-//                        {null, null}
-//                },
-//                new String [] {
-//                        "Title 1", "Title 2"
-//                }
-//        ) {
-//            Class[] types = new Class [] {
-//                    java.lang.String.class, java.lang.Object.class
-//            };
-//
-//            public Class getColumnClass(int columnIndex) {
-//                return types [columnIndex];
-//            }
-//
-//            @Override
-//            public boolean isCellEditable(int row, int column) {
-//                return false;
-//            }
-//        });
+        dataModel = new CopterUIDataModel();
 
-        jTable1.setModel(new CopterUIDataModel());
+        jTable1.setModel(dataModel);
         jScrollPane1.setViewportView(jTable1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE)
                                 .addContainerGap())
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 228, GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(277, Short.MAX_VALUE))
         );
 
         jScrollPane1.addKeyListener(new KeyControlListener());
         jTable1.addKeyListener(new KeyControlListener());
-
-        addKeyListener(new KeyControlListener());
+        keyControlListener = new KeyControlListener();
+        addKeyListener(keyControlListener);
     }// </editor-fold>
     // Variables declaration - do not modify
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration
 
-    public static void main(String[] args) {
-        CopterUI c = new CopterUI();
 
+    public CopterUIDataModel getDataModel() {
+        return dataModel;
+    }
+
+    public KeyControlListener getKeyControlListener() {
+        return keyControlListener;
     }
 }
 

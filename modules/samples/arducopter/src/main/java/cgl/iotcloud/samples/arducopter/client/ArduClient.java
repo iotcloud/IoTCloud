@@ -14,7 +14,7 @@ import cgl.iotcloud.sensors.NodeClient;
 
 public class ArduClient {
 
-    private ArduUI arduUI;
+    private Updater updater;
 
     private NodeClient nodeClient = null;
 
@@ -25,8 +25,8 @@ public class ArduClient {
     private Listener rcListener;
     private Listener controlListener;
 
-    public ArduClient(ArduUI arduUI) {
-        this.arduUI = arduUI;
+    public ArduClient(Updater updater) {
+        this.updater = updater;
         try {
             nodeClient = new NodeClient("http://localhost:8080/");
         } catch (IOTException e) {
@@ -141,37 +141,65 @@ public class ArduClient {
 
     private void handleAttitudeMessage(SensorMessage message) {
         if (message instanceof AttitudeMessage) {
-            arduUI.updateAttitudeMessage(message);
+            AttitudeMessage attitudeMessage = (AttitudeMessage) message;
+            updater.updateAttitudeData(attitudeMessage.getPitch(),
+                    attitudeMessage.getPitchSpeed(),
+                    attitudeMessage.getRoll(),
+                    attitudeMessage.getRollSpeed(),
+                    attitudeMessage.getYaw(),
+                    attitudeMessage.getYawSpeed());
         }
     }
 
     private void handleStateMessage(SensorMessage message) {
         if (message instanceof StateMessage) {
-            arduUI.updateStateMessage(message);
+            StateMessage stateMessage = (StateMessage) message;
+            updater.updateStateData(stateMessage.getMode(),
+                    stateMessage.isArmed(),
+                    stateMessage.isGuided());
         }
     }
 
     private void handleMRIMessage(SensorMessage message) {
         if (message instanceof MRIMessage) {
-            arduUI.updateMRIMessage(message);
+            MRIMessage mriMessage = (MRIMessage) message;
+            updater.updateMRIData(mriMessage.getTimeUsec(),
+                    mriMessage.getXacc(),
+                    mriMessage.getXgyro(),
+                    mriMessage.getXmag(),
+                    mriMessage.getYacc(),
+                    mriMessage.getYgyro(),
+                    mriMessage.getYmag(),
+                    mriMessage.getZacc(),
+                    mriMessage.getZgyro(),
+                    mriMessage.getZmag());
         }
     }
 
     private void handleVHMessage(SensorMessage message) {
         if (message instanceof VHMessage) {
-            arduUI.updateVHMessage(message);
+            VHMessage vhMessage = (VHMessage) message;
+            updater.updateVHData(vhMessage.getAirSpeed(),
+                    vhMessage.getAlt(),
+                    vhMessage.getClimb(),
+                    vhMessage.getGroundSpeed(),
+                    vhMessage.getHeading(),
+                    vhMessage.getThrottle());
         }
     }
 
     private void handleRCMessage(SensorMessage message) {
         if (message instanceof RCMessage) {
-            // TODO: Push the Message to the UI/Client
         }
     }
 
     private void handleControlMessage(SensorMessage message) {
         if (message instanceof ControlMessage) {
-            arduUI.updateControlMessage(message);
+            ControlMessage controlMessage = (ControlMessage) message;
+            updater.updateControlData(controlMessage.getPitch(),
+                    controlMessage.getRoll(),
+                    controlMessage.getThrust(),
+                    controlMessage.getYaw());
         }
     }
 }

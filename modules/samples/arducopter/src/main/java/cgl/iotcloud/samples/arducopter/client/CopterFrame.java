@@ -1,16 +1,36 @@
 package cgl.iotcloud.samples.arducopter.client;
 
+import cgl.iotcloud.core.IOTRuntimeException;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 public class CopterFrame extends JFrame {
-    private JPanel jPanel1 = new CopterUI();
+    private CopterUI copterUI = new CopterUI();
+
+    private ArduClient client;
 
     public CopterFrame() throws HeadlessException {
         initComponents();
+
+
+    }
+
+    public void start() {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                client = new ArduClient(copterUI.getDataModel());
+                try {
+                    client.start();
+                } catch (IOTRuntimeException e) {
+                    e.printStackTrace();
+
+                }
+            }
+        });
+
+        t.start();
     }
 
     public void initComponents() {
@@ -20,14 +40,14 @@ public class CopterFrame extends JFrame {
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(copterUI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addContainerGap())
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(copterUI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -40,5 +60,6 @@ public class CopterFrame extends JFrame {
     public static void main(String[] args) {
         CopterFrame copterFrame = new CopterFrame();
         copterFrame.setVisible(true);
+
     }
 }

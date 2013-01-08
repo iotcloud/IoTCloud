@@ -18,7 +18,7 @@ public class ArduUI {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                client = new ArduClient(ui);
+                client = new ArduClient(dataPanel);
                 try {
                     client.start();
                 } catch (IOTRuntimeException e) {
@@ -59,54 +59,5 @@ public class ArduUI {
     public static void main(String[] args) {
         ui = new ArduUI();
         ui.start();
-    }
-
-    public void updateAttitudeMessage(SensorMessage message) {
-        AttitudeMessage attitudeMessage = (AttitudeMessage) message;
-        dataPanel.updateAttitudeData(attitudeMessage.getPitch(),
-                attitudeMessage.getPitchSpeed(),
-                attitudeMessage.getRoll(),
-                attitudeMessage.getRollSpeed(),
-                attitudeMessage.getYaw(),
-                attitudeMessage.getYawSpeed());
-    }
-
-    public void updateControlMessage(SensorMessage message) {
-        ControlMessage controlMessage = (ControlMessage) message;
-        dataPanel.updateControlData(controlMessage.getPitch(),
-                controlMessage.getRoll(),
-                controlMessage.getThrust(),
-                controlMessage.getYaw());
-    }
-
-    public void updateMRIMessage(SensorMessage message) {
-        MRIMessage mriMessage = (MRIMessage) message;
-        dataPanel.updateMRIData(mriMessage.getTimeUsec(),
-                mriMessage.getXacc(),
-                mriMessage.getXgyro(),
-                mriMessage.getXmag(),
-                mriMessage.getYacc(),
-                mriMessage.getYgyro(),
-                mriMessage.getYmag(),
-                mriMessage.getZacc(),
-                mriMessage.getZgyro(),
-                mriMessage.getZmag());
-    }
-
-    public void updateStateMessage(SensorMessage message) {
-        StateMessage stateMessage = (StateMessage) message;
-        dataPanel.updateStateData(stateMessage.getMode(),
-                stateMessage.isArmed(),
-                stateMessage.isGuided());
-    }
-
-    public void updateVHMessage(SensorMessage message) {
-        VHMessage vhMessage = (VHMessage) message;
-        dataPanel.updateVHData(vhMessage.getAirSpeed(),
-                vhMessage.getAlt(),
-                vhMessage.getClimb(),
-                vhMessage.getGroundSpeed(),
-                vhMessage.getHeading(),
-                vhMessage.getThrottle());
     }
 }
