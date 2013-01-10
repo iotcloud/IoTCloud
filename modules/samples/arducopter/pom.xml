@@ -28,6 +28,12 @@
         </dependency>
 
         <dependency>
+            <groupId>iotcloud</groupId>
+            <artifactId>iotcloud-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>ros.rosjava_core</groupId>
             <artifactId>rosjava</artifactId>
             <version>0.0.0-SNAPSHOT</version>
