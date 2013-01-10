@@ -1,19 +1,21 @@
 package cgl.iotcloud.samples.arducopter.client;
 
 import cgl.iotcloud.core.IOTRuntimeException;
+import cgl.iotcloud.samples.arducopter.client.control.Controller;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class CopterFrame extends JFrame {
-    private CopterUI copterUI = new CopterUI();
+    private CopterUI copterUI;
 
     private ArduClient client;
 
     public CopterFrame() throws HeadlessException {
+        Controller controller = new Controller(client);
+
+        copterUI = new CopterUI(controller);
         initComponents();
-
-
     }
 
     public void start() {
@@ -51,7 +53,7 @@ public class CopterFrame extends JFrame {
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        addKeyListener(new KeyControlListener());
+        addKeyListener(copterUI.getKeyControlListener());
 
         pack();
     }

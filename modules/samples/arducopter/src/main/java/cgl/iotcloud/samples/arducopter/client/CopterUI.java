@@ -1,5 +1,8 @@
 package cgl.iotcloud.samples.arducopter.client;
 
+import cgl.iotcloud.samples.arducopter.client.control.Controller;
+import cgl.iotcloud.samples.arducopter.client.control.KeyControlListener;
+
 import javax.swing.*;
 
 public class CopterUI extends javax.swing.JPanel {
@@ -10,7 +13,8 @@ public class CopterUI extends javax.swing.JPanel {
     /**
      * Creates new form CopterUI
      */
-    public CopterUI() {
+    public CopterUI(Controller controller) {
+        keyControlListener = new KeyControlListener(controller);
         initComponents();
     }
 
@@ -23,8 +27,8 @@ public class CopterUI extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
-        jScrollPane1 = new JScrollPane();
-        jTable1 = new JTable();
+        JScrollPane jScrollPane1 = new JScrollPane();
+        JTable jTable1 = new JTable();
 
         dataModel = new CopterUIDataModel();
 
@@ -48,16 +52,11 @@ public class CopterUI extends javax.swing.JPanel {
                                 .addContainerGap(277, Short.MAX_VALUE))
         );
 
-        jScrollPane1.addKeyListener(new KeyControlListener());
-        jTable1.addKeyListener(new KeyControlListener());
-        keyControlListener = new KeyControlListener();
-        addKeyListener(keyControlListener);
-    }// </editor-fold>
-    // Variables declaration - do not modify
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    // End of variables declaration
+        jScrollPane1.addKeyListener(keyControlListener);
+        jTable1.addKeyListener(keyControlListener);
 
+        addKeyListener(keyControlListener);
+    }
 
     public CopterUIDataModel getDataModel() {
         return dataModel;

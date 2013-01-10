@@ -1,9 +1,18 @@
 package cgl.iotcloud.samples.arducopter.client.control;
 
+import cgl.iotcloud.samples.arducopter.client.ArduClient;
+import cgl.iotcloud.samples.arducopter.mssg.ControllerMessage;
+
 public class Controller {
     private JoyStick left;
 
     private JoyStick right;
+
+    private ArduClient client;
+
+    public Controller(ArduClient client) {
+        this.client = client;
+    }
 
     public enum Axis {
         X,
@@ -23,7 +32,7 @@ public class Controller {
     }
 
     public void move(StickPos s, Direction d) {
-        JoyStick stick = null;
+        JoyStick stick;
         if (s == StickPos.LEFT) {
             stick = left;
         } else if (s == StickPos.RIGHT) {
@@ -41,5 +50,11 @@ public class Controller {
         } else if (d == Direction.RIGHT) {
             stick.change(Axis.X, JoyStick.Action.DECR);
         }
+        // send a message
+
+    }
+
+    private ControllerMessage createControllerMessage() {
+        return new ControllerMessage(left.getX(), left.getY(), right.getX(), right.getY());
     }
 }

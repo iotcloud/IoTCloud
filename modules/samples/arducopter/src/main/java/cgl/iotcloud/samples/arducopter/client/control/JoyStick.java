@@ -4,9 +4,9 @@ public class JoyStick {
     private double xrange[] = new double[2];
     private double yrange[] = new double[2];
 
-    private double initialX = .1;
+    private double initialX = 0;
 
-    private double initialY = .1;
+    private double initialY = 0;
 
     private double xChange = .1;
 
@@ -66,5 +66,10 @@ public class JoyStick {
 
     public double getY() {
         return y;
+    }
+
+    public void reset() {
+        x = initialX;
+        y = initialY;
     }
 }

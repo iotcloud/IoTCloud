@@ -1,6 +1,5 @@
-package cgl.iotcloud.samples.arducopter.client;
+package cgl.iotcloud.samples.arducopter.client.control;
 
-import cgl.iotcloud.core.Control;
 import cgl.iotcloud.samples.arducopter.client.control.Controller;
 
 import java.awt.event.KeyAdapter;
@@ -13,7 +12,7 @@ public class KeyControlListener extends KeyAdapter {
         this.controller = controller;
     }
 
-    public void keyTyped(KeyEvent e) {
+    public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_DOWN:
                 controller.move(Controller.StickPos.RIGHT, Controller.Direction.DOWN);
@@ -40,16 +39,5 @@ public class KeyControlListener extends KeyAdapter {
                 controller.move(Controller.StickPos.RIGHT, Controller.Direction.RIGHT);
                 break;
         }
-        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-
-        } else if (e.ge)
-    }
-
-    public void keyPressed(KeyEvent e) {
-
-    }
-
-    public void keyReleased(KeyEvent e) {
-
     }
 }
