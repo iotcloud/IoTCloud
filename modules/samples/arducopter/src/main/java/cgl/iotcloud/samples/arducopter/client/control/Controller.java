@@ -12,6 +12,8 @@ public class Controller {
 
     public Controller(ArduClient client) {
         this.client = client;
+        left = new JoyStick(0, .5, new double[]{0, 1}, new double[]{0, 1}, .05, .05);
+        right = new JoyStick(.5, .5, new double[]{0, 1}, new double[]{0, 1}, .05, .05);
     }
 
     public enum Axis {
@@ -51,7 +53,7 @@ public class Controller {
             stick.change(Axis.X, JoyStick.Action.DECR);
         }
         // send a message
-
+        client.getControlsSender().send(createControllerMessage());
     }
 
     private ControllerMessage createControllerMessage() {

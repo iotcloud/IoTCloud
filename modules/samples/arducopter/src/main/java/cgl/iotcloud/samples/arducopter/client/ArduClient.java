@@ -3,7 +3,9 @@ package cgl.iotcloud.samples.arducopter.client;
 import cgl.iotcloud.core.Endpoint;
 import cgl.iotcloud.core.IOTException;
 import cgl.iotcloud.core.Listener;
+import cgl.iotcloud.core.Sender;
 import cgl.iotcloud.core.broker.JMSListener;
+import cgl.iotcloud.core.broker.JMSSender;
 import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
@@ -24,6 +26,8 @@ public class ArduClient {
     private Listener vhListener;
     private Listener rcListener;
     private Listener controlListener;
+
+    private Sender controlsSender;
 
     public ArduClient(Updater updater) {
         this.updater = updater;
@@ -134,6 +138,14 @@ public class ArduClient {
             controlListener.init();
             controlListener.start();
 
+            endpoint = nodeInformation.getProducer("controls");
+            controlsSender = nodeClient.newSender(endpoint);
+            if (controlsSender instanceof JMSSender) {
+                ((JMSSender) controlsSender).setMessageFactory(new JMSDataMessageFactory());
+            }
+
+            controlsSender.init();
+            controlsSender.start();
         } catch (IOTException e) {
             e.printStackTrace();
         }
@@ -201,5 +213,9 @@ public class ArduClient {
                     controlMessage.getThrust(),
                     controlMessage.getYaw());
         }
+    }
+
+    public Sender getControlsSender() {
+        return controlsSender;
     }
 }

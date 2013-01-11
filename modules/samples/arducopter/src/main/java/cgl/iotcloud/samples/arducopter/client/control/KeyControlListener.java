@@ -1,7 +1,5 @@
 package cgl.iotcloud.samples.arducopter.client.control;
 
-import cgl.iotcloud.samples.arducopter.client.control.Controller;
-
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 

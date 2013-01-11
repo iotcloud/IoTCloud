@@ -20,7 +20,7 @@ public class JoyStick {
         DECR
     }
 
-    private JoyStick(double x, double y,
+    public JoyStick(double x, double y,
                      double xrange[], double yrange[],
                      double xChange, double yChange) {
         this.x = x;

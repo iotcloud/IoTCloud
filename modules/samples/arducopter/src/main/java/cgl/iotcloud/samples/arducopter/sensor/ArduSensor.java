@@ -2,11 +2,16 @@ package cgl.iotcloud.samples.arducopter.sensor;
 
 import cgl.iotcloud.core.Constants;
 import cgl.iotcloud.core.IOTException;
+import cgl.iotcloud.core.Listener;
 import cgl.iotcloud.core.Sender;
+import cgl.iotcloud.core.broker.JMSListener;
 import cgl.iotcloud.core.broker.JMSSender;
+import cgl.iotcloud.core.message.MessageHandler;
+import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
 import cgl.iotcloud.core.sensor.NodeName;
 import cgl.iotcloud.sensors.Node;
+import com.sun.corba.se.impl.orbutil.closure.Constant;
 import org.ros.internal.loader.CommandLineLoader;
 import org.ros.node.DefaultNodeMainExecutor;
 import org.ros.node.NodeConfiguration;
@@ -24,6 +29,8 @@ public class ArduSensor {
     private Sender vhSender;
     private Sender rcSender;
     private Sender controlSender;
+
+    private Listener controlListener;
 
     public ArduSensor() {
         try {
@@ -90,6 +97,18 @@ public class ArduSensor {
         if (controlSender instanceof JMSSender) {
             ((JMSSender) controlSender).setMessageFactory(new JMSDataMessageFactory());
         }
+
+        controlListener = node.newListener("controls", Constants.MESSAGE_TYPE_BLOCK, "controls");
+        if (controlListener instanceof JMSListener) {
+            ((JMSListener) controlListener).setMessageFactory(new JMSDataMessageFactory());
+        }
+
+        controlListener.setMessageHandler(new MessageHandler() {
+            @Override
+            public void onMessage(SensorMessage message) {
+                System.out.println("Received control message");
+            }
+        });
 
         //Preconditions.checkState(turtle != null);
         NodeMainExecutor nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
