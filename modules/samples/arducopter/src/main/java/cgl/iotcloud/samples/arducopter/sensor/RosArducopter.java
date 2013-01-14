@@ -29,6 +29,10 @@ public class RosArducopter extends AbstractNodeMain {
         return GraphName.of("/ardu_controller_node");
     }
 
+    public ArduCopterController getController() {
+        return controller;
+    }
+
     @Override
     public void onStart(final ConnectedNode connectedNode) {
         final Subscriber<roscopter.Attitude> rosCopterAttitudeSubscriber = connectedNode.newSubscriber("/attitude", roscopter.Attitude._TYPE);
@@ -153,7 +157,7 @@ public class RosArducopter extends AbstractNodeMain {
             @Override
             protected void loop() throws InterruptedException {
                 RC rc = rcPublisher.newMessage();
-                rc.setChannel(new int[]{1001,1001,1001,1001,1001,1001,1001, 1001});
+                rc.setChannel(new int[]{1001, 1001, 1001, 1001, 1001, 1001, 1001, 1001});
                 rcPublisher.publish(rc);
 
                 Control control = controlPublisher.newMessage();
@@ -164,8 +168,12 @@ public class RosArducopter extends AbstractNodeMain {
                 control.setRoll((float) controller.getLeftX());
 
                 controlPublisher.publish(control);
+
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException ignore) {
+                }
             }
         });
-        System.out.println(" === onStart Over === ");
     }
 }

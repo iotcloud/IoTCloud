@@ -50,4 +50,20 @@ public class ArduCopterController {
     public void setActive(boolean active) {
         this.active = active;
     }
+
+    public float getPitch() {
+        return (float) leftY;
+    }
+
+    public float getRoll() {
+        return (float) leftX;
+    }
+
+    public float getYaw() {
+        return (float) rightX;
+    }
+
+    public float getThrust() {
+        return (float) rightY;
+    }
 }

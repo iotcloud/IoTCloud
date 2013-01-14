@@ -33,6 +33,8 @@ public class ArduSensor {
 
     private Listener controlListener;
 
+    private ArduCopterController controller;
+
     public ArduSensor() {
         try {
             node = new Node(new NodeName("ardusensor"), "http://localhost:8080");
@@ -40,6 +42,8 @@ public class ArduSensor {
             e.printStackTrace();
         }
         rosArducopter = new RosArducopter();
+        controller = rosArducopter.getController();
+
     }
 
     public Sender getAttitudeSender() {
@@ -108,7 +112,13 @@ public class ArduSensor {
             @Override
             public void onMessage(SensorMessage message) {
                 if (message instanceof ControllerMessage) {
+                    ControllerMessage m = (ControllerMessage) message;
 
+                    controller.setActive(m.getActive());
+                    controller.setLeftX(m.getLeftX());
+                    controller.setLeftY(m.getLeftY());
+                    controller.setRightX(m.getRightX());
+                    controller.setRightY(m.getRightY());
                 }
             }
         });

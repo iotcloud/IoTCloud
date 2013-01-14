@@ -55,7 +55,7 @@ public class ControllerMessage extends ObjectDataMessage {
         this.rightY = rightY;
     }
 
-    public boolean isActive() {
+    public boolean getActive() {
         return active;
     }
 
