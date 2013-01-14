@@ -10,6 +10,7 @@ import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
 import cgl.iotcloud.core.sensor.NodeName;
+import cgl.iotcloud.samples.arducopter.mssg.ControllerMessage;
 import cgl.iotcloud.sensors.Node;
 import com.sun.corba.se.impl.orbutil.closure.Constant;
 import org.ros.internal.loader.CommandLineLoader;
@@ -106,7 +107,9 @@ public class ArduSensor {
         controlListener.setMessageHandler(new MessageHandler() {
             @Override
             public void onMessage(SensorMessage message) {
-                System.out.println("Received control message");
+                if (message instanceof ControllerMessage) {
+
+                }
             }
         });
 

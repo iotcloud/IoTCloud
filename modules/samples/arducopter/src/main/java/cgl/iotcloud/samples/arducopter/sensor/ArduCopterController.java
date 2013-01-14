@@ -1,8 +1,6 @@
-package cgl.iotcloud.samples.arducopter.mssg;
+package cgl.iotcloud.samples.arducopter.sensor;
 
-import cgl.iotcloud.core.message.data.ObjectDataMessage;
-
-public class ControllerMessage extends ObjectDataMessage {
+public class ArduCopterController {
     private double leftX;
 
     private double leftY;
@@ -12,16 +10,6 @@ public class ControllerMessage extends ObjectDataMessage {
     private double rightY;
 
     private boolean active = false;
-
-    public ControllerMessage(double leftX, double leftY, double rightX, double rightY) {
-        this.leftX = leftX;
-        this.leftY = leftY;
-        this.rightX = rightX;
-        this.rightY = rightY;
-    }
-
-    public ControllerMessage() {
-    }
 
     public double getLeftX() {
         return leftX;
@@ -39,6 +27,10 @@ public class ControllerMessage extends ObjectDataMessage {
         return rightY;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
     public void setLeftX(double leftX) {
         this.leftX = leftX;
     }
@@ -53,10 +45,6 @@ public class ControllerMessage extends ObjectDataMessage {
 
     public void setRightY(double rightY) {
         this.rightY = rightY;
-    }
-
-    public boolean isActive() {
-        return active;
     }
 
     public void setActive(boolean active) {
