@@ -29,13 +29,16 @@ public class ArduClient {
 
     private Sender controlsSender;
 
-    public ArduClient(Updater updater) {
-        this.updater = updater;
+    public ArduClient() {
         try {
             nodeClient = new NodeClient("http://localhost:8080/");
         } catch (IOTException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setUpdater(Updater updater) {
+        this.updater = updater;
     }
 
     public void start() {
@@ -138,7 +141,7 @@ public class ArduClient {
             controlListener.init();
             controlListener.start();
 
-            endpoint = nodeInformation.getProducer("controls");
+            endpoint = nodeInformation.getConsumer("controls");
             controlsSender = nodeClient.newSender(endpoint);
             if (controlsSender instanceof JMSSender) {
                 ((JMSSender) controlsSender).setMessageFactory(new JMSDataMessageFactory());

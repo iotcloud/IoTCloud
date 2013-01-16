@@ -1,6 +1,5 @@
 package cgl.iotcloud.samples.arducopter.client;
 
-import cgl.iotcloud.core.IOTRuntimeException;
 import cgl.iotcloud.samples.arducopter.client.control.Controller;
 
 import javax.swing.*;
@@ -12,27 +11,20 @@ public class CopterFrame extends JFrame {
     private ArduClient client;
 
     public CopterFrame() throws HeadlessException {
+        client = new ArduClient();
+
         Controller controller = new Controller(client);
 
         copterUI = new CopterUI(controller);
+        client.setUpdater(copterUI.getDataModel());
+
         initComponents();
+
+        start();
     }
 
     public void start() {
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                client = new ArduClient(copterUI.getDataModel());
-                try {
-                    client.start();
-                } catch (IOTRuntimeException e) {
-                    e.printStackTrace();
-
-                }
-            }
-        });
-
-        t.start();
+        client.start();
     }
 
     public void initComponents() {
@@ -62,6 +54,6 @@ public class CopterFrame extends JFrame {
     public static void main(String[] args) {
         CopterFrame copterFrame = new CopterFrame();
         copterFrame.setVisible(true);
-
+        copterFrame.start();
     }
 }

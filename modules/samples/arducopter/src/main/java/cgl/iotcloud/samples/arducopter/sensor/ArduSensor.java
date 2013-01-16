@@ -12,7 +12,7 @@ import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
 import cgl.iotcloud.core.sensor.NodeName;
 import cgl.iotcloud.samples.arducopter.mssg.ControllerMessage;
 import cgl.iotcloud.sensors.Node;
-import com.sun.corba.se.impl.orbutil.closure.Constant;
+
 import org.ros.internal.loader.CommandLineLoader;
 import org.ros.node.DefaultNodeMainExecutor;
 import org.ros.node.NodeConfiguration;

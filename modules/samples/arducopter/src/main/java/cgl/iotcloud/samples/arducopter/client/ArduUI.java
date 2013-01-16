@@ -18,7 +18,8 @@ public class ArduUI {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                client = new ArduClient(dataPanel);
+                client = new ArduClient();
+                client.setUpdater(dataPanel);
                 try {
                     client.start();
                 } catch (IOTRuntimeException e) {
