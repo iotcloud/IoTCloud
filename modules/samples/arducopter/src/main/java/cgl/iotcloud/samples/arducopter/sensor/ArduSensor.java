@@ -113,6 +113,12 @@ public class ArduSensor {
             public void onMessage(SensorMessage message) {
                 if (message instanceof ControllerMessage) {
                     ControllerMessage m = (ControllerMessage) message;
+                    System.out.println("received control message..........");
+                    System.out.println("active: " + m.getActive());
+                    System.out.println("left X: " + m.getLeftX());
+                    System.out.println("left Y: " + m.getLeftY());
+                    System.out.println("right X: " + m.getRightX());
+                    System.out.println("right Y: " + m.getRightY());
 
                     controller.setActive(m.getActive());
                     controller.setLeftX(m.getLeftX());

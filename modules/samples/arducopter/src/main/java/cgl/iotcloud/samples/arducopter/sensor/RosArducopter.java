@@ -17,11 +17,14 @@ public class RosArducopter extends AbstractNodeMain {
 
     private ArduCopterController controller;
 
-    private boolean active;
+    private boolean active = false;
+
+    public RosArducopter() {
+        controller = new ArduCopterController();
+    }
 
     public void setSensor(ArduSensor sensor) {
         this.sensor = sensor;
-        this.controller = new ArduCopterController();
     }
 
     @Override
@@ -51,8 +54,8 @@ public class RosArducopter extends AbstractNodeMain {
             @Override
             public void onNewMessage(roscopter.Attitude message) {
                 // TEST
-                System.out.println("Attitude Message --> " + "Pitch=" + message.getPitch() + ",Pitch_Speed=" + message.getPitchspeed() + ",Roll=" + message.getRoll()
-                        + ",Roll_Speed=" + message.getRollspeed() + ",Yaw=" + message.getYaw() + ",Yaw_Speed=" + message.getYawspeed());
+//                System.out.println("Attitude Message --> " + "Pitch=" + message.getPitch() + ",Pitch_Speed=" + message.getPitchspeed() + ",Roll=" + message.getRoll()
+//                        + ",Roll_Speed=" + message.getRollspeed() + ",Yaw=" + message.getYaw() + ",Yaw_Speed=" + message.getYawspeed());
                 // TODO: Publish Attitude Message to Native(IoT) Network
                 AttitudeMessage attitudeMessage = new AttitudeMessage();
                 attitudeMessage.setPitch(message.getPitch());
@@ -70,7 +73,7 @@ public class RosArducopter extends AbstractNodeMain {
             @Override
             public void onNewMessage(roscopter.State message) {
                 // TEST
-                System.out.println("State Message --> " + "Mode=" + message.getMode() + ",Armed=" + message.getArmed() + ",Guided=" + message.getGuided());
+//                System.out.println("State Message --> " + "Mode=" + message.getMode() + ",Armed=" + message.getArmed() + ",Guided=" + message.getGuided());
                 // TODO: Publish State Message to Native(IoT) Network
                 StateMessage stateMessage = new StateMessage();
                 stateMessage.setMode(message.getMode());
@@ -85,8 +88,8 @@ public class RosArducopter extends AbstractNodeMain {
             @Override
             public void onNewMessage(roscopter.Mavlink_RAW_IMU message) {
                 // TEST
-                System.out.println("Mavlink_RAW_IMU Message --> " + "Time=" + message.getTimeUsec() + ",Xacc=" + message.getXacc() + ",Xgyro=" + message.getXgyro()
-                        + ",Xmag=" + message.getXmag() + ",etc");
+//                System.out.println("Mavlink_RAW_IMU Message --> " + "Time=" + message.getTimeUsec() + ",Xacc=" + message.getXacc() + ",Xgyro=" + message.getXgyro()
+//                        + ",Xmag=" + message.getXmag() + ",etc");
                 // TODO: Publish Mavlink_RAW_IMU Message to Native(IoT) Network
                 MRIMessage mriMessage = new MRIMessage();
                 mriMessage.setTimeUsec(message.getTimeUsec());
@@ -108,8 +111,8 @@ public class RosArducopter extends AbstractNodeMain {
             @Override
             public void onNewMessage(roscopter.VFR_HUD message) {
                 // TEST
-                System.out.println("VFR_HUD Message --> " + "AirSpeed=" + message.getAirspeed() + ",Altitude=" + message.getAlt() + ",Climb=" + message.getClimb()
-                        + ",GroundSpeed=" + message.getGroundspeed() + ",Heading=" + message.getHeading() + ",Throttle=" + message.getThrottle());
+//                System.out.println("VFR_HUD Message --> " + "AirSpeed=" + message.getAirspeed() + ",Altitude=" + message.getAlt() + ",Climb=" + message.getClimb()
+//                        + ",GroundSpeed=" + message.getGroundspeed() + ",Heading=" + message.getHeading() + ",Throttle=" + message.getThrottle());
                 // TODO: Publish VFR_HUD Message to Native(IoT) Network
                 VHMessage vhMessage = new VHMessage();
                 vhMessage.setAirSpeed(message.getAirspeed());
@@ -127,11 +130,14 @@ public class RosArducopter extends AbstractNodeMain {
             @Override
             public void onNewMessage(roscopter.RC message) {
                 // TEST
-                System.out.println("RC Message --> " + "Channel=" + message.getChannel());
+//                System.out.println("RC Message --> " + "Channel=" + message.getChannel());
                 // TODO: Publish RC Message to Native(IoT) Network
                 RCMessage rcMessage = new RCMessage();
                 rcMessage.setChannel(message.getChannel());
-
+//                System.out.println("Received rc message:");
+//                for (int i = 0; i < rcMessage.getChannel().length; i++) {
+//                    System.out.println(rcMessage.getChannel()[i]);
+//                }
                 sensor.getRcSender().send(rcMessage);
             }
         });
@@ -140,8 +146,8 @@ public class RosArducopter extends AbstractNodeMain {
             @Override
             public void onNewMessage(roscopter.Control message) {
                 // TEST
-                System.out.println("Control Message --> " + "Pitch=" + message.getPitch() + ",Roll=" + message.getRoll() + ",Thrust=" + message.getThrust()
-                        + ",Yaw=" + message.getYaw());
+//                System.out.println("Control Message --> " + "Pitch=" + message.getPitch() + ",Roll=" + message.getRoll() + ",Thrust=" + message.getThrust()
+//                        + ",Yaw=" + message.getYaw());
                 // TODO: Publish Control Message to Native(IoT) Network
                 ControlMessage controlMessage = new ControlMessage();
                 controlMessage.setPitch(message.getPitch());
@@ -153,19 +159,33 @@ public class RosArducopter extends AbstractNodeMain {
             }
         });
 
+
+
         connectedNode.executeCancellableLoop(new CancellableLoop() {
             @Override
             protected void loop() throws InterruptedException {
                 RC rc = rcPublisher.newMessage();
-                rc.setChannel(new int[]{1001, 1001, 1001, 1001, 1001, 1001, 1001, 1001});
-                rcPublisher.publish(rc);
+                if (!active && controller.isActive()) {
+                    System.out.println("Activating the channel");
+                    rc.setChannel(new int[]{1021, 1235, 1124, 1421, 1789, 1652, 1321, 1125});
+                    rcPublisher.publish(rc);
+                    active = true;
+                } else if (active && !controller.isActive()){
+                    System.out.println("Deactivating the channel");
+                    rc.setChannel(new int[]{0, 0, 0, 0, 0, 0, 0, 0});
+                    rcPublisher.publish(rc);
+                    active = false;
+                }
 
+
+                // System.out.println("send control.....");
                 Control control = controlPublisher.newMessage();
 
-                control.setPitch((float) controller.getLeftX());
-                control.setRoll((float) controller.getLeftX());
-                control.setPitch((float) controller.getLeftX());
-                control.setRoll((float) controller.getLeftX());
+                // System.out.format("sending %f %f %f %f\n", controller.getLeftY(), controller.getLeftX(), controller.getRightX(), controller.getRightY());
+                control.setPitch(controller.getLeftX());
+                control.setThrust(controller.getLeftY());
+                control.setYaw(controller.getRightX());
+                control.setRoll(controller.getLeftY());
 
                 controlPublisher.publish(control);
 

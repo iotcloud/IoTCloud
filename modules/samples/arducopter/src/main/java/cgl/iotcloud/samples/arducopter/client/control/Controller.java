@@ -10,10 +10,12 @@ public class Controller {
 
     private ArduClient client;
 
+    private boolean active;
+
     public Controller(ArduClient client) {
         this.client = client;
-        left = new JoyStick(0, .5, new double[]{0, 1}, new double[]{0, 1}, .05, .05);
-        right = new JoyStick(.5, .5, new double[]{0, 1}, new double[]{0, 1}, .05, .05);
+        left = new JoyStick(0f, .5f, new float[]{0f, 1f}, new float[]{0f, 1}, .05f, .05f);
+        right = new JoyStick(.5f, .5f, new float[]{0, 1}, new float[]{0, 1}, .05f, .05f);
     }
 
     public enum Axis {
@@ -56,7 +58,15 @@ public class Controller {
         client.getControlsSender().send(createControllerMessage());
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     private ControllerMessage createControllerMessage() {
-        return new ControllerMessage(left.getX(), left.getY(), right.getX(), right.getY());
+        return new ControllerMessage(active, left.getX(), left.getY(), right.getX(), right.getY());
     }
 }
