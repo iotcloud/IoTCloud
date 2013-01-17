@@ -1,69 +1,97 @@
 package cgl.iotcloud.samples.arducopter.sensor;
 
 public class ArduCopterController {
-    private float leftX;
+    private int yaw;
 
-    private float leftY;
+    private int thrust;
 
-    private float rightX;
+    private int roll;
 
-    private float rightY;
+    private int pitch;
+
+    private int r5, r6, r7, r8;
 
     private boolean active = false;
 
-    public float getLeftX() {
-        return leftX;
+    private boolean newData = false;
+
+    public int getYaw() {
+        return yaw;
     }
 
-    public float getLeftY() {
-        return leftY;
+    public int getThrust() {
+        return thrust;
     }
 
-    public float getRightX() {
-        return rightX;
+    public int getRoll() {
+        return roll;
     }
 
-    public float getRightY() {
-        return rightY;
+    public int getPitch() {
+        return pitch;
     }
 
     public boolean isActive() {
         return active;
     }
 
-    public void setLeftX(float leftX) {
-        this.leftX = leftX;
+    public void setYaw(int yaw) {
+        this.yaw = yaw;
     }
 
-    public void setLeftY(float leftY) {
-        this.leftY = leftY;
+    public void setThrust(int thrust) {
+        this.thrust = thrust;
     }
 
-    public void setRightX(float rightX) {
-        this.rightX = rightX;
+    public void setRoll(int roll) {
+        this.roll = roll;
     }
 
-    public void setRightY(float rightY) {
-        this.rightY = rightY;
+    public void setPitch(int pitch) {
+        this.pitch = pitch;
     }
 
     public void setActive(boolean active) {
         this.active = active;
     }
 
-    public float getPitch() {
-        return leftY;
+    public int getR5() {
+        return r5;
     }
 
-    public float getRoll() {
-        return leftX;
+    public int getR6() {
+        return r6;
     }
 
-    public float getYaw() {
-        return rightX;
+    public int getR7() {
+        return r7;
     }
 
-    public float getThrust() {
-        return rightY;
+    public int getR8() {
+        return r8;
+    }
+
+    public void setR5(int r5) {
+        this.r5 = r5;
+    }
+
+    public void setR6(int r6) {
+        this.r6 = r6;
+    }
+
+    public void setR7(int r7) {
+        this.r7 = r7;
+    }
+
+    public void setR8(int r8) {
+        this.r8 = r8;
+    }
+
+    public boolean isNewData() {
+        return newData;
+    }
+
+    public void setNewData(boolean newData) {
+        this.newData = newData;
     }
 }

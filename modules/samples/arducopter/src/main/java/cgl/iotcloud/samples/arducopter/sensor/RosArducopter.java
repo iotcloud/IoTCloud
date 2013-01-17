@@ -166,28 +166,37 @@ public class RosArducopter extends AbstractNodeMain {
             protected void loop() throws InterruptedException {
                 RC rc = rcPublisher.newMessage();
                 if (!active && controller.isActive()) {
+                    Control control = controlPublisher.newMessage();
+
+                    control.setPitch(0);
+                    control.setThrust(0);
+                    control.setYaw(0);
+                    control.setRoll(0);
+
+                    controlPublisher.publish(control);
                     System.out.println("Activating the channel");
-                    rc.setChannel(new int[]{1021, 1235, 1124, 1421, 1789, 1652, 1321, 1125});
-                    rcPublisher.publish(rc);
                     active = true;
                 } else if (active && !controller.isActive()){
+                    Control control = controlPublisher.newMessage();
+
+                    control.setPitch(1);
+                    control.setThrust(1);
+                    control.setYaw(1);
+                    control.setRoll(1);
+
+                    controlPublisher.publish(control);
                     System.out.println("Deactivating the channel");
-                    rc.setChannel(new int[]{0, 0, 0, 0, 0, 0, 0, 0});
-                    rcPublisher.publish(rc);
                     active = false;
                 }
+                if (controller.isNewData()) {
+                    System.out.format("sending %d %d %d %d %d %d %d %d:\n", controller.getRoll(), controller.getPitch(), controller.getYaw(), controller.getThrust(), controller.getR5(), controller.getR6(), controller.getR7(), controller.getR8());
+                    rc.setChannel(new int[]{controller.getRoll(), controller.getPitch(),
+                            controller.getThrust(), controller.getYaw(), controller.getR6(),
+                            controller.getR6(), controller.getR7(), controller.getR8()});
 
-
-                // System.out.println("send control.....");
-                Control control = controlPublisher.newMessage();
-
-                // System.out.format("sending %f %f %f %f\n", controller.getLeftY(), controller.getLeftX(), controller.getRightX(), controller.getRightY());
-                control.setPitch(controller.getLeftX());
-                control.setThrust(controller.getLeftY());
-                control.setYaw(controller.getRightX());
-                control.setRoll(controller.getLeftY());
-
-                controlPublisher.publish(control);
+                    controller.setNewData(false);
+                    rcPublisher.publish(rc);
+                }
 
                 try {
                     Thread.sleep(1);

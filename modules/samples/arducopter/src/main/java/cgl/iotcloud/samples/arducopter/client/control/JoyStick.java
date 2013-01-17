@@ -1,28 +1,28 @@
 package cgl.iotcloud.samples.arducopter.client.control;
 
 public class JoyStick {
-    private float xrange[] = new float[2];
-    private float yrange[] = new float[2];
+    private int xrange[] = new int[2];
+    private int yrange[] = new int[2];
 
-    private float initialX = 0;
+    private int initialX = 0;
 
-    private float initialY = 0;
+    private int initialY = 0;
 
-    private float xChange = .1f;
+    private int xChange = 1;
 
-    private float yChange = .1f;
+    private int yChange = 1;
 
-    private float x;
-    private float y;
+    private int x;
+    private int y;
 
     public enum Action {
         INCR,
         DECR
     }
 
-    public JoyStick(float x, float y,
-                    float xrange[], float yrange[],
-                    float xChange, float yChange) {
+    public JoyStick(int x, int y,
+                    int xrange[], int yrange[],
+                    int xChange, int yChange) {
         this.x = x;
         this.y = y;
 
@@ -43,7 +43,7 @@ public class JoyStick {
                     x += xChange;
                 }
             } else if (action == Action.DECR) {
-                if (x - xChange >= xrange[1]) {
+                if (x - xChange >= xrange[0]) {
                     x -= xChange;
                 }
             }
@@ -53,18 +53,18 @@ public class JoyStick {
                     y += yChange;
                 }
             } else if (action == Action.DECR) {
-                if (y - yChange >= yrange[1]) {
+                if (y - yChange >= yrange[0]) {
                     y -= yChange;
                 }
             }
         }
     }
 
-    public float getX() {
+    public int getX() {
         return x;
     }
 
-    public float getY() {
+    public int getY() {
         return y;
     }
 

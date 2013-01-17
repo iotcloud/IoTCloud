@@ -28,13 +28,13 @@ public class KeyControlListener extends KeyAdapter {
                 controller.move(Controller.StickPos.LEFT, Controller.Direction.UP);
                 break;
             case KeyEvent.VK_S:
-                controller.move(Controller.StickPos.RIGHT, Controller.Direction.UP);
+                controller.move(Controller.StickPos.LEFT, Controller.Direction.DOWN);
                 break;
             case KeyEvent.VK_D:
-                controller.move(Controller.StickPos.RIGHT, Controller.Direction.LEFT);
+                controller.move(Controller.StickPos.LEFT, Controller.Direction.RIGHT);
                 break;
             case KeyEvent.VK_A:
-                controller.move(Controller.StickPos.RIGHT, Controller.Direction.RIGHT);
+                controller.move(Controller.StickPos.LEFT, Controller.Direction.LEFT);
                 break;
         }
     }

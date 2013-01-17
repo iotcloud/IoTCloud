@@ -14,8 +14,8 @@ public class Controller {
 
     public Controller(ArduClient client) {
         this.client = client;
-        left = new JoyStick(0f, .5f, new float[]{0f, 1f}, new float[]{0f, 1}, .05f, .05f);
-        right = new JoyStick(.5f, .5f, new float[]{0, 1}, new float[]{0, 1}, .05f, .05f);
+        left = new JoyStick(1507, 1127, new int[]{1113, 1901}, new int[]{1127, 1895}, 10, 10);
+        right = new JoyStick(1497, 1507, new int[]{1113, 1901}, new int[]{1116, 11897}, 10, 10);
     }
 
     public enum Axis {
@@ -49,9 +49,9 @@ public class Controller {
             stick.change(Axis.Y, JoyStick.Action.INCR);
         } else if (d == Direction.DOWN) {
             stick.change(Axis.Y, JoyStick.Action.DECR);
-        } else if (d == Direction.LEFT) {
-            stick.change(Axis.X, JoyStick.Action.INCR);
         } else if (d == Direction.RIGHT) {
+            stick.change(Axis.X, JoyStick.Action.INCR);
+        } else if (d == Direction.LEFT) {
             stick.change(Axis.X, JoyStick.Action.DECR);
         }
         // send a message
@@ -67,6 +67,11 @@ public class Controller {
     }
 
     private ControllerMessage createControllerMessage() {
-        return new ControllerMessage(active, left.getX(), left.getY(), right.getX(), right.getY());
+        ControllerMessage message = new ControllerMessage(active, left.getX(), left.getY(), right.getY(), right.getX());
+        message.setR5(1901);
+        message.setR6(1114);
+        message.setR7(1552);
+        message.setR8(900);
+        return message;
     }
 }

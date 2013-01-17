@@ -115,16 +115,23 @@ public class ArduSensor {
                     ControllerMessage m = (ControllerMessage) message;
                     System.out.println("received control message..........");
                     System.out.println("active: " + m.getActive());
-                    System.out.println("left X: " + m.getLeftX());
-                    System.out.println("left Y: " + m.getLeftY());
-                    System.out.println("right X: " + m.getRightX());
-                    System.out.println("right Y: " + m.getRightY());
+                    System.out.println("yaw: " + m.getYaw());
+                    System.out.println("thrust: " + m.getThrust());
+                    System.out.println("roll: " + m.getRoll());
+                    System.out.println("pitch: " + m.getPitch());
 
                     controller.setActive(m.getActive());
-                    controller.setLeftX(m.getLeftX());
-                    controller.setLeftY(m.getLeftY());
-                    controller.setRightX(m.getRightX());
-                    controller.setRightY(m.getRightY());
+                    controller.setYaw(m.getYaw());
+                    controller.setThrust(m.getThrust());
+                    controller.setPitch(m.getPitch());
+                    controller.setRoll(m.getRoll());
+
+                    controller.setR5(m.getR5());
+                    controller.setR6(m.getR6());
+                    controller.setR7(m.getR7());
+                    controller.setR8(m.getR8());
+
+                    controller.setNewData(true);
                 }
             }
         });

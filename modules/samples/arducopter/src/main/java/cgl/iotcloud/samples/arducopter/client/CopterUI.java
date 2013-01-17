@@ -29,6 +29,7 @@ public class CopterUI extends CopterUIGen {
         dataModel = new CopterUIDataModel();
 
         jTable1.setModel(dataModel);
+        jTable1.setEnabled(false);
 
         jScrollPane1.addKeyListener(keyControlListener);
         jTable1.addKeyListener(keyControlListener);
