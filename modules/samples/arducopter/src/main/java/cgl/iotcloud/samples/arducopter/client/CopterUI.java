@@ -78,6 +78,7 @@ public class CopterUI extends CopterUIGen {
         rollpb.setValue(controller.getRight().getX());
 
         enableBttn.addKeyListener(keyControlListener);
+        resetBttn.addKeyListener(keyControlListener);
 
         addKeyListener(keyControlListener);
 
