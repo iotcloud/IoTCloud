@@ -72,4 +72,28 @@ public class JoyStick {
         x = initialX;
         y = initialY;
     }
+
+    public int[] getXrange() {
+        return xrange;
+    }
+
+    public int[] getYrange() {
+        return yrange;
+    }
+
+    public int getInitialX() {
+        return initialX;
+    }
+
+    public int getInitialY() {
+        return initialY;
+    }
+
+    public int getxChange() {
+        return xChange;
+    }
+
+    public int getyChange() {
+        return yChange;
+    }
 }

@@ -10,6 +10,13 @@ public class KeyControlListener extends KeyAdapter {
         this.controller = controller;
     }
 
+    private EventHandler eventHandler;
+
+
+    public void setEventHandler(EventHandler eventHandler) {
+        this.eventHandler = eventHandler;
+    }
+
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_DOWN:
@@ -36,6 +43,10 @@ public class KeyControlListener extends KeyAdapter {
             case KeyEvent.VK_A:
                 controller.move(Controller.StickPos.LEFT, Controller.Direction.LEFT);
                 break;
+        }
+
+        if (eventHandler != null) {
+            eventHandler.handleEvent(e);
         }
     }
 }

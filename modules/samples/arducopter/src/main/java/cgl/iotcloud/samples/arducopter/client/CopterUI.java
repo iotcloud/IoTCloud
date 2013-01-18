@@ -1,10 +1,14 @@
 package cgl.iotcloud.samples.arducopter.client;
 
 import cgl.iotcloud.samples.arducopter.client.control.Controller;
+import cgl.iotcloud.samples.arducopter.client.control.EventHandler;
 import cgl.iotcloud.samples.arducopter.client.control.KeyControlListener;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
 
 
 public class CopterUI extends CopterUIGen {
@@ -34,29 +38,70 @@ public class CopterUI extends CopterUIGen {
         jScrollPane1.addKeyListener(keyControlListener);
         jTable1.addKeyListener(keyControlListener);
 
-        ll.addKeyListener(keyControlListener);
-        lr.addKeyListener(keyControlListener);
-        lu.addKeyListener(keyControlListener);
-        ld.addKeyListener(keyControlListener);
-        rl.addKeyListener(keyControlListener);
-        rr.addKeyListener(keyControlListener);
-        ru.addKeyListener(keyControlListener);
-        rd.addKeyListener(keyControlListener);
+        keyControlListener.setEventHandler(new EventHandler() {
 
-        jButton1.addKeyListener(keyControlListener);
+            @Override
+            public void handleEvent(AWTEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println("Updating the progress");
+                        thrustpb.setValue(controller.getLeft().getY());
+                        yawpb.setValue(controller.getLeft().getX());
+                        pitchpb.setValue(controller.getRight().getY());
+                        rollpb.setValue(controller.getRight().getX());
+                    }
+                });
+
+            }
+        });
+
+        thrustpb.addKeyListener(keyControlListener);
+        rollpb.addKeyListener(keyControlListener);
+        pitchpb.addKeyListener(keyControlListener);
+        yawpb.addKeyListener(keyControlListener);
+
+        thrustpb.setMaximum(controller.getLeft().getYrange()[1]);
+        thrustpb.setMinimum(controller.getLeft().getYrange()[0]);
+        thrustpb.setValue(controller.getLeft().getY());
+
+        yawpb.setMaximum(controller.getLeft().getXrange()[1]);
+        yawpb.setMinimum(controller.getLeft().getXrange()[0]);
+        yawpb.setValue(controller.getLeft().getX());
+
+        pitchpb.setMaximum(controller.getRight().getYrange()[1]);
+        pitchpb.setMinimum(controller.getRight().getYrange()[0]);
+        pitchpb.setValue(controller.getRight().getY());
+
+        rollpb.setMaximum(controller.getRight().getXrange()[1]);
+        rollpb.setMinimum(controller.getRight().getXrange()[0]);
+        rollpb.setValue(controller.getRight().getX());
+
+        enableBttn.addKeyListener(keyControlListener);
 
         addKeyListener(keyControlListener);
 
-        jButton1.addActionListener(new ActionListener() {
+        enableBttn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (controller.isActive()) {
                     controller.setActive(false);
-                    jButton1.setText("Enable");
+                    enableBttn.setText("Enable");
                 } else {
                     controller.setActive(true);
-                    jButton1.setText("Disable");
+                    enableBttn.setText("Disable");
                 }
+            }
+        });
+
+        resetBttn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.reset();
+                thrustpb.setValue(controller.getLeft().getY());
+                yawpb.setValue(controller.getLeft().getX());
+                pitchpb.setValue(controller.getRight().getY());
+                rollpb.setValue(controller.getRight().getX());
             }
         });
     }
@@ -68,5 +113,6 @@ public class CopterUI extends CopterUIGen {
     public KeyControlListener getKeyControlListener() {
         return keyControlListener;
     }
+
 }
 

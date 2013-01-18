@@ -1,5 +1,7 @@
 package cgl.iotcloud.samples.arducopter.client;
 
+import javax.swing.*;
+
 public class CopterUIGen extends javax.swing.JPanel {
 
     /**
@@ -20,15 +22,16 @@ public class CopterUIGen extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        ll = new javax.swing.JButton();
-        lu = new javax.swing.JButton();
-        lr = new javax.swing.JButton();
-        ld = new javax.swing.JButton();
-        ru = new javax.swing.JButton();
-        rd = new javax.swing.JButton();
-        rr = new javax.swing.JButton();
-        rl = new javax.swing.JButton();
+        thrustpb = new javax.swing.JSlider();
+        yawpb = new javax.swing.JSlider();
+        rollpb = new javax.swing.JSlider();
+        pitchpb = new javax.swing.JSlider();
+        pitchlb = new javax.swing.JLabel();
+        thrustlb1 = new javax.swing.JLabel();
+        yawlb = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        resetBttn = new javax.swing.JButton();
+        enableBttn = new javax.swing.JToggleButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
                 new Object [][] {
@@ -43,23 +46,33 @@ public class CopterUIGen extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jButton1.setText("Enable");
+        thrustpb.setFont(new java.awt.Font("Cantarell", 0, 10)); // NOI18N
+        thrustpb.setOrientation(javax.swing.JSlider.VERTICAL);
 
-        ll.setText("0");
+        yawpb.setFont(new java.awt.Font("Cantarell", 0, 10)); // NOI18N
 
-        lu.setText("0");
+        rollpb.setFont(new java.awt.Font("Cantarell", 0, 10)); // NOI18N
 
-        lr.setText("0");
+        pitchpb.setFont(new java.awt.Font("Cantarell", 0, 10)); // NOI18N
+        pitchpb.setOrientation(javax.swing.JSlider.VERTICAL);
 
-        ld.setText("0");
+        pitchlb.setFont(new java.awt.Font("Cantarell", 0, 10)); // NOI18N
+        pitchlb.setText("Pitch");
 
-        ru.setText("0");
+        thrustlb1.setFont(new java.awt.Font("Cantarell", 0, 10)); // NOI18N
+        thrustlb1.setText("Thrust");
 
-        rd.setText("0");
+        yawlb.setFont(new java.awt.Font("Cantarell", 0, 10)); // NOI18N
+        yawlb.setText("Yaw");
 
-        rr.setText("0");
+        jLabel1.setFont(new java.awt.Font("Cantarell", 0, 10)); // NOI18N
+        jLabel1.setText("Roll");
 
-        rl.setText("0");
+        resetBttn.setFont(new java.awt.Font("Cantarell", 0, 10)); // NOI18N
+        resetBttn.setText("Reset");
+
+        enableBttn.setFont(new java.awt.Font("Cantarell", 0, 10)); // NOI18N
+        enableBttn.setText("Enable");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -67,32 +80,38 @@ public class CopterUIGen extends javax.swing.JPanel {
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
-                                .addContainerGap())
-                        .addGroup(layout.createSequentialGroup()
-                                .addGap(98, 98, 98)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(ld, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lu, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(ru, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(rd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(104, 104, 104))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(46, 46, 46)
-                                .addComponent(ll, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(55, 55, 55)
-                                .addComponent(lr, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(rl, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(54, 54, 54)
-                                .addComponent(rr, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(51, 51, 51))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
+                                                .addContainerGap())
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                                .addComponent(enableBttn, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(resetBttn, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addGap(101, 101, 101)
+                                                                .addComponent(thrustpb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(thrustlb1)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(pitchpb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(pitchlb)
+                                                .addGap(92, 92, 92))))
                         .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jButton1)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(27, 27, 27)
+                                .addComponent(yawpb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(rollpb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(50, 50, 50))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(111, 111, 111)
+                                .addComponent(yawlb)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel1)
+                                .addGap(139, 139, 139))
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -100,35 +119,50 @@ public class CopterUIGen extends javax.swing.JPanel {
                                 .addContainerGap()
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton1)
-                                .addGap(37, 37, 37)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(ru)
-                                        .addComponent(lu))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(resetBttn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(enableBttn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addGap(9, 9, 9)
+                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                        .addComponent(pitchpb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(thrustpb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                                .addComponent(pitchlb)
+                                                                                .addGap(88, 88, 88))
+                                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                                .addComponent(thrustlb1)
+                                                                                .addGap(89, 89, 89)))))
+                                                .addGap(25, 25, 25)
+                                                .addComponent(yawpb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(rollpb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(rr)
-                                        .addComponent(lr)
-                                        .addComponent(ll)
-                                        .addComponent(rl))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(rd)
-                                        .addComponent(ld))
-                                .addContainerGap(65, Short.MAX_VALUE))
+                                        .addComponent(jLabel1)
+                                        .addComponent(yawlb))
+                                .addContainerGap(86, Short.MAX_VALUE))
         );
     }// </editor-fold>
     // Variables declaration - do not modify
-    protected javax.swing.JButton jButton1;
+    protected javax.swing.JToggleButton enableBttn;
+    protected javax.swing.JLabel jLabel1;
     protected javax.swing.JScrollPane jScrollPane1;
     protected javax.swing.JTable jTable1;
-    protected javax.swing.JButton ld;
-    protected javax.swing.JButton ll;
-    protected javax.swing.JButton lr;
-    protected javax.swing.JButton lu;
-    protected javax.swing.JButton rd;
-    protected javax.swing.JButton rl;
-    protected javax.swing.JButton rr;
-    protected javax.swing.JButton ru;
+    protected javax.swing.JLabel pitchlb;
+    protected javax.swing.JSlider pitchpb;
+    protected javax.swing.JButton resetBttn;
+    protected javax.swing.JSlider rollpb;
+    protected javax.swing.JLabel thrustlb1;
+    protected javax.swing.JSlider thrustpb;
+    protected javax.swing.JLabel yawlb;
+    protected javax.swing.JSlider yawpb;
     // End of variables declaration
 }

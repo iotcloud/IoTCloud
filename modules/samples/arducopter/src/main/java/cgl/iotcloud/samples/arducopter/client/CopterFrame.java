@@ -1,8 +1,10 @@
 package cgl.iotcloud.samples.arducopter.client;
 
 import cgl.iotcloud.samples.arducopter.client.control.Controller;
+import com.sun.java.swing.plaf.gtk.GTKLookAndFeel;
 
 import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import java.awt.*;
 
 public class CopterFrame extends JFrame {
@@ -53,6 +55,22 @@ public class CopterFrame extends JFrame {
 
     public static void main(String[] args) {
         CopterFrame copterFrame = new CopterFrame();
+        try {
+            // Set cross-platform Java L&F (also called "Metal")
+            UIManager.setLookAndFeel(GTKLookAndFeel.class.getCanonicalName());
+        }
+        catch (UnsupportedLookAndFeelException e) {
+            // handle exception
+        }
+        catch (ClassNotFoundException e) {
+            // handle exception
+        }
+        catch (InstantiationException e) {
+            // handle exception
+        }
+        catch (IllegalAccessException e) {
+            // handle exception
+        }
         copterFrame.setVisible(true);
         copterFrame.start();
     }

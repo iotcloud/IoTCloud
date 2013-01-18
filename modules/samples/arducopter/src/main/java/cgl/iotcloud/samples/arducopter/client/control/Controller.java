@@ -15,7 +15,7 @@ public class Controller {
     public Controller(ArduClient client) {
         this.client = client;
         left = new JoyStick(1507, 1127, new int[]{1113, 1901}, new int[]{1127, 1895}, 10, 10);
-        right = new JoyStick(1497, 1507, new int[]{1113, 1901}, new int[]{1116, 11897}, 10, 10);
+        right = new JoyStick(1497, 1507, new int[]{1113, 1901}, new int[]{1116, 1897}, 10, 10);
     }
 
     public enum Axis {
@@ -64,6 +64,7 @@ public class Controller {
 
     public void setActive(boolean active) {
         this.active = active;
+        client.getControlsSender().send(createControllerMessage());
     }
 
     private ControllerMessage createControllerMessage() {
@@ -73,5 +74,18 @@ public class Controller {
         message.setR7(1552);
         message.setR8(900);
         return message;
+    }
+
+    public JoyStick getRight() {
+        return right;
+    }
+
+    public JoyStick getLeft() {
+        return left;
+    }
+
+    public void reset() {
+        left.reset();
+        right.reset();
     }
 }
