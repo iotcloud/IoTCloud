@@ -1,6 +1,6 @@
 package cgl.iotcloud.samples.arducopter.client.control;
 
-public class JoyStick {
+public class JoyStickModel {
     private int xrange[] = new int[2];
     private int yrange[] = new int[2];
 
@@ -20,9 +20,9 @@ public class JoyStick {
         DECR
     }
 
-    public JoyStick(int x, int y,
-                    int xrange[], int yrange[],
-                    int xChange, int yChange) {
+    public JoyStickModel(int x, int y,
+                         int xrange[], int yrange[],
+                         int xChange, int yChange) {
         this.x = x;
         this.y = y;
 
