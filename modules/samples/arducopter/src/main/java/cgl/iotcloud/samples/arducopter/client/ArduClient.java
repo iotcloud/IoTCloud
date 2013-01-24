@@ -29,6 +29,8 @@ public class ArduClient {
 
     private Sender controlsSender;
 
+    private Sender stateControlSender;
+
     public ArduClient() {
         try {
             nodeClient = new NodeClient("http://localhost:8080/");
@@ -149,6 +151,15 @@ public class ArduClient {
 
             controlsSender.init();
             controlsSender.start();
+
+            endpoint = nodeInformation.getConsumer("stateControls");
+            stateControlSender = nodeClient.newSender(endpoint);
+            if (stateControlSender instanceof JMSSender) {
+                ((JMSSender) stateControlSender).setMessageFactory(new JMSDataMessageFactory());
+            }
+
+            stateControlSender.init();
+            stateControlSender.start();
         } catch (IOTException e) {
             e.printStackTrace();
         }
@@ -220,5 +231,9 @@ public class ArduClient {
 
     public Sender getControlsSender() {
         return controlsSender;
+    }
+
+    public Sender getStateControlSender() {
+        return stateControlSender;
     }
 }

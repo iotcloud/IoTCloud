@@ -11,6 +11,10 @@ public class JS {
 
     private final Controller controller;
 
+    public JS() {
+        this(null);
+    }
+
     public JS(Controller controller) {
         this.controller = controller;
         try {
@@ -27,12 +31,34 @@ public class JS {
 
         @Override
         public void joystickAxisChanged(Joystick joystick) {
-            controller.axisChanged(joystick.getX(), joystick.getY(), joystick.getZ(), joystick.getR());
+            if (controller != null) {
+                controller.axisChanged(joystick.getX(), joystick.getY(), joystick.getZ(), joystick.getR());
+            }
         }
 
         @Override
         public void joystickButtonChanged(Joystick joystick) {
-            controller.buttonChanged(joystick.getButtons());
+            if ((joystick.getButtons() & Joystick.BUTTON7) > 0) {
+                if (controller != null) {
+                    controller.setActive(true);
+                }
+            }
+            if ((joystick.getButtons() & Joystick.BUTTON8) > 0) {
+                if (controller != null) {
+                    controller.setActive(false);
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        JS js = new JS();
+        while(true) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
     }
 }

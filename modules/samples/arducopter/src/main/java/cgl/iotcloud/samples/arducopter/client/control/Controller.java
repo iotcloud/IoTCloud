@@ -2,6 +2,7 @@ package cgl.iotcloud.samples.arducopter.client.control;
 
 import cgl.iotcloud.samples.arducopter.client.ArduClient;
 import cgl.iotcloud.samples.arducopter.client.control.joystick.JS;
+import cgl.iotcloud.samples.arducopter.mssg.StateControlMessage;
 import cgl.iotcloud.samples.arducopter.mssg.ControllerMessage;
 
 public class Controller {
@@ -95,9 +96,17 @@ public class Controller {
 
     }
 
+    public void activateButtonChanged(boolean active) {
+        StateControlMessage message = new StateControlMessage(active);
+
+        if (client.getStateControlSender() != null) {
+            client.getStateControlSender().send(message);
+        }
+    }
+
     public void setActive(boolean active) {
         this.active = active;
-        client.getControlsSender().send(createControllerMessage());
+        client.getStateControlSender().send(new StateControlMessage(active));
     }
 
     private ControllerMessage createControllerMessage() {

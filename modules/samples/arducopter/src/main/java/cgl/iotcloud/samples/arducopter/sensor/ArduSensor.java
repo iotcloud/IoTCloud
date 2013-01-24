@@ -10,6 +10,7 @@ import cgl.iotcloud.core.message.MessageHandler;
 import cgl.iotcloud.core.message.SensorMessage;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
 import cgl.iotcloud.core.sensor.NodeName;
+import cgl.iotcloud.samples.arducopter.mssg.StateControlMessage;
 import cgl.iotcloud.samples.arducopter.mssg.ControllerMessage;
 import cgl.iotcloud.sensors.Node;
 
@@ -32,6 +33,7 @@ public class ArduSensor {
     private Sender controlSender;
 
     private Listener controlListener;
+    private Listener stateListener;
 
     private ArduCopterController controller;
 
@@ -131,6 +133,23 @@ public class ArduSensor {
                     controller.setR7(m.getR7());
                     controller.setR8(m.getR8());
 
+                    controller.setNewData(true);
+                }
+            }
+        });
+
+        stateListener = node.newListener("stateControls", Constants.MESSAGE_TYPE_BLOCK, "stateControls");
+        if (stateListener instanceof JMSListener) {
+            ((JMSListener) stateListener).setMessageFactory(new JMSDataMessageFactory());
+        }
+
+        stateListener.setMessageHandler(new MessageHandler() {
+            @Override
+            public void onMessage(SensorMessage message) {
+                if (message instanceof StateControlMessage) {
+                    StateControlMessage stateControlMessage = (StateControlMessage) message;
+
+                    controller.setActive(stateControlMessage.isActive());
                     controller.setNewData(true);
                 }
             }
