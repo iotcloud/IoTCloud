@@ -15,10 +15,17 @@ public class Controller {
     private boolean active;
 
     private int[] yawRange = new int[]{1113, 1901};
-    private int[] thrustRange = new int[]{1127, 1895};
+    private int[] thrustRange = new int[]{1125, 1895};
 
     private int[] rollChange = new int[]{1113, 1901};
     private int[] pitchChange = new int[]{1116, 1897};
+
+    private int yawInitial = 1500;
+    private int rollInitial = 1497;
+    private int thrustInitial = 1125;
+    private int pitchInitlal = 1497;
+
+    private boolean joystickEnabled = false;
 
     private JS js;
 
@@ -45,6 +52,10 @@ public class Controller {
     public enum StickPos {
         LEFT,
         RIGHT
+    }
+
+    public void setJoystickEnabled(boolean enabled) {
+        joystickEnabled = enabled;
     }
 
     public void move(StickPos s, Direction d) {
@@ -75,12 +86,24 @@ public class Controller {
     }
 
     public void axisChanged(float x, float y, float z, float r) {
-        int yaw = (int)(((r + 1) * (yawRange[1] - yawRange[0]) / 2) + yawRange[0]);
-        int thrust = (int)(((z + 1) * (thrustRange[1] - thrustRange[0]) / 2) + thrustRange[0]);
-        int roll = (int)(((x + 1) * (rollChange[1] - rollChange[0]) / 2) + rollChange[0]);
-        int pitch = (int)(((y + 1) * (pitchChange[1] - pitchChange[0]) / 2) + pitchChange[0]);
+
+        System.out.println("x: " + x);
+        System.out.println("y: " + y);
+        System.out.println("z: " + z);
+        System.out.println("r: " + r);
+
+
+        int yaw = (int)(((z) * (yawRange[1] - yawRange[0]) / 2) + yawInitial);
+        int thrust = (int)((((r + 1) / 2) * (thrustRange[1] - thrustRange[0])) + thrustInitial);
+        int roll = (int)(((x) * (rollChange[1] - rollChange[0]) / 2) + rollInitial);
+        int pitch = (int)(((y) * (pitchChange[1] - pitchChange[0]) / 2) + pitchInitlal);
 
         ControllerMessage message = new ControllerMessage(active, yaw, thrust, pitch, roll);
+
+        System.out.println("yaw: " + yaw);
+        System.out.println("thrust: " + thrust);
+        System.out.println("roll: " + roll);
+        System.out.println("oitch: " + pitch);
 
         message.setR5(1901);
         message.setR6(1114);
@@ -97,6 +120,7 @@ public class Controller {
     }
 
     public void activateButtonChanged(boolean active) {
+
         StateControlMessage message = new StateControlMessage(active);
 
         if (client.getStateControlSender() != null) {

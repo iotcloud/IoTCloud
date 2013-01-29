@@ -13,6 +13,7 @@ public class CopterFrame extends JFrame {
     private ArduClient client;
 
     public CopterFrame() throws HeadlessException {
+        super("Hexacopter");
         client = new ArduClient();
 
         Controller controller = new Controller(client);

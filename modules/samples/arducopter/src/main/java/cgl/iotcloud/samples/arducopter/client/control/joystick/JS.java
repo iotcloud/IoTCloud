@@ -50,15 +50,4 @@ public class JS {
             }
         }
     }
-
-    public static void main(String[] args) {
-        JS js = new JS();
-        while(true) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-        }
-    }
 }
