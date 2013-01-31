@@ -94,7 +94,7 @@ public class Controller {
 
 
         int yaw = (int)(((z) * (yawRange[1] - yawRange[0]) / 2) + yawInitial);
-        int thrust = (int)((((r + 1) / 2) * (thrustRange[1] - thrustRange[0])) + thrustInitial);
+        int thrust = (int)((((r + 1) / 2) * (thrustRange[1] - thrustRange[0]) / 2) + thrustInitial);
         int roll = (int)(((x) * (rollChange[1] - rollChange[0]) / 2) + rollInitial);
         int pitch = (int)(((y) * (pitchChange[1] - pitchChange[0]) / 2) + pitchInitlal);
 
