@@ -150,7 +150,7 @@ public class ArduSensor {
                     StateControlMessage stateControlMessage = (StateControlMessage) message;
 
                     controller.setActive(stateControlMessage.isActive());
-                    controller.setNewData(true);
+                    //controller.setNewData(true);
                 }
             }
         });

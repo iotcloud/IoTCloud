@@ -93,10 +93,10 @@ public class Controller {
         System.out.println("r: " + r);
 
 
-        int yaw = (int)(((z) * (yawRange[1] - yawRange[0]) / 2) + yawInitial);
-        int thrust = (int)((((r + 1) / 2) * (thrustRange[1] - thrustRange[0]) / 3) + thrustInitial);
-        int roll = (int)(((x) * (rollChange[1] - rollChange[0]) / 2) + rollInitial);
-        int pitch = (int)(((y) * (pitchChange[1] - pitchChange[0]) / 2) + pitchInitlal);
+        int yaw = (int)(((z) * (yawRange[1] - yawRange[0]) / 8) + yawInitial);
+        int thrust = (int)((((r + 1) / 2) * (thrustRange[1] - thrustRange[0]) / 4) + thrustInitial);
+        int roll = (int)(((x) * (rollChange[1] - rollChange[0]) / 8) + rollInitial);
+        int pitch = (int)(((y) * (pitchChange[1] - pitchChange[0]) / 8) + pitchInitlal);
 
         ControllerMessage message = new ControllerMessage(active, yaw, thrust, pitch, roll);
 
