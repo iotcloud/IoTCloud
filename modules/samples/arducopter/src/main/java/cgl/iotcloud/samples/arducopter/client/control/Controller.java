@@ -15,15 +15,15 @@ public class Controller {
     private boolean active;
 
     private int[] yawRange = new int[]{1113, 1901};
-    private int[] thrustRange = new int[]{1125, 1895};
+    private int[] thrustRange = new int[]{1120, 1895};
 
     private int[] rollChange = new int[]{1113, 1901};
     private int[] pitchChange = new int[]{1116, 1897};
 
-    private int yawInitial = 1500;
-    private int rollInitial = 1497;
-    private int thrustInitial = 1125;
-    private int pitchInitlal = 1497;
+    private int yawInitial = 1507;
+    private int rollInitial = 1505;
+    private int thrustInitial = 1120;
+    private int pitchInitlal = 1507;
 
     private boolean joystickEnabled = false;
 
@@ -93,10 +93,10 @@ public class Controller {
         System.out.println("r: " + r);
 
 
-        int yaw = (int)(((z) * (yawRange[1] - yawRange[0]) / 8) + yawInitial);
-        int thrust = (int)((((r + 1) / 2) * (thrustRange[1] - thrustRange[0]) / 4) + thrustInitial);
-        int roll = (int)(((x) * (rollChange[1] - rollChange[0]) / 8) + rollInitial);
-        int pitch = (int)(((y) * (pitchChange[1] - pitchChange[0]) / 8) + pitchInitlal);
+        int yaw = (int)(((z) * (yawRange[1] - yawRange[0]) / 4) + yawInitial);
+        int thrust = (int)((((r + 1) / 2) * (thrustRange[1] - thrustRange[0]) / 2) + thrustInitial);
+        int roll = (int)(((x) * (rollChange[1] - rollChange[0]) / 4) + rollInitial);
+        int pitch = (int)(((y) * (pitchChange[1] - pitchChange[0]) / 4) + pitchInitlal);
 
         ControllerMessage message = new ControllerMessage(active, yaw, thrust, pitch, roll);
 
@@ -106,9 +106,9 @@ public class Controller {
         System.out.println("oitch: " + pitch);
 
         message.setR5(1901);
-        message.setR6(1114);
-        message.setR7(1552);
-        message.setR8(900);
+        message.setR6(1500);
+        message.setR7(1498);
+        message.setR8(1498);
 
         if (client.getControlsSender() != null ) {
             client.getControlsSender().send(message);
