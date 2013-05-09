@@ -26,6 +26,7 @@
         <module>turtlebot</module>
         <!-- <module>lego_nxt</module> -->
         <module>arducopter</module>
+        <module>joystick</module>
     </modules>
 
 	<dependencies>
