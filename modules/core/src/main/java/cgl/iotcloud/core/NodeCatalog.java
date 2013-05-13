@@ -6,7 +6,11 @@ import cgl.iotcloud.core.sensor.NodeName;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Keep the information about the registered nodes
+ */
 public class NodeCatalog {
+    /** List of nodes that are registered in the system */
     private List<NodeInformation> nodes = new ArrayList<NodeInformation>();
 
     public List<NodeInformation> getNodes() {

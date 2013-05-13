@@ -7,11 +7,7 @@ import cgl.iotcloud.core.message.data.TextDataMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
-import javax.jms.Session;
-import javax.jms.TextMessage;
+import javax.jms.*;
 import java.io.Serializable;
 
 /**
@@ -41,6 +37,8 @@ public class JMSDataMessageFactory implements JMSMessageFactory {
             } catch (JMSException e) {
                 handleException("Error retrieving the message", e);
             }
+        } else if (message instanceof BytesMessage) {
+
         }
         return null;
     }

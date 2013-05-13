@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 public abstract class ObjectDataMessage implements Serializable, DataMessage {
     private static final long serialVersionUID = 1L;
+
     private long timestamp = 0;
 
     public ObjectDataMessage() {
@@ -20,12 +21,10 @@ public abstract class ObjectDataMessage implements Serializable, DataMessage {
         return timestamp;
     }
 
-    @Override
     public String getId() {
         return null;
     }
 
-    @Override
     public void setId(String id) {
     }
 }

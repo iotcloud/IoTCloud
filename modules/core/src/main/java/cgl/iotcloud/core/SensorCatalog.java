@@ -13,6 +13,7 @@ import java.util.List;
 public class SensorCatalog {
     private List<SCSensor> sensors = new ArrayList<SCSensor>();
 
+
     public List<SCSensor> getSensors() {
         return sensors;
     }
