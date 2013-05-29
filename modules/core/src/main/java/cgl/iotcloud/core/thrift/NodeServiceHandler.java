@@ -14,6 +14,10 @@ import java.util.*;
 public class NodeServiceHandler implements NodeService.Iface {
     private IoTCloud ioTCloud;
 
+    public NodeServiceHandler(IoTCloud ioTCloud) {
+        this.ioTCloud = ioTCloud;
+    }
+
     @Override
     public Response registerNode(NodeId nodeId) throws TException {
         if (nodeId.getName() == null) {
