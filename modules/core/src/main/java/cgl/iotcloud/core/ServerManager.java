@@ -5,6 +5,7 @@ import cgl.iotcloud.core.config.SCCConfigurationFactory;
 import cgl.iotcloud.core.config.SCConfiguration;
 import cgl.iotcloud.core.jetty.SGCHTTPServer;
 import cgl.iotcloud.core.stream.StreamingServer;
+import cgl.iotcloud.core.thrift.ThriftServer;
 import cgl.iotcloud.core.tomcat.TomcatServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,12 +37,14 @@ public class ServerManager {
         }
 
         final TomcatServer server = new TomcatServer(cloud);
+        final ThriftServer thriftServer = new ThriftServer(cloud);
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
             	log.info("Shutting down IOTCloud...");
             	cloud.destroy();
                 server.stop();
+                thriftServer.stop();
             }
         });
 
@@ -50,6 +53,18 @@ public class ServerManager {
                     public void run() {
                         // start the HTTP server
                         server.start();
+                    }
+                }).start();
+
+        new Thread(
+                new Runnable() {
+                    public void run() {
+                        // start the HTTP server
+                        try {
+                            thriftServer.start();
+                        } catch (IOTException e) {
+                            log.error("Failed to start the thrift server");
+                        }
                     }
                 }).start();
 
