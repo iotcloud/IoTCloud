@@ -4,12 +4,10 @@ import cgl.iotcloud.core.Endpoint;
 import cgl.iotcloud.core.IOTException;
 import cgl.iotcloud.core.Listener;
 import cgl.iotcloud.core.Sender;
-import cgl.iotcloud.core.broker.JMSListener;
 import cgl.iotcloud.core.broker.JMSListenerFactory;
 import cgl.iotcloud.core.broker.JMSSenderFactory;
 import cgl.iotcloud.core.sensor.NodeInformation;
 import cgl.iotcloud.core.sensor.NodeName;
-import cgl.iotcloud.core.stream.StreamingListenerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,31 +42,6 @@ public class NodeClient {
     public Sender newSender(cgl.iotcloud.core.Endpoint endpoint) {
         JMSSenderFactory factory = new JMSSenderFactory();
         return factory.create(endpoint);
-    }
-
-    public static Sender createSender(Endpoint endpoint) {
-        Sender sender;
-        JMSSenderFactory factory = new JMSSenderFactory();
-        sender = factory.create(endpoint);
-
-        if (sender != null) {
-            sender.init();
-            sender.start();
-        }
-        return sender;
-    }
-
-    public static Listener createListener(Endpoint endpoint) {
-        Listener listener;
-        JMSListenerFactory factory = new JMSListenerFactory();
-        listener = factory.create(endpoint);
-
-        if (listener != null) {
-            listener.init();
-            listener.start();
-        }
-
-        return listener;
     }
 
     private void handleException(String s, Exception e) throws IOTException {
