@@ -1,49 +1,49 @@
 namespace java cgl.iotcloud.thrift
 
-struct Property {
+struct TProperty {
     1:string name
     2:string value
 }
 
-struct EndpointRequest {
+struct TEndpointRequest {
     1:string name
     2:string type
     3:string path
 }
 
-struct EndpointResponse {
+struct TEndpointResponse {
     1:string name
     2:string type
     3:string address
-    4:list<Property> properties
+    4:list<TProperty> properties
 }
 
-struct NodeId {
+struct TNodeId {
     1:string name
     2:string group
 }
 
-struct Node {
+struct TNode {
     1:string name
     2:string group
-    3:list<EndpointResponse> consumers
-    4:list<EndpointResponse> producers
+    3:list<TEndpointResponse> consumers
+    4:list<TEndpointResponse> producers
 }
 
-struct Response {
+struct TResponse {
     1:i32 status
     2:string reason
 }
 
-service NodeService {
-    Response registerNode(1:NodeId nodeId)
-    Response unRegisterNode(1:NodeId nodeId)
-    EndpointResponse registerProducer(1:NodeId nodeId, 2:EndpointRequest endpoint)
-    Response unRegisterProducer(1:NodeId nodeId, 2:EndpointRequest endpoint)
-    EndpointResponse registerConsumer(1:NodeId nodeId, 2:EndpointRequest endpoint)
-    Response unRegisterConsumer(1:NodeId nodeId, 2:EndpointRequest endpoint)
-    list<NodeId> getNodes()
-    Node getNode(1:NodeId id)
+service TNodeService {
+    TResponse registerNode(1:TNodeId nodeId)
+    TResponse unRegisterNode(1:TNodeId nodeId)
+    TEndpointResponse registerProducer(1:TNodeId nodeId, 2:TEndpointRequest endpoint)
+    TResponse unRegisterProducer(1:TNodeId nodeId, 2:TEndpointRequest endpoint)
+    TEndpointResponse registerConsumer(1:TNodeId nodeId, 2:TEndpointRequest endpoint)
+    TResponse unRegisterConsumer(1:TNodeId nodeId, 2:TEndpointRequest endpoint)
+    list<TNodeId> getNodes()
+    TNode getNode(1:TNodeId id)
 }
 
 

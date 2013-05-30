@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NodeWSClient {
+public class NodeWSClient implements Client {
     private Logger log = LoggerFactory.getLogger(NodeWSClient.class);
 
     private NodeServiceStub nodeServiceStub;
@@ -35,57 +35,67 @@ public class NodeWSClient {
         }
     }
 
-    public RegistrationResponse registerNode(NodeInfo nodeInfo) throws IOTException {
+    public boolean registerNode(NodeName nodeInfo) throws IOTException {
         try {
-            return nodeServiceStub.registerNode(nodeInfo);
+            nodeServiceStub.registerNode(createNodeInfo(nodeInfo));
         } catch (RemoteException e) {
             handleException("Failed to register the node.." + nodeInfo.getName(), e);
         }
-        return null;
+        return true;
     }
 
-    public RegistrationResponse unRegisterNode(NodeInfo nodeInfo) throws IOTException {
+    public boolean unRegisterNode(NodeName nodeInfo) throws IOTException {
         try {
-            return nodeServiceStub.unRegisterNode(nodeInfo);
+            nodeServiceStub.unRegisterNode(createNodeInfo(nodeInfo));
         } catch (RemoteException e) {
             handleException("Failed to unregister the node.." + nodeInfo, e);
         }
-        return null;
+        return true;
     }
 
-    public Endpoint registerConsumer(NodeInfo nodeInfo, EndpointInfo endpointInfo) throws IOTException {
+    public cgl.iotcloud.core.Endpoint registerConsumer(NodeName nodeInfo, String name,
+                                     String type, String path) throws IOTException {
         try {
-            return nodeServiceStub.registerConsumer(nodeInfo, endpointInfo);
+            EndpointInfo endpointInfo = createEndpointInfo(name, type, path);
+            Endpoint e = nodeServiceStub.registerConsumer(createNodeInfo(nodeInfo), endpointInfo);
+            return createEndpoint(e);
         } catch (RemoteException e) {
-            handleException("Failed to un-register the consumer.." + endpointInfo, e);
+            handleException("Failed to un-register the consumer.." + name, e);
         }
 
         return null;
     }
 
-    public Endpoint registerProducer(NodeInfo nodeInfo, EndpointInfo endpointInfo) throws IOTException {
+    public cgl.iotcloud.core.Endpoint registerProducer(NodeName nodeInfo, String name,
+                                     String type, String path) throws IOTException {
         try {
-            return nodeServiceStub.registerProducer(nodeInfo, endpointInfo);
+            EndpointInfo endpointInfo = createEndpointInfo(name, type, path);
+            Endpoint e = nodeServiceStub.registerProducer(createNodeInfo(nodeInfo), endpointInfo);
+            return createEndpoint(e);
         } catch (RemoteException e) {
-            handleException("Failed to un-register the producer.." + endpointInfo, e);
+            handleException("Failed to un-register the producer.." + name, e);
         }
 
         return null;
     }
 
-    public boolean unRegisterProducer(NodeInfo nodeInfo, EndpointInfo endpointInfo) throws IOTException {
+    public boolean unRegisterProducer(NodeName nodeInfo, String name,
+                                      String type, String path) throws IOTException {
         try {
-            RegistrationResponse response = nodeServiceStub.unRegisterProducer(nodeInfo, endpointInfo);
+            EndpointInfo endpointInfo = createEndpointInfo(name, type, path);
+            RegistrationResponse response = nodeServiceStub.unRegisterProducer(createNodeInfo(nodeInfo), endpointInfo);
         } catch (RemoteException e) {
-            handleException("Failed to un-register the producer.." + endpointInfo, e);
+            handleException("Failed to un-register the producer.." + name, e);
         }
 
         return true;
     }
 
-    public boolean unRegisterConsumer(NodeInfo nodeInfo, EndpointInfo endpointInfo) throws IOTException {
+    public boolean unRegisterConsumer(NodeName nodeInfo, String name,
+                                      String type, String path) throws IOTException {
+        EndpointInfo endpointInfo = createEndpointInfo(name, type, path);
         try {
-            nodeServiceStub.unRegisterConsumer(nodeInfo, endpointInfo);
+            nodeServiceStub.unRegisterConsumer(createNodeInfo(nodeInfo), endpointInfo);
         } catch (RemoteException e) {
             handleException("Failed to un-register the producer.." + endpointInfo, e);
         }
@@ -163,6 +173,14 @@ public class NodeWSClient {
         nodeInfo.setName(nodeName.getName());
 
         return nodeInfo;
+    }
+
+    private EndpointInfo createEndpointInfo(String name, String type, String path) {
+        EndpointInfo info = new EndpointInfo();
+        info.setName(name);
+        info.setType(type);
+        info.setPath(path);
+        return info;
     }
 
     private NodeName createNodeName(NodeInfo nodeInfo) {

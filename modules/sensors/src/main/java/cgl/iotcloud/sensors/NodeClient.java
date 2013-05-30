@@ -1,6 +1,5 @@
 package cgl.iotcloud.sensors;
 
-import cgl.iotcloud.core.Endpoint;
 import cgl.iotcloud.core.IOTException;
 import cgl.iotcloud.core.Listener;
 import cgl.iotcloud.core.Sender;
@@ -16,22 +15,28 @@ import java.util.List;
 public class NodeClient {
     private Logger log = LoggerFactory.getLogger(NodeClient.class);
 
-    private NodeWSClient wsClient = null;
+    private Client client = null;
+
+    private int mode = NodeAdaptor.MODE_WS;
 
     public NodeClient(String url) throws IOTException {
         try {
-            wsClient = new NodeWSClient(url);
+            if (mode == NodeAdaptor.MODE_WS) {
+                client = new NodeWSClient(url);
+            } else {
+                client = new NodeThriftClient("localhost", 9090);
+            }
         } catch (IOTException e) {
             handleException("Failed to create client.", e);
         }
     }
 
     public List<NodeName> getNodeList() throws IOTException {
-        return wsClient.getNodeList();
+        return client.getNodeList();
     }
 
     public NodeInformation getNode(NodeName name) throws IOTException {
-        return wsClient.getNode(name);
+        return client.getNode(name);
     }
 
     public Listener newListener(cgl.iotcloud.core.Endpoint endpoint) {

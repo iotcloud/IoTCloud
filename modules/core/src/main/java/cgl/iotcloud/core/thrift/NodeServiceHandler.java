@@ -11,7 +11,7 @@ import org.apache.thrift.TException;
 
 import java.util.*;
 
-public class NodeServiceHandler implements NodeService.Iface {
+public class NodeServiceHandler implements TNodeService.Iface {
     private IoTCloud ioTCloud;
 
     public NodeServiceHandler(IoTCloud ioTCloud) {
@@ -19,7 +19,7 @@ public class NodeServiceHandler implements NodeService.Iface {
     }
 
     @Override
-    public Response registerNode(NodeId nodeId) throws TException {
+    public TResponse registerNode(TNodeId nodeId) throws TException {
         if (nodeId.getName() == null) {
             handleException("Invalid parameter for registering node.. " +
                     "a valid node name must be present");
@@ -32,7 +32,7 @@ public class NodeServiceHandler implements NodeService.Iface {
             handleException("Failed to register node..", e);
         }
 
-        Response response = new Response();
+        TResponse response = new TResponse();
         response.setStatus(1);
         return response;
     }
@@ -46,7 +46,7 @@ public class NodeServiceHandler implements NodeService.Iface {
     }
 
     @Override
-    public Response unRegisterNode(NodeId nodeId) throws TException {
+    public TResponse unRegisterNode(TNodeId nodeId) throws TException {
         if (nodeId.getName() == null) {
             handleException("Invalid parameter for registering node.. " +
                     "a valid node name must be present");
@@ -60,14 +60,14 @@ public class NodeServiceHandler implements NodeService.Iface {
             handleException("Failed to register node..", e);
         }
 
-        Response response = new Response();
+        TResponse response = new TResponse();
         response.setStatus(1);
 
         return response;
     }
 
     @Override
-    public EndpointResponse registerProducer(NodeId nodeId, EndpointRequest endpoint) throws TException {
+    public TEndpointResponse registerProducer(TNodeId nodeId, TEndpointRequest endpoint) throws TException {
         if (nodeId.getName() == null) {
             handleException("Invalid parameter for registering producer.. " +
                     "a valid node name must be present");
@@ -96,7 +96,7 @@ public class NodeServiceHandler implements NodeService.Iface {
     }
 
     @Override
-    public Response unRegisterProducer(NodeId nodeId, EndpointRequest endpoint) throws TException {
+    public TResponse unRegisterProducer(TNodeId nodeId, TEndpointRequest endpoint) throws TException {
         if (nodeId.getName() == null) {
             handleException("Invalid parameter for registering producer.. " +
                     "a valid node name must be present");
@@ -120,7 +120,7 @@ public class NodeServiceHandler implements NodeService.Iface {
     }
 
     @Override
-    public EndpointResponse registerConsumer(NodeId nodeId, EndpointRequest endpoint) throws TException {
+    public TEndpointResponse registerConsumer(TNodeId nodeId, TEndpointRequest endpoint) throws TException {
         if (nodeId.getName() == null) {
             handleException("Invalid parameter for registering consumer.. " +
                     "a valid node name must be present");
@@ -149,7 +149,7 @@ public class NodeServiceHandler implements NodeService.Iface {
     }
 
     @Override
-    public Response unRegisterConsumer(NodeId nodeId, EndpointRequest endpoint) throws TException {
+    public TResponse unRegisterConsumer(TNodeId nodeId, TEndpointRequest endpoint) throws TException {
         if (nodeId.getName() == null) {
             handleException("Invalid parameter for registering consumer.. " +
                     "a valid node name must be present");
@@ -168,14 +168,14 @@ public class NodeServiceHandler implements NodeService.Iface {
             handleException("Failed to register the producer..", e);
         }
 
-        return new Response().setStatus(1);
+        return new TResponse().setStatus(1);
     }
 
     @Override
-    public List<NodeId> getNodes() throws TException {
+    public List<TNodeId> getNodes() throws TException {
         NodeCatalog nodeCatalog = ioTCloud.getNodeCatalog();
 
-        List<NodeId> infos = new ArrayList<NodeId>();
+        List<TNodeId> infos = new ArrayList<TNodeId>();
         int count = 0;
         for (NodeInformation n : nodeCatalog.getNodes()) {
             infos.add(createNodeInfo(n));
@@ -184,15 +184,15 @@ public class NodeServiceHandler implements NodeService.Iface {
     }
 
     @Override
-    public Node getNode(NodeId id) throws TException {
+    public TNode getNode(TNodeId id) throws TException {
         NodeCatalog catalog = ioTCloud.getNodeCatalog();
 
         NodeName nodeName = new NodeName(id.getName(), id.getGroup());
 
         NodeInformation nodeInformation = catalog.getNode(nodeName);
 
-        EndpointResponse consumers[] = new EndpointResponse[nodeInformation.getConsumers().size()];
-        EndpointResponse producers[] = new EndpointResponse[nodeInformation.getProducers().size()];
+        TEndpointResponse consumers[] = new TEndpointResponse[nodeInformation.getConsumers().size()];
+        TEndpointResponse producers[] = new TEndpointResponse[nodeInformation.getProducers().size()];
 
         int count = 0;
         for (cgl.iotcloud.core.Endpoint e : nodeInformation.getConsumers()) {
@@ -204,7 +204,7 @@ public class NodeServiceHandler implements NodeService.Iface {
             producers[count++] = createEndpoint(e);
         }
 
-        Node nodeDetail = new Node();
+        TNode nodeDetail = new TNode();
         nodeDetail.setConsumers(Arrays.asList(consumers));
         nodeDetail.setProducers(Arrays.asList(producers));
 
@@ -215,8 +215,8 @@ public class NodeServiceHandler implements NodeService.Iface {
        return nodeDetail;
     }
 
-    private EndpointResponse createEndpoint(Endpoint epr) {
-        EndpointResponse endpoint = new EndpointResponse();
+    private TEndpointResponse createEndpoint(Endpoint epr) {
+        TEndpointResponse endpoint = new TEndpointResponse();
 
         endpoint.setAddress(epr.getAddress());
         endpoint.setName(epr.getName());
@@ -224,7 +224,7 @@ public class NodeServiceHandler implements NodeService.Iface {
         Set<Map.Entry<String, String>> props = epr.getProperties().entrySet();
         int i = 0;
         for (Map.Entry<String, String> e : props) {
-            Property p = new Property();
+            TProperty p = new TProperty();
             p.setName(e.getKey());
             p.setValue(e.getValue());
             endpoint.addToProperties(p);
@@ -233,8 +233,8 @@ public class NodeServiceHandler implements NodeService.Iface {
         return endpoint;
     }
 
-    private NodeId createNodeInfo(NodeInformation nodeInformation) {
-        NodeId nodeInfo = new NodeId();
+    private TNodeId createNodeInfo(NodeInformation nodeInformation) {
+        TNodeId nodeInfo = new TNodeId();
 
         nodeInfo.setGroup(nodeInformation.getName().getGroup());
         nodeInfo.setName(nodeInformation.getName().getName());

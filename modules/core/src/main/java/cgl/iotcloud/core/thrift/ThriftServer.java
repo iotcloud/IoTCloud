@@ -2,7 +2,7 @@ package cgl.iotcloud.core.thrift;
 
 import cgl.iotcloud.core.IOTException;
 import cgl.iotcloud.core.IoTCloud;
-import cgl.iotcloud.thrift.NodeService;
+import cgl.iotcloud.thrift.TNodeService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.thrift.server.TServer;
@@ -34,7 +34,7 @@ public class ThriftServer {
             TServerTransport serverTransport = new TServerSocket(port);
             server = new TSimpleServer(
                     new TServer.Args(serverTransport).processor(
-                            new NodeService.Processor <NodeServiceHandler>(new NodeServiceHandler(ioTCloud))));
+                            new TNodeService.Processor <NodeServiceHandler>(new NodeServiceHandler(ioTCloud))));
             server.serve();
         } catch (TTransportException e) {
             String msg = "Error starting the Thrift server";

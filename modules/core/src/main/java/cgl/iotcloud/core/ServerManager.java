@@ -1,18 +1,12 @@
 package cgl.iotcloud.core;
 
-import cgl.iotcloud.core.broker.BrokerPool;
 import cgl.iotcloud.core.config.SCCConfigurationFactory;
 import cgl.iotcloud.core.config.SCConfiguration;
-import cgl.iotcloud.core.jetty.SGCHTTPServer;
 import cgl.iotcloud.core.stream.StreamingServer;
 import cgl.iotcloud.core.thrift.ThriftServer;
 import cgl.iotcloud.core.tomcat.TomcatServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-
-import javax.jcr.RepositoryException;
 
 /**
  * Starts a SGX server. This is the mail class for starting a SGX Server. This class creates
