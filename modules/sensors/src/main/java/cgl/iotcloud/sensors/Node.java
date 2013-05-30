@@ -24,6 +24,11 @@ public class Node implements cgl.iotcloud.core.sensor.Node {
         this.adaptor = new NodeAdaptor(this, url);
     }
 
+    public Node(NodeName name, String host, int port, int mode) throws IOTException {
+        this.name = name;
+        this.adaptor = new NodeAdaptor(this, host, port, mode);
+    }
+
     @Override
     public Sender newSender(String name, String type, String path) throws IOTException {
         if (senders.containsKey(name)) {

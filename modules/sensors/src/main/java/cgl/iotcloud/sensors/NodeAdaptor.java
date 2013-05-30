@@ -33,6 +33,15 @@ public class NodeAdaptor {
         }
     }
 
+    public NodeAdaptor(Node node, String host, int port, int mode) throws IOTException {
+        this.node = node;
+        if (mode == MODE_WS) {
+            nodeClient = new NodeWSClient("http://" + host + ":"  + port);
+        } else if (mode == MODE_THRIFT) {
+            nodeClient = new NodeThriftClient(host, port);
+        }
+    }
+
     public NodeAdaptor(Node node, String url, int mode) throws IOTException {
         this.node = node;
         this.mode = mode;

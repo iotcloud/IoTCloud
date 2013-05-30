@@ -5,8 +5,7 @@ import cgl.iotcloud.core.Listener;
 import cgl.iotcloud.core.Sender;
 import cgl.iotcloud.core.broker.JMSListenerFactory;
 import cgl.iotcloud.core.broker.JMSSenderFactory;
-import cgl.iotcloud.core.sensor.NodeInformation;
-import cgl.iotcloud.core.sensor.NodeName;
+import cgl.iotcloud.core.sensor.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +27,14 @@ public class NodeClient {
             }
         } catch (IOTException e) {
             handleException("Failed to create client.", e);
+        }
+    }
+
+    public NodeClient(String host, int port, int mode) throws IOTException {
+        if (mode == NodeAdaptor.MODE_WS) {
+            client = new NodeWSClient("http://" + host + ":"  + port);
+        } else if (mode == NodeAdaptor.MODE_THRIFT) {
+            client = new NodeThriftClient(host, port);
         }
     }
 

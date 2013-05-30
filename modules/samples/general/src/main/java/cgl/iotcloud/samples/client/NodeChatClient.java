@@ -12,6 +12,7 @@ import cgl.iotcloud.core.message.data.TextDataMessage;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
 import cgl.iotcloud.core.sensor.NodeInformation;
 import cgl.iotcloud.core.sensor.NodeName;
+import cgl.iotcloud.sensors.NodeAdaptor;
 import cgl.iotcloud.sensors.NodeClient;
 
 import java.io.BufferedReader;
@@ -30,7 +31,8 @@ public class  NodeChatClient {
 
     public NodeChatClient() {
         try {
-            nodeClient = new NodeClient("http://localhost:8080/");
+            //nodeClient = new NodeClient("http://localhost:8080/");
+            nodeClient = new NodeClient("localhost", 9090, NodeAdaptor.MODE_THRIFT);
         } catch (IOTException e) {
             e.printStackTrace();
         }
@@ -38,7 +40,7 @@ public class  NodeChatClient {
 
     public void init() {
         try {
-            NodeInformation nodeInformation = nodeClient.getNode(new NodeName("NodeChatSensor"));
+            NodeInformation nodeInformation = nodeClient.getNode(new NodeName("NodeChatSensor", "chat"));
 
             Endpoint endpoint = nodeInformation.getConsumer("control");
 

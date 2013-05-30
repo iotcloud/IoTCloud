@@ -5,11 +5,13 @@ import cgl.iotcloud.core.IoTCloud;
 import cgl.iotcloud.thrift.TNodeService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.thrift.server.THsHaServer;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TSimpleServer;
-import org.apache.thrift.transport.TServerSocket;
-import org.apache.thrift.transport.TServerTransport;
-import org.apache.thrift.transport.TTransportException;
+import org.apache.thrift.transport.*;
+
+import java.net.UnknownHostException;
+import java.util.concurrent.Executors;
 
 public class ThriftServer {
     private Log log = LogFactory.getLog(ThriftServer.class);
@@ -31,10 +33,10 @@ public class ThriftServer {
 
     public void start() throws IOTException {
         try {
-            TServerTransport serverTransport = new TServerSocket(port);
-            server = new TSimpleServer(
-                    new TServer.Args(serverTransport).processor(
-                            new TNodeService.Processor <NodeServiceHandler>(new NodeServiceHandler(ioTCloud))));
+            TNonblockingServerTransport serverTransport = new TNonblockingServerSocket(port);
+            server = new THsHaServer(
+                    new THsHaServer.Args(serverTransport).processor(
+                            new TNodeService.Processor <NodeServiceHandler>(new NodeServiceHandler(ioTCloud))).executorService(Executors.newFixedThreadPool(10)));
             server.serve();
         } catch (TTransportException e) {
             String msg = "Error starting the Thrift server";

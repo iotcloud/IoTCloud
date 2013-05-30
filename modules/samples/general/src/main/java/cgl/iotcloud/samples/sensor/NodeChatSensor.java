@@ -13,6 +13,7 @@ import cgl.iotcloud.core.message.jms.JMSControlMessageFactory;
 import cgl.iotcloud.core.message.jms.JMSDataMessageFactory;
 import cgl.iotcloud.core.sensor.NodeName;
 import cgl.iotcloud.sensors.Node;
+import cgl.iotcloud.sensors.NodeAdaptor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class NodeChatSensor {
     private Sender messageSender;
 
     public NodeChatSensor() throws IOTException {
-        node = new Node(new NodeName("NodeChatSensor"), "http://localhost:8080");
+        node = new Node(new NodeName("NodeChatSensor", "chat"), "localhost", 9090, NodeAdaptor.MODE_THRIFT);
     }
 
     public void start() throws IOTException {
